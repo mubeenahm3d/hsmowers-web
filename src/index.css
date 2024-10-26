@@ -1,11 +1,18 @@
 :root {
-  --mobile-width: 95%;
-  --tablet-width: 90%;
-  --laptop-width: 80%;
-  --mobile-breakpoint: 600px;
-  --tablet-breakpoint: 900px;
-  --laptop-breakpoint: 900px;
+  --section-width: 90%;
   --section-height: 75vh;
+
+  --xl-heading: 3.4rem;
+  --l-heading: 2.4rem;
+  --main-heading: 2rem;
+  --m-heading: 1.75rem;
+  --ms-heading: 1.375rem;
+  --s-heading: 1.125rem;
+  --text: 1rem;
+
+  --bp-tablet: 600px;
+  --bp-laptop: 1024px;
+  --bp-desktop: 1640px;
 
   --section-margin: 60px;
   --heading-margin: 50px;
@@ -14,15 +21,15 @@
   --primary-color: #1dbf73;
   --primary-light-color: #84dfb5;
   --primary-dark-color: #008a37;
-  --secondary-color: #F9AD3E;
-  --secondary-light-color: #FBC76D;
-  --secondary-dark-color: #D68A2D;
+  --secondary-color: #f9ad3e;
+  --secondary-light-color: #fbc76d;
+  --secondary-dark-color: #d68a2d;
   --accent-color: #e94c4f;
   --accent-light-color: #f19092;
   --accent-dark-color: #e31f22;
 
   --text-color: black;
-  --text-light-color: gray;
+  --text-light-color: #475467;
   --text-white-color: white;
   --text-hover-color: #d7d5d5;
 
@@ -39,9 +46,9 @@
   --shadow: #bdbdbd;
   --shadow-light: #e2e2e2;
 
-  --radius-6: 6px;
-  --radius-10: 8px;
-  --radius-20: 20px;
+  --s-radius: 6px;
+  --m-radius: 8px;
+  --l-radius: 24px;
 
   --nav-height: 70px;
 }
@@ -58,72 +65,64 @@ html {
 }
 
 body {
-  font-family: "Lato", sans-serif;
+  font-family: "Poppins", sans-serif;
   background: var(--background-color);
-  color: black;
+  color: var(--text-color);
   overflow-y: auto;
   overflow-x: hidden;
   height: 100vh;
 }
-h1,
-h2,
-h3,
-h4,
-h5,
-a {
-  font-family: "Poppins", sans-serif;
-  font-weight: bold;
-  color: var(--text-color);
-}
+
 h1 {
-  font-size: 3.5rem;
+  font-size: var(--l-heading);
   font-weight: 700;
 }
 h2 {
-  font-size: 2.8rem;
+  font-size: var(--main-heading);
+  font-weight: 700;
 }
 h3 {
-  font-size: 2rem;
+  font-size: var(--m-heading);
   font-weight: 700;
 }
 h4 {
-  font-size: 1.2rem;
+  font-size: var(--ms-heading);
   font-weight: 600;
 }
 h5 {
-  font-size: 1.1rem;
+  font-size: var(--s-heading);
   font-weight: 500;
 }
-p {
-  font-size: 1rem;
-  color: var(--text-light-color);
+h6 {
+  font-size: var(--xl-heading);
 }
+p,
 li,
 button,
 input,
 select,
-textarea {
-  font-size: 1rem;
+article,
+title,
+header textarea,
+a,
+label,
+span {
+  font-size: var(--text);
   color: var(--text-light-color);
-  line-height: 1.2;
 }
 span,
 a {
-  font-size: 1rem;
   color: var(--text-color);
   font-weight: 500;
-}
-label {
-  font-size: 1.1rem;
 }
 
 button {
   cursor: pointer;
   outline: none;
-  color: white;
+  color: var(--text-white-color);
   transition: all 0.15s ease-in-out;
   background-color: var(--primary-color);
-  border-radius: 6px;
+  border-radius: var(--s-radius);
   padding: 10px 16px;
   min-width: 120px;
   max-height: 45px;
@@ -144,7 +143,7 @@ button:hover {
 .blue-btn {
   min-width: 50px;
   padding: 6px 12px;
-  border-radius: 24px;
+  border-radius: var(--l-radius);
 }
 .outline-btn {
   color: var(--text-white-color);
@@ -176,7 +175,7 @@ button:hover {
 }
 input {
   outline: none;
-  border-radius: 6px;
+  border-radius: var(--s-radius);
   color: var(--text-color);
   padding: 6px 14px;
   border: 1px solid var(--border-color);
@@ -207,7 +206,7 @@ a {
   cursor: pointer;
 }
 select {
-  border-radius: 12px;
+  border-radius: var(--m-radius);
   padding: 10px 14px;
 }
 li {
@@ -233,32 +232,15 @@ svg:hover {
   :root {
     --section-margin: 50px;
     --heading-margin: 30px;
-    --tablet-width: 95%;
-    --laptop-width: 95%;
-  }
-  h1 {
-    font-size: 2.4rem;
-  }
-  h2 {
-    font-size: 2.2rem;
-  }
-  h3 {
-    font-size: 1.4rem;
-  }
-  h4 {
-    font-size: 1.1rem;
-  }
-  p,
-  li,
-  a,
-  button,
-  input,
-  h5,
-  select,
-  span,
-  label,
-  textarea {
-    font-size: 1rem;
+    --section-width: 90%;
+
+    --xl-heading: 3rem;
+    --l-heading: 2.2rem;
+    --main-heading: 1.75rem;
+    --m-heading: 1.375rem;
+    --ms-heading: 1.125rem;
+    --s-heading: 1rem;
+    --text: 0.9rem;
   }
   button {
     padding: 8px 12px;
@@ -267,40 +249,6 @@ svg:hover {
   input,
   select,
   button {
-    /* height: 40px; */
-  }
-}
-@media (min-width: 600px) and (max-width: 900px) {
-  :root {
-    --section-margin: 50px;
-    --heading-margin: 30px;
-  }
-  h1 {
-    font-size: 2.6rem;
-  }
-  h2 {
-    font-size: 2.6rem;
-  }
-  h3 {
-    font-size: 1.8rem;
-  }
-  h4 {
-    font-size: 1.2rem;
-  }
-  p,
-  li,
-  a,
-  button,
-  input,
-  h5,
-  select,
-  span,
-  label,
-  textarea {
-    font-size: 1rem;
-  }
-  button {
-    padding: 8px 12px;
-    min-width: 100px;
+    height: 42px;
   }
 }
