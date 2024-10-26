@@ -2,7 +2,6 @@ import { Backdrop, Fade, Modal } from "@mui/material";
 import styled from "styled-components";
 
 function BackdropWrapper({ open, smallSize, element, backdropHandler }) {
-
   return (
     <Modal
       sx={{
@@ -60,6 +59,12 @@ const StyledWrapper = styled.div`
       font-weight: inherit;
       color: var(--secondary-dark-color);
     }
+  }
+  .heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 6px;
   }
   overflow-y: scroll;
   @media (max-width: 850px) {

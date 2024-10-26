@@ -1,12 +1,12 @@
 :root {
   --section-width: 90%;
-  --section-height: 75vh;
+  --section-height: 65vh;
 
   --xl-heading: 3.4rem;
   --l-heading: 2.4rem;
   --main-heading: 2rem;
   --m-heading: 1.75rem;
-  --ms-heading: 1.375rem;
+  --ms-heading: 1.25rem;
   --s-heading: 1.125rem;
   --text: 1rem;
 
@@ -14,7 +14,7 @@
   --bp-laptop: 1024px;
   --bp-desktop: 1640px;
 
-  --section-margin: 60px;
+  --section-margin: 80px;
   --heading-margin: 50px;
 
   --background-color: #fefefe;
@@ -29,7 +29,7 @@
   --accent-dark-color: #e31f22;
 
   --text-color: black;
-  --text-light-color: #475467;
+  --text-light-color: #1d2530;
   --text-white-color: white;
   --text-hover-color: #d7d5d5;
 
@@ -75,11 +75,11 @@ body {
 
 h1 {
   font-size: var(--l-heading);
-  font-weight: 700;
+  font-weight: 600;
 }
 h2 {
   font-size: var(--main-heading);
-  font-weight: 700;
+  font-weight: 600;
 }
 h3 {
   font-size: var(--m-heading);

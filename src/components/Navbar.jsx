@@ -71,13 +71,13 @@ export default function Navbar() {
       </div>
       <div className="nav-items">
         <div className="item">
-          <Link to="/blog">Blog</Link>
+          <Link to="/blog">Home</Link>
         </div>
         <div className="item">
-          <Link to="/upgrade">Upgrade</Link>
+          <Link to="/upgrade">About</Link>
         </div>
         <div onClick={backdropHandler} className="item">
-          <h5>Contact Us</h5>
+          <h5>Pricing</h5>
         </div>
         {/* Avatar or Login button for larger screens */}
         {auth.currentUser ? (
