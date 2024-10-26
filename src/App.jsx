@@ -22,6 +22,7 @@ import PaymentResponse from "./pages/PaymentResponse";
 import Blogs from "./pages/Blogs";
 import BlogDetail from "./pages/BlogDetail";
 import SubscriptionDetail from "./pages/SubscriptionDetail";
+import LandingPage from "./pages/LandingPage";
 
 function App() {
   const [redirectLoading, setRedirectLoading] = useState(true);
@@ -90,7 +91,8 @@ function App() {
     <div className="App">
       <AlertBar alertStates={alert} />
       <Routes>
-        <Route path="/" element={<Home />} />
+        {/* <Route path="/" element={<Home />} /> */}
+        <Route path="/" element={<LandingPage/> } />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/upgrade" element={<Upgrade />} />

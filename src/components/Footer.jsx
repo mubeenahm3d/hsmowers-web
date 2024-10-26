@@ -1,10 +1,9 @@
 import React, { useRef } from "react";
 import styled from "styled-components";
-import logo from "../assets/logo-white.png";
-// import LoadingButton from "../components/LoadingButton";
-// import { FaFacebook, FaYoutube, FaLinkedin, FaTiktok } from "react-icons/fa";
-// import { AiFillInstagram } from "react-icons/ai";
+import logo from "../assets/MowerLogo.jpeg";
 import { Link } from "react-router-dom";
+import { FaXTwitter } from "react-icons/fa6";
+import { FaInstagram, FaFacebookF } from "react-icons/fa";
 import { useState } from "react";
 import BackdropWrapper from "./modals/BackdropWrapper";
 import Info from "./modals/Info";
@@ -23,67 +22,37 @@ export default function Footer() {
         open={contactBackdrop}
         smallSize={true}
         backdropHandler={backdropHandler}
-        element={<Info heading={"Contact Us"} msg="For all inquires please contact: info@decanlys.com" backdropHandler={backdropHandler} />}
+        element={
+          <Info
+            heading={"Contact Us"}
+            msg="For all inquires please contact: info@decanlys.com"
+            backdropHandler={backdropHandler}
+          />
+        }
       />
       <div className="content">
         <div className="socials">
-          <img src={logo} alt="" className="logo" />
+          <h2>HighSchoolMowers</h2>
         </div>
-        <div className="tabs">
-          <div className="nav-tabs">
-            <h5>
-              Want to check more?{"  "}
-              <Link to="/upgrade">Upgrade Now</Link>
-            </h5>
-            {/* <h5>
-              Want to check live?{"  "}
-              <Link
-                className="landing-meal-planning-gtag"
-                to="/dashboard/meal-planning"
-              >
-                Use our API
-              </Link>
-            </h5> */}
-            <h5>
-              Custom solution for your business?{"  "}
-              <span onClick={backdropHandler}>Contact Us</span>
-            </h5>
-          </div>
-        </div>
-        {/* <div className="recipes">
-          <h5>Recipes</h5>
-          <div className="nav-tabs">
-            <Link className="footer-recipes-gtag" to="/dashboard/explore">
-              Best
-            </Link>
-            <Link className="footer-recipes-gtag" to="/dashboard/explore">
-              Diets
-            </Link>
-            <Link className="footer-recipes-gtag" to="/dashboard/explore">
-              Cuisines
-            </Link>
-            <Link className="footer-recipes-gtag" to="/dashboard/explore">
-              Under 45 minutes
-            </Link>
-            <Link className="footer-recipes-gtag" to="/dashboard/explore">
-              Under 30 minutes
-            </Link>
-          </div>
-        </div> */}
       </div>
       <div className="copyright">
-        <p>Copyright © {year}, ClearSlate</p>
-        {/* <p>|</p>
-        <Link to="/terms-of-service">Terms of Service</Link>
-        <p>|</p>
-        <Link to="/privacy-policy">Privacy Policy</Link> */}
+        <p> HighSchoolMowers, Copyright © {year}</p>
+        <div className="tabs">
+          <div className="nav-tabs">
+            <FaXTwitter className="icon-img" />
+            <FaInstagram className="icon-img" />
+            <FaFacebookF className="icon-img" />
+          </div>
+        </div>
       </div>
     </StyledFooter>
   );
 }
 
 const StyledFooter = styled.section`
-  background-color: var(--primary-color);
+  background-color: var(--background-color);
+  box-shadow: 0px 0px 4px 2px var(--shadow-light);
+  margin-bottom: 0.6rem;
   padding: 40px 8%;
   h5,
   li,
@@ -93,9 +62,9 @@ const StyledFooter = styled.section`
   }
   .content {
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     justify-content: space-between;
-    border-bottom: 1px solid white;
+    border-bottom: 1px solid green;
     padding-bottom: 10px;
     flex-wrap: wrap;
     gap: 1.2rem;
@@ -105,7 +74,9 @@ const StyledFooter = styled.section`
       flex-direction: column;
       gap: 20px;
       .logo {
-        width: 200px;
+        width: 100px;
+        height: 100px;
+        border-radius: 60px;
       }
       form {
         display: flex;
@@ -124,6 +95,7 @@ const StyledFooter = styled.section`
       .connect {
         display: flex;
         align-items: center;
+        flex-wrap: wrap;
         gap: 20px;
         a {
           margin-right: 10px;
@@ -139,30 +111,64 @@ const StyledFooter = styled.section`
     .recipes {
       h5 {
         margin-bottom: 8px;
-        a,span {
+        a,
+        span {
           cursor: pointer;
           color: white;
           font-size: inherit;
           text-decoration: underline;
         }
       }
-      .nav-tabs {
+      /* .nav-tabs {
         display: flex;
-        flex-direction: column;
-        gap: 6px;
+        justify-content: center;
+        align-items: center;
+        gap: 2rem;
         a {
           color: white;
         }
-      }
+        .icon-img {
+          width: 30px;
+          height: 30px;
+          color: var(--primary-color);
+        }
+      } */
     }
   }
   .copyright {
     margin-top: 10px;
     display: flex;
+    justify-content: space-between;
     align-items: center;
-    gap: 10px;
+    flex-wrap: wrap;
+    gap: 1rem;
+    p {
+      color: var(--text-color);
+      font-size: var(--text);
+    }
     a {
       text-decoration: underline;
     }
+
+    .nav-tabs {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 2rem;
+      flex-shrink: 0;
+      a {
+        color: white;
+      }
+      .icon-img {
+        min-width: 20px;
+        min-height: 20px;
+        max-width: 30px;
+        max-height: 30px;
+        color: var(--primary-color);
+      }
+    }
   }
+
+ 
+
 `;

@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import logo from "../assets/logo-white.png";
+import logo from "../assets/MowerLogo.jpeg";
 import styled from "styled-components";
 import { Link, useNavigate } from "react-router-dom";
 import { GiHamburgerMenu } from "react-icons/gi";
-import { FaStar } from "react-icons/fa"; // Importing the star icon for premium users
+import { FaStar } from "react-icons/fa"; 
 import BackdropWrapper from "./modals/BackdropWrapper";
 import ContactForm from "./modals/ContactForm";
 import {
@@ -68,16 +68,17 @@ export default function Navbar() {
       />
       <div className="logo" onClick={() => navigate("/")}>
         <img src={logo} alt="Logo" />
+        <h4>HighSchoolShovelers.com</h4>
       </div>
       <div className="nav-items">
         <div className="item">
-          <Link to="/blog">Blog</Link>
+          <Link to="/blog">Home</Link>
         </div>
         <div className="item">
-          <Link to="/upgrade">Upgrade</Link>
+          <Link to="/upgrade">About</Link>
         </div>
         <div onClick={backdropHandler} className="item">
-          <h5>Contact Us</h5>
+          <h5>Pricing</h5>
         </div>
         {/* Avatar or Login button for larger screens */}
         {auth.currentUser ? (
@@ -229,29 +230,38 @@ const StyledNavbar = styled.section`
   height: 10vh;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 5%;
+  justify-content: center;
+  gap: 5rem;
   background-color: var(--primary-color);
   width: 100%;
   padding: 0 2%;
 
   .logo {
-    width: 200px;
+    display: flex; 
+    align-items: center; 
+    gap: 1rem;
     cursor: pointer;
 
     img {
-      width: 100%;
-      height: 100%;
+      width: 60px; 
+      height: 60px; 
+      border-radius: 10px;
+    }
+
+    h4 {
+      font-size: 1rem; 
+      color: white; 
+      margin: 0;
     }
   }
 
   .nav-icon {
-    display: block; // Show hamburger icon by default (for smaller screens)
+    display: block;
     cursor: pointer;
   }
 
   .nav-items {
-    display: none; // Hide navigation items by default for smaller screens
+    display: none;
     align-items: center;
     justify-content: center;
     gap: 5%;
@@ -288,22 +298,53 @@ const StyledNavbar = styled.section`
       font-size: 1.2rem;
       font-weight: 600;
       color: white;
+
       &:hover {
         color: var(--text-hover-color);
       }
     }
   }
 
-  @media (min-width: 769px) {
+  @media (min-width: 640px) and (max-width: 1024px) {
+    gap: 10rem;
+    .nav-items {
+      display: flex;
+    }
+
     .nav-icon {
-      display: none; // Hide hamburger icon on larger screens
+      display: none;
+    }
+
+    .logo {
+      width: auto;
+      img {
+        width: 70px;
+        height: 70px; 
+      }
+    }
+  }
+
+  @media (min-width: 1024px) and (max-width: 1650px) {
+    gap: 30rem;
+    .logo {
+      width: auto;
+    }
+    .nav-icon {
+      display: none;
     }
 
     .nav-items {
-      display: flex; // Show navigation items on larger screens
+      display: flex;
+      gap: 7%;
+    }
+
+    .nav-items .item {
+      font-size: 1.5rem;
     }
   }
 `;
+
+
 
 // Styled component for the Drawer Header
 const DrawerHeader = styled.div`
@@ -311,6 +352,6 @@ const DrawerHeader = styled.div`
   height: 10vh;
   align-items: center;
   justify-content: end;
-  padding: 16px; // Padding for header
-  background-color: var(--primary-color); // Match primary color
+  padding: 16px;
+  background-color: var(--primary-color); 
 `;
