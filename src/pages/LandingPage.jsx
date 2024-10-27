@@ -4,7 +4,6 @@ import LandingMenu from '../components/LandingMenu'
 import BG from '../assets/bg4.jpg'
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
-import LandingFooter from '../components/LandingFooter';
 import Footer from '../components/Footer';
 
 

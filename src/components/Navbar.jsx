@@ -75,7 +75,7 @@ export default function Navbar() {
           <Link to="/blog">Home</Link>
         </div>
         <div className="item">
-          <Link to="/upgrade">About</Link>
+          <Link to="/about">About</Link>
         </div>
         <div onClick={backdropHandler} className="item">
           <h5>Pricing</h5>
