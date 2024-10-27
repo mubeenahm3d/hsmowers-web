@@ -30,7 +30,7 @@ export default function LandingPage() {
                 Find your next <br /> <span>Mower</span>
               </h3>
               <p>
-                No Ads. No SignUp. Support local students & get a gear looking
+                No Ads. No SignUp. Support local students & get a geart looking
                 lawn
               </p>
 

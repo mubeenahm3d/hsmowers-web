@@ -6,7 +6,6 @@ function BackdropWrapper({ open, smallSize, element, backdropHandler }) {
     <Modal
       sx={{
         overflow: "hidden",
-        color: "#fff",
         scrollbarWidth: "none",
         position: "fixed",
         zIndex: (theme) => theme.zIndex.drawer + 1,
@@ -64,7 +63,7 @@ const StyledWrapper = styled.div`
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 6px;
+    
   }
   overflow-y: scroll;
   @media (max-width: 850px) {

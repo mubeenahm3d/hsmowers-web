@@ -1,20 +1,25 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import Navbar from "../components/Navbar";
 import ProfileCards from "../components/profile/ProfileCards";
 import Footer from "../components/Footer";
-import ProfileSetup from "../components/modals/ProfileSetup";
 import BackdropWrapper from "../components/modals/BackdropWrapper";
+import Info from "../components/modals/Info";
+import UserConsent from "../components/modals/UserConsent";
 
 export default function GetStarted() {
+    const [consentOpen, setConsentOpen] = useState(true)
+    function backdropHandler() {
+        setConsentOpen(current => !current)
+    }
   return (
     <>
       <Navbar />
       <StyledGetStarted>
       <BackdropWrapper
-        open={false}
-        // backdropHandler={backdropHandler}
-        element={<ProfileSetup />}
+        open={consentOpen}
+        backdropHandler={backdropHandler}
+        element={<UserConsent backdropHandler={backdropHandler} />}
       />
         <div className="first">
           <h1>Student Signup</h1>
@@ -23,7 +28,7 @@ export default function GetStarted() {
             business and gain customers Get your own Business Website Plus Tap
             into our Large Advertising Network to grow your business
           </p>
-          <button>Get Started Today!</button>
+          <button onClick={backdropHandler}>Get Started Today!</button>
         </div>
         <div className="second">
           <h4>Recently Created Profiles</h4>

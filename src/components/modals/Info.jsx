@@ -8,7 +8,7 @@ export default function Info({ backdropHandler, heading, msg }) {
       <div className="heading">
         <h4>{heading}</h4>
         <button className="icon" onClick={(e) => backdropHandler(false)}>
-          {<CloseIcon htmlColor="var(--primary-color)" fontSize="medium" />}
+          {<CloseIcon htmlColor="var(--primary-color)" fontSize="large" />}
         </button>
       </div>
 

@@ -1,0 +1,439 @@
+import React, { useState } from "react";
+import PhoneInput from "react-phone-input-2";
+import styled from "styled-components";
+import { Avatar } from "@mui/material";
+import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+
+let services = [];
+export default function ProfileSetup({ backdropHandler }) {
+  const [stepNum, setStepNum] = useState(1);
+  const [form, setForm] = useState({
+    fullName: "",
+    userName: "",
+    phoneNumber: "",
+    zipCode: "",
+    grade: 9,
+    description: "",
+    schoolName: "",
+    profileImg: "",
+    services: [],
+    serviceDistance: 0.5,
+  });
+
+  function onChangeHandler(e) {
+    console.log("e", e.target.name, e.target.value);
+    setForm((current) => ({ ...current, [e.target.name]: e.target.value }));
+  }
+  console.log("form", form);
+  function submitHandler(e) {
+    e.preventDefault();
+    if (stepNum < 4) {
+      setStepNum((current) => current + 1);
+    }
+  }
+  function backBtnHandler(e) {
+    e.preventDefault();
+    setStepNum((current) => current - 1);
+  }
+
+  function renderSteps() {
+    switch (stepNum) {
+      case 1:
+        return <Step1 form={form} onChangeHandler={onChangeHandler} />;
+      case 2:
+        return <Step2 form={form} onChangeHandler={onChangeHandler} />;
+      case 3:
+        return <Step3 form={form} onChangeHandler={onChangeHandler} />;
+      case 4:
+        return <Step4 form={form} onChangeHandler={onChangeHandler} />;
+      default:
+        return <Step1 form={form} onChangeHandler={onChangeHandler} />;
+    }
+  }
+
+  return (
+    <>
+      <Navbar />
+      <StyledProfileSetup>
+        <h3>Profile Setup</h3>
+        <div className="content">
+          <h4>Create your business page</h4>
+          <form onSubmit={submitHandler}>
+            {renderSteps()}
+            <div className="btns">
+              <button
+                disabled={stepNum === 1}
+                onClick={backBtnHandler}
+                className="back-btn"
+              >
+                <ArrowBackIcon /> Back
+              </button>
+              <button type="submit">Next</button>
+            </div>
+          </form>
+          <div className="progress">
+            <div className={`step ${stepNum === 1 ? "active" : ""}`} />
+            <div className={`step ${stepNum === 2 ? "active" : ""}`} />
+            <div className={`step ${stepNum === 3 ? "active" : ""}`} />
+            <div className={`step ${stepNum === 4 ? "active" : ""}`} />
+          </div>
+        </div>
+      </StyledProfileSetup>
+      <Footer />
+    </>
+  );
+}
+
+function Step1({ form, onChangeHandler }) {
+  return (
+    <StyledStep>
+      <div className="field">
+        <label htmlFor="fullName">Full Name</label>
+        <input
+          type={"text"}
+          minLength={3}
+          placeholder="Enter Full Name"
+          name={"fullName"}
+          value={form.fullName}
+          onChange={onChangeHandler}
+          required
+        />
+      </div>
+      <div className="field">
+        <label htmlFor="userName">Username</label>
+        <input
+          type={"text"}
+          minLength={3}
+          placeholder="Enter Username"
+          name={"userName"}
+          value={form.userName}
+          onChange={onChangeHandler}
+          required
+        />
+      </div>
+      <div className="field">
+        <label htmlFor="phoneNumber">Phone Number</label>
+        <PhoneInput
+          country={"us"}
+          value={form.phoneNumber}
+          onChange={(phone) =>
+            onChangeHandler({ target: { name: "phoneNumber", value: phone } })
+          }
+          onlyCountries={["us"]}
+          placeholder="Enter phone number"
+          required
+        />
+      </div>
+    </StyledStep>
+  );
+}
+
+function Step2({ form, onChangeHandler }) {
+  function servicesBtnClicked(e) {
+    e.preventDefault();
+    const { classList, value } = e.target;
+    if (classList.contains("active")) {
+      services = services.filter((service) => value !== service);
+      classList.remove("active");
+    } else {
+      services.push(value);
+      classList.add("active");
+    }
+    onChangeHandler({ target: { name: "services", value: services } });
+  }
+
+  const servicesOptions = [
+    "Mowing",
+    "Snow Removal",
+    "Baby Sitting",
+    "Window Cleaning",
+    "Edging",
+    "Weeding",
+    "Leaf Removal",
+  ];
+  return (
+    <StyledStep className="step2">
+      <div className="field">
+        <label htmlFor="services">Select your services</label>
+        <div className="services-btns">
+          {servicesOptions.map((service, index) => (
+            <button
+              key={index}
+              className="gray-btn"
+              value={service.toLowerCase().split(" ").join("-")}
+              onClick={servicesBtnClicked}
+            >
+              {service}
+            </button>
+          ))}
+        </div>
+      </div>
+      <div className="field">
+        <label htmlFor="serviceDistance">Service Distance</label>
+        <h5>{form.serviceDistance} Miles</h5>
+        <input
+          type={"range"}
+          min={0.5}
+          step={0.5}
+          max={20}
+          className="range-input"
+          name={"serviceDistance"}
+          value={form.serviceDistance}
+          onChange={onChangeHandler}
+        />
+      </div>
+    </StyledStep>
+  );
+}
+
+function Step3({ form, onChangeHandler }) {
+  const fileSelectedHandler = (e) => {
+    // setLoading(true);
+    let img = {};
+    const reader = new FileReader();
+    reader.onload = async () => {
+      if (reader.readyState === 2) {
+        img = { name: e.target.files[0].name, data: reader.result };
+        onChangeHandler({ target: { name: "profileImg", value: img.data } });
+        // setProfileImg(img.data);
+        // try {
+        //   const imageUrl = img.data && (await uploadImg(img, "profilePics"));
+        //   console.log("image url", imageUrl);
+
+        //   await updateProfile(auth.currentUser, {
+        //     photoURL: imageUrl,
+        //   });
+        //   dispatch(userActions.setUserImage(imageUrl));
+        //   dispatch(
+        //     alertActions.setAlert({
+        //       title: "Profile picture changed",
+        //       messageType: "success",
+        //     })
+        //   );
+        // } catch (error) {
+        //   console.log("e", error);
+        //   dispatch(
+        //     alertActions.setAlert({
+        //       title: "Failed to change profile picture",
+        //       messageType: "error",
+        //     })
+        //   );
+        // }
+      }
+    };
+    reader.readAsDataURL(e.target.files[0]);
+
+    // setLoading(false);
+  };
+
+  return (
+    <StyledStep className="step3">
+      <div className="field">
+        <label htmlFor="fullName">Profile Picture</label>
+        <Avatar
+          src={form.profileImg}
+          sx={{ width: "100px", height: "100px" }}
+        />
+        <input
+          style={{ display: "none" }}
+          type="file"
+          accept="image/*"
+          onChange={(e) => fileSelectedHandler(e)}
+          id="img-upload"
+        />
+        <label htmlFor="img-upload" className="gray-btn">
+          Upload Image
+        </label>
+      </div>
+      <div className="field">
+        <label htmlFor="userName">School Name</label>
+        <input
+          type={"text"}
+          minLength={3}
+          placeholder="Enter School Name"
+          name={"schoolName"}
+          value={form.schoolName}
+          onChange={onChangeHandler}
+          required
+        />
+      </div>
+      <div className="field">
+        <label htmlFor="grade">Grade</label>
+        <select
+          name="grade"
+          value={form.grade}
+          onChange={onChangeHandler}
+          required
+        >
+          <option value={9}>Fresher</option>
+          <option value={10}>Sophomore</option>
+          <option value={11}>Junior</option>
+          <option value={12}>Senior</option>
+        </select>
+      </div>
+    </StyledStep>
+  );
+}
+
+function Step4({ form, onChangeHandler }) {
+  return (
+    <StyledStep className="step4">
+      <div className="field">
+        <label htmlFor="fullName">Describe your business</label>
+        <textarea
+          placeholder="Enter Full Name"
+          rows={5}
+          required
+          maxLength={200}
+          name={"description"}
+          value={form.description}
+          onChange={onChangeHandler}
+        />
+      </div>
+    </StyledStep>
+  );
+}
+const StyledProfileSetup = styled.section`
+  margin-top: var(--section-margin);
+  min-height: var(--section-height);
+  h3 {
+    text-align: center;
+  }
+  h4 {
+    color: var(--text-color);
+  }
+  .content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0px 0px 4px 2px var(--shadow-light);
+    max-width: 650px;
+    margin: var(--section-margin) auto;
+    border-radius: var(--l-radius);
+    padding: 30px;
+    min-height: 420px;
+    h4 {
+      margin-bottom: 20px;
+    }
+    form {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      min-height: 400px;
+      .btns {
+        display: flex;
+
+        .back-btn {
+          background-color: transparent;
+          color: var(--text-light-color);
+          font-weight: 600;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 2px;
+          font-size: var(--s-heading);
+        }
+      }
+    }
+    .progress {
+      width: 200px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      margin-top: 30px;
+      .step {
+        width: 50px;
+        height: 6px;
+        background-color: gray;
+        border-radius: 4px;
+        background-color: var(--light-gray-color);
+        transition: all 0.2 ease-in-out;
+        &.active {
+          background-color: var(--primary-color);
+        }
+      }
+    }
+  }
+`;
+
+const StyledStep = styled.div`
+  min-height: 270px;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  .field {
+    display: flex;
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 1rem;
+    label {
+      font-weight: 500;
+    }
+    input,
+    select,
+    textarea {
+      min-width: 240px;
+    }
+    .gray-btn {
+      border-radius: 50px;
+      border: 1px solid var(--gray-color);
+      color: var(--gray-color);
+      background-color: transparent;
+      &:hover {
+        border-color: var(--primary-color);
+        color: var(--primary-color);
+      }
+    }
+    .services-btns {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      .gray-btn.active {
+        background-color: var(--primary-color);
+        color: white;
+        border-color: var(--primary-color);
+      }
+    }
+    .special-label {
+      display: none;
+    }
+  }
+  &.step2 {
+    .field {
+      width: 70%;
+      h5 {
+        color: var(--text-light-color);
+        width: 100%;
+        text-align: center;
+      }
+      .range-input {
+        width: 100%;
+      }
+    }
+  }
+  &.step3 {
+    .field {
+      .gray-btn {
+        padding: 0px 8px;
+        cursor: pointer;
+      }
+      width: 100%;
+    }
+  }
+  &.step4 {
+    textarea {
+      padding: 10px 6px;
+      border-radius: var(--m-radius);
+      width: 320px;
+      max-width: 320px;
+      height: 200px;
+      max-height: 200px;
+    }
+  }
+`;
