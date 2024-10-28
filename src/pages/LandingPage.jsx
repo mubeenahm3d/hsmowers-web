@@ -53,7 +53,7 @@ export default function LandingPage() {
             at all. No Signup needed, so you will never be contacted by random
             vendors. Students pay a small fee to have their own business
             promoted on the website, making it extremely easy to find the help
-            you need
+            you need.
           </p>
         </About>
       </HeroSection>

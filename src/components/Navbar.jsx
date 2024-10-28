@@ -262,7 +262,6 @@ const StyledNavbar = styled.section`
     }
 
     img {
-      width: 100%;
       max-width: 60px;
       margin-right: 6px;
       height: auto;

@@ -26,6 +26,7 @@ import GetStarted from "./pages/GetStarted";
 import LandingPage from "./pages/LandingPage";
 import ProfileSetup from "./pages/ProfileSetup";
 import About from "./pages/About";
+import ConsentResponse from "./pages/ConsentResponse";
 
 function App() {
   const [redirectLoading, setRedirectLoading] = useState(true);
@@ -97,6 +98,7 @@ function App() {
         {/* <Route path="/" element={<Home />} /> */}
         <Route path="/" element={<LandingPage />} />
         <Route path="/about" element={<About />} />
+        <Route path="/consentresponse" element={<ConsentResponse/>} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/get-started" element={<GetStarted />} />

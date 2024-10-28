@@ -18,7 +18,7 @@ export default function About() {
         <div className="info-container">
           <div className="content-container">
             <h3>
-              <span>Empowering</span> Local Youth, <span> Serving</span> the
+              <span>Empowering</span> Local Youth,<br/> <span>Serving</span> the
               Community
             </h3>
             <p>
