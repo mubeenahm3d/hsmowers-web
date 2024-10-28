@@ -32,7 +32,11 @@ export default function Footer() {
       />
       <div className="content">
         <div className="socials">
-          <h2>HighSchoolMowers</h2>
+          {/* <h2>HighSchoolMowers</h2> */}
+          <p>
+            Students pay a small fee to have their own business promoted on the
+            website, making it extremely easy to find the help you need.
+          </p>
         </div>
       </div>
       <div className="copyright">
@@ -52,7 +56,6 @@ export default function Footer() {
 const StyledFooter = styled.section`
   background-color: var(--background-color);
   box-shadow: 0px 0px 4px 2px var(--shadow-light);
-  margin-bottom: 0.6rem;
   padding: 40px 8%;
   h5,
   li,
@@ -73,6 +76,10 @@ const StyledFooter = styled.section`
       flex-wrap: wrap;
       flex-direction: column;
       gap: 20px;
+
+      p {
+        color: var(--text-color);
+      }
       .logo {
         width: 100px;
         height: 100px;
@@ -168,7 +175,4 @@ const StyledFooter = styled.section`
       }
     }
   }
-
- 
-
 `;

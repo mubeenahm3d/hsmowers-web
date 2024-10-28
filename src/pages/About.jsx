@@ -18,7 +18,8 @@ export default function About() {
         <div className="info-container">
           <div className="content-container">
             <h3>
-              Empowering Local Youth, Serving the Community
+              <span>Empowering</span> Local Youth, <span> Serving</span> the
+              Community
             </h3>
             <p>
               Our mission is simple: to connect local high school students with
@@ -38,7 +39,9 @@ export default function About() {
 
         <div className="info-container">
           <div className="content-container">
-            <h3>Find, Filter, and Hire with Ease</h3>
+            <h3>
+              Find, Filter, and <span>Hire with Ease</span>{" "}
+            </h3>
             <p>
               Our platform allows you to quickly and easily browse through a
               list of high school students ready to help you with lawn care.
@@ -57,7 +60,9 @@ export default function About() {
 
         <div className="info-container">
           <div className="content-container">
-            <h3>Convenient, Reliable, and Local</h3>
+            <h3>
+              Convenient, <span>Reliable,</span> and Local
+            </h3>
             <p>
               We understand that finding reliable help can be a hassle, and
               that's why we’ve created a curated list of local students who are
@@ -76,7 +81,9 @@ export default function About() {
 
         <div className="info-container">
           <div className="content-container">
-            <h3>A Win-Win for Everyone</h3>
+            <h3>
+              A <span>Win-Win</span> for Everyone
+            </h3>
             <p>
               For the students, mowing lawns isn’t just about making money—it’s
               about learning responsibility, building a work ethic, and
@@ -112,10 +119,16 @@ const AboutContainer = styled.div`
     align-items: center;
     flex-wrap: wrap;
     gap: 2rem;
+    margin-top: var(--section-margin);
 
     .content-container {
       h3 {
         text-align: center;
+        font-weight: 600;
+        span {
+          color: var(--primary-color);
+          font-size: var(--m-heading);
+        }
       }
       p {
         text-align: center;
@@ -128,6 +141,7 @@ const AboutContainer = styled.div`
         width: 100%;
         height: auto;
         max-width: 500px;
+        border-radius: var(--l-radius);
       }
     }
   }
