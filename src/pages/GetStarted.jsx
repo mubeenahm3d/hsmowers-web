@@ -8,7 +8,7 @@ import Info from "../components/modals/Info";
 import UserConsent from "../components/modals/UserConsent";
 
 export default function GetStarted() {
-    const [consentOpen, setConsentOpen] = useState(true)
+    const [consentOpen, setConsentOpen] = useState(false)
     function backdropHandler() {
         setConsentOpen(current => !current)
     }

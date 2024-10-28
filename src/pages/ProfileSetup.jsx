@@ -68,16 +68,16 @@ export default function ProfileSetup({ backdropHandler }) {
                 onClick={backBtnHandler}
                 className="back-btn"
               >
-                <ArrowBackIcon /> Back
+                <ArrowBackIcon fontSize="small" /> Back
               </button>
               <button type="submit">Next</button>
             </div>
           </form>
           <div className="progress">
-            <div className={`step ${stepNum === 1 ? "active" : ""}`} />
-            <div className={`step ${stepNum === 2 ? "active" : ""}`} />
-            <div className={`step ${stepNum === 3 ? "active" : ""}`} />
-            <div className={`step ${stepNum === 4 ? "active" : ""}`} />
+            <div className={`step ${stepNum >0  ? "active" : ""}`} />
+            <div className={`step ${stepNum >1 ? "active" : ""}`} />
+            <div className={`step ${stepNum >2 ? "active" : ""}`} />
+            <div className={`step ${stepNum >3 ? "active" : ""}`} />
           </div>
         </div>
       </StyledProfileSetup>
@@ -314,7 +314,6 @@ const StyledProfileSetup = styled.section`
     margin: var(--section-margin) auto;
     border-radius: var(--l-radius);
     padding: 30px;
-    min-height: 420px;
     h4 {
       margin-bottom: 20px;
     }
@@ -323,7 +322,6 @@ const StyledProfileSetup = styled.section`
       align-items: center;
       justify-content: center;
       flex-direction: column;
-      min-height: 400px;
       .btns {
         display: flex;
 
@@ -335,7 +333,6 @@ const StyledProfileSetup = styled.section`
           align-items: center;
           justify-content: center;
           gap: 2px;
-          font-size: var(--s-heading);
         }
       }
     }
@@ -352,7 +349,7 @@ const StyledProfileSetup = styled.section`
         background-color: gray;
         border-radius: 4px;
         background-color: var(--light-gray-color);
-        transition: all 0.2 ease-in-out;
+        transition: all 0.2s ease-in-out;
         &.active {
           background-color: var(--primary-color);
         }
@@ -362,7 +359,7 @@ const StyledProfileSetup = styled.section`
 `;
 
 const StyledStep = styled.div`
-  min-height: 270px;
+  min-height: 370px;
   display: flex;
   align-items: center;
   flex-direction: column;

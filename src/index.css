@@ -66,7 +66,7 @@ html {
 }
 
 body {
-  font-family: "Poppins", sans-serif;
+  font-family: "Open Sans", sans-serif;
   background: var(--background-color);
   color: var(--text-color);
   overflow-y: auto;
@@ -172,12 +172,11 @@ input::placeholder {
   color: var(--text-gray-color);
 }
 textarea {
-  font-family: "Lato", sans-serif;
   color: var(--text-color);
   border-color: var(--border-color);
 }
 textarea::placeholder {
-  font-family: "Lato", sans-serif;
+  font-family: "Poppins", sans-serif;
 }
 input:focus,
 select:focus,
