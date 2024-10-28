@@ -1,20 +1,13 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import CloseIcon from "@mui/icons-material/Close";
-import { useNavigate } from "react-router";
 
 export default function UserConsent({ backdropHandler }) {
   const [selectedOption, setSelectedOption] = useState("");
-  const navigate = useNavigate()
 
   const handleOptionChange = (event) => {
     setSelectedOption(event.target.value);
   };
-
-  const submitHandler = (event) => {
-    event.preventDefault()
-    navigate("/login")
-  }
 
   console.log('selected option', selectedOption)
   return (
@@ -26,21 +19,21 @@ export default function UserConsent({ backdropHandler }) {
         </button>
       </div>
       <h4 className="mid-heading">Confirm Your Status</h4>
-      <form onSubmit={submitHandler} className="content">
+      <div className="content">
         <label htmlFor="1st">
-          <input required type="radio" id="1st" name="consent"  value={true} onChange={handleOptionChange}/>
+          <input type="radio" id="1st" name="consent" value={true} onChange={handleOptionChange}/>
           Yes, I am over 13 years old and I am currently enrolled in High School
         </label>
         <label htmlFor="2nd">
-          <input required type="radio" id="2nd" name="consent" value={false} onChange={handleOptionChange}/>
+          <input type="radio" id="2nd" name="consent" value={false} onChange={handleOptionChange}/>
           No, I am not over 13 years old
         </label>
         <label htmlFor="3rd">
-          <input required type="radio" id="3rd" name="consent" value={false} onChange={handleOptionChange}/>
+          <input type="radio" id="3rd" name="consent" value={false} onChange={handleOptionChange}/>
           No, I am not currently enrolled in High School
         </label>
-        <button type="submit">Submit</button>
-      </form>
+        <button onClick={backdropHandler}>Submit</button>
+      </div>
     </StyledUserConsent>
   );
 }
@@ -59,7 +52,7 @@ const StyledUserConsent = styled.section`
     justify-content: center;
     width: 70%;
     margin: auto;
-    margin-top: 32px;
+    margin-top: 2rem;
     label {
       display: flex;
       align-items: center;
@@ -67,7 +60,6 @@ const StyledUserConsent = styled.section`
       gap: 10px;
     }
     button {
-      margin-top: 16px;
       align-self: center;
     }
   }

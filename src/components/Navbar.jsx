@@ -244,7 +244,6 @@ const StyledNavbar = styled.section`
   align-items: center;
   justify-content: space-between;
   gap: 5%;
-  /* background-color: var(--primary-color); */
   box-shadow: 0px 0px 4px 2px var(--shadow-light);
   width: 100%;
   padding: 0 5%;

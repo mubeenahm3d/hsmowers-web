@@ -24,7 +24,7 @@ export default function ProfileSetup() {
     grade: 9,
     description: "",
     schoolName: "",
-    photoURL: "",
+    profileImg: "",
     services: [],
     serviceDistance: 0.5,
   });
@@ -137,10 +137,10 @@ export default function ProfileSetup() {
             </div>
           </form>
           <div className="progress">
-            <div className={`step ${stepNum > 0 ? "active" : ""}`} />
-            <div className={`step ${stepNum > 1 ? "active" : ""}`} />
-            <div className={`step ${stepNum > 2 ? "active" : ""}`} />
-            <div className={`step ${stepNum > 3 ? "active" : ""}`} />
+            <div className={`step ${stepNum >0  ? "active" : ""}`} />
+            <div className={`step ${stepNum >1 ? "active" : ""}`} />
+            <div className={`step ${stepNum >2 ? "active" : ""}`} />
+            <div className={`step ${stepNum >3 ? "active" : ""}`} />
           </div>
         </div>
       </StyledProfileSetup>
@@ -327,7 +327,6 @@ function Step4({ form, onChangeHandler }) {
     </StyledStep>
   );
 }
-
 const StyledProfileSetup = styled.section`
   margin-top: var(--section-margin);
   min-height: var(--section-height);

@@ -5,55 +5,68 @@ import logo from "../assets/MowerLogo.png";
 export default function LandingMenu() {
   return (
     <>
-      <Main>
         <StyledNavbar>
-          <div className="image-container">
-            <img src={logo} alt="" />
-            <h2>HighSchoolMowers</h2>
+          <div className="navbar-container">
+            <div className="image-container">
+              <img src={logo} alt="" />
+              <h2>HighSchoolMowers</h2>
+            </div>
+            <button>Student? Signup!</button>
           </div>
-              <button>Student? Signup!</button>
-
         </StyledNavbar>
-      </Main>
     </>
   );
 }
 
-const Main = styled.div`
+
+const StyledNavbar = styled.div`
   background-color: var(--background-color);
   width: var(--section-width);
   margin: 1rem auto;
-`;
 
-const StyledNavbar = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 1rem;
-  .image-container {
+  .navbar-container {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
+    flex-wrap: wrap;
     gap: 1rem;
-    img {
-      max-width: 70px;
-      height: auto;
+
+    .image-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+
+      h2 {
+        color: var(--text-light-color);
+        font-weight: 700;
+      }
+
+      img {
+        max-width: 70px;
+        height: auto;
+      }
     }
   }
 
-  button{
-    justify-content: center;
-  } 
-  
   @media (min-width: 600px) {
-    justify-content: space-between;
-    gap: 1rem;
-    /* .image-container {
-      img {
-        width: 80px;
-        height: 80px;
+    .navbar-container {
+      justify-content: space-between;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .navbar-container {
+      justify-content: space-between;
+    }
+  }
+
+  @media (max-width: 400px) {
+    .image-container {
+      h2 {
+        font-size: var(--m-heading);
+        font-weight: 600;
       }
-    } */
+    }
   }
 `;
