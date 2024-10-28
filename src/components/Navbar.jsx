@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import logo from "../assets/MowerLogo.jpeg";
+import logo from "../assets/MowerLogo.png";
 import styled from "styled-components";
 import { Link, useNavigate } from "react-router-dom";
 import { GiHamburgerMenu } from "react-icons/gi";
-import { FaStar } from "react-icons/fa"; 
+import { FaStar } from "react-icons/fa"; // Importing the star icon for premium users
 import BackdropWrapper from "./modals/BackdropWrapper";
 import ContactForm from "./modals/ContactForm";
 import {
@@ -64,21 +64,27 @@ export default function Navbar() {
         open={contactBackdrop}
         smallSize={true}
         backdropHandler={backdropHandler}
-        element={<Info heading={"Contact Us"} msg="For all inquires please contact: info@decanlys.com" backdropHandler={backdropHandler} />}
+        element={
+          <Info
+            heading={"Contact Us"}
+            msg="For all inquires please contact: info@decanlys.com"
+            backdropHandler={backdropHandler}
+          />
+        }
       />
       <div className="logo" onClick={() => navigate("/")}>
         <img src={logo} alt="Logo" />
-        <h4>HighSchoolShovelers.com</h4>
+        <h2>HighSchoolMowers</h2>
       </div>
       <div className="nav-items">
         <div className="item">
-          <Link to="/blog">Home</Link>
+          <Link to="/blog">Blog</Link>
         </div>
         <div className="item">
-          <Link to="/about">About</Link>
+          <Link to="/upgrade">Upgrade</Link>
         </div>
         <div onClick={backdropHandler} className="item">
-          <h5>Pricing</h5>
+          <h5>Contact Us</h5>
         </div>
         {/* Avatar or Login button for larger screens */}
         {auth.currentUser ? (
@@ -86,7 +92,13 @@ export default function Navbar() {
             <Avatar
               alt={auth.currentUser.email?.toUpperCase()}
               src="/broken-image.jpg"
-              sx={{ cursor: "pointer", width: 50, height: 50, marginRight: 1, background: "var(--secondary-color)"}}
+              sx={{
+                cursor: "pointer",
+                width: 50,
+                height: 50,
+                marginRight: 1,
+                background: "var(--secondary-color)",
+              }}
             />
           </div>
         ) : (
@@ -98,7 +110,7 @@ export default function Navbar() {
 
       {/* Hamburger icon */}
       <div className="nav-icon" onClick={toggleDrawer(true)}>
-        <GiHamburgerMenu size={30} color="white" />
+        <GiHamburgerMenu size={30} color="var(--text-light-color)" />
       </div>
 
       {/* Drawer for mobile view */}
@@ -200,7 +212,7 @@ export default function Navbar() {
         disableScrollLock={true}
       >
         {isPremiumUser && (
-          <MenuItem >
+          <MenuItem>
             <FaStar
               style={{
                 width: 25,
@@ -209,7 +221,7 @@ export default function Navbar() {
                 color: "gold",
               }}
             />
-            <h5 style={{  marginRight: 10 }}>Premium User</h5>
+            <h5 style={{ marginRight: 10 }}>Premium User</h5>
             <button onClick={() => navigate("/subscription-detail")}>
               Details
             </button>
@@ -230,38 +242,41 @@ const StyledNavbar = styled.section`
   height: 10vh;
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 5rem;
-  background-color: var(--primary-color);
+  justify-content: space-between;
+  gap: 5%;
+  /* background-color: var(--primary-color); */
+  box-shadow: 0px 0px 4px 2px var(--shadow-light);
   width: 100%;
-  padding: 0 2%;
+  padding: 0 5%;
 
   .logo {
-    display: flex; 
-    align-items: center; 
-    gap: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    width: 200px;
     cursor: pointer;
 
-    img {
-      width: 60px; 
-      height: 60px; 
-      border-radius: 10px;
+    h2 {
+      color: var(--text-light-color);
+      font-weight: 700;
     }
 
-    h4 {
-      font-size: 1rem; 
-      color: white; 
-      margin: 0;
+    img {
+      width: 100%;
+      max-width: 60px;
+      margin-right: 6px;
+      height: auto;
     }
   }
 
   .nav-icon {
-    display: block;
+    display: block; // Show hamburger icon by default (for smaller screens)
     cursor: pointer;
   }
 
   .nav-items {
-    display: none;
+    display: none; // Hide navigation items by default for smaller screens
     align-items: center;
     justify-content: center;
     gap: 5%;
@@ -273,10 +288,10 @@ const StyledNavbar = styled.section`
       h5 {
         font-size: 1.2rem;
         font-weight: 600;
-        color: white;
+        color: var(--text-light-color);
 
         &:hover {
-          color: var(--text-hover-color);
+          color: var(--primary-color);
         }
       }
     }
@@ -297,54 +312,33 @@ const StyledNavbar = styled.section`
     a {
       font-size: 1.2rem;
       font-weight: 600;
-      color: white;
+      color: var(--text-light-color);
 
       &:hover {
-        color: var(--text-hover-color);
+        color: var(--primary-color);
       }
     }
   }
 
-  @media (min-width: 640px) and (max-width: 1024px) {
-    gap: 10rem;
-    .nav-items {
-      display: flex;
-    }
-
+  @media (min-width: 769px) {
     .nav-icon {
-      display: none;
+      display: none; // Hide hamburger icon on larger screens
     }
 
-    .logo {
-      width: auto;
-      img {
-        width: 70px;
-        height: 70px; 
-      }
+    .nav-items {
+      display: flex; // Show navigation items on larger screens
     }
   }
 
-  @media (min-width: 1024px) and (max-width: 1650px) {
-    gap: 30rem;
+  @media (max-width: 400px) {
     .logo {
-      width: auto;
-    }
-    .nav-icon {
-      display: none;
-    }
-
-    .nav-items {
-      display: flex;
-      gap: 7%;
-    }
-
-    .nav-items .item {
-      font-size: 1.5rem;
+      h2 {
+        font-size: var(--m-heading);
+        font-weight: 600;
+      }
     }
   }
 `;
-
-
 
 // Styled component for the Drawer Header
 const DrawerHeader = styled.div`
@@ -352,6 +346,6 @@ const DrawerHeader = styled.div`
   height: 10vh;
   align-items: center;
   justify-content: end;
-  padding: 16px;
-  background-color: var(--primary-color); 
+  padding: 16px; // Padding for header
+  background-color: var(--primary-color); // Match primary color
 `;

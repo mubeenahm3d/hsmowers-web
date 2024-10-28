@@ -1,6 +1,5 @@
 import React, { useRef } from "react";
 import styled from "styled-components";
-import logo from "../assets/MowerLogo.jpeg";
 import { Link } from "react-router-dom";
 import { FaXTwitter } from "react-icons/fa6";
 import { FaInstagram, FaFacebookF } from "react-icons/fa";
