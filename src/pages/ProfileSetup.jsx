@@ -5,9 +5,13 @@ import { Avatar } from "@mui/material";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import { collection, setDoc } from "firebase/firestore";
+import { auth, db } from "../authentication/firebase";
+import { useNavigate } from "react-router";
+import LoadingButton from "../components/LoadingButton";
 
 let services = [];
-export default function ProfileSetup({ backdropHandler }) {
+export default function ProfileSetup() {
   const [stepNum, setStepNum] = useState(1);
   const [form, setForm] = useState({
     fullName: "",
@@ -17,20 +21,44 @@ export default function ProfileSetup({ backdropHandler }) {
     grade: 9,
     description: "",
     schoolName: "",
-    profileImg: "",
+    photoURL: "",
     services: [],
     serviceDistance: 0.5,
   });
+  const [submitLoading, setSubmitLoading] = useState(false);
+  const navigate = useNavigate();
+  const currentUser = auth?.currentUser;
 
   function onChangeHandler(e) {
     console.log("e", e.target.name, e.target.value);
     setForm((current) => ({ ...current, [e.target.name]: e.target.value }));
   }
   console.log("form", form);
-  function submitHandler(e) {
+  async function submitHandler(e) {
     e.preventDefault();
     if (stepNum < 4) {
       setStepNum((current) => current + 1);
+      return;
+    }
+    setSubmitLoading(true);
+    try {
+      await setDoc(collection(db, "userInfo"), {
+        email: currentUser?.email,
+        uid: currentUser?.uid,
+        ...form,
+      });
+
+      console.log("form", {
+        email: currentUser?.email,
+        uid: currentUser?.uid,
+        ...form,
+      });
+
+      navigate(`/profile-page/@${form.userName}`);
+    } catch (err) {
+      console.log("error while saving user info", err);
+    } finally {
+      setSubmitLoading(false);
     }
   }
   function backBtnHandler(e) {
@@ -70,14 +98,14 @@ export default function ProfileSetup({ backdropHandler }) {
               >
                 <ArrowBackIcon fontSize="small" /> Back
               </button>
-              <button type="submit">Next</button>
+              <LoadingButton type="submit" title={"Next"} />
             </div>
           </form>
           <div className="progress">
-            <div className={`step ${stepNum >0  ? "active" : ""}`} />
-            <div className={`step ${stepNum >1 ? "active" : ""}`} />
-            <div className={`step ${stepNum >2 ? "active" : ""}`} />
-            <div className={`step ${stepNum >3 ? "active" : ""}`} />
+            <div className={`step ${stepNum > 0 ? "active" : ""}`} />
+            <div className={`step ${stepNum > 1 ? "active" : ""}`} />
+            <div className={`step ${stepNum > 2 ? "active" : ""}`} />
+            <div className={`step ${stepNum > 3 ? "active" : ""}`} />
           </div>
         </div>
       </StyledProfileSetup>
@@ -233,7 +261,7 @@ function Step3({ form, onChangeHandler }) {
       <div className="field">
         <label htmlFor="fullName">Profile Picture</label>
         <Avatar
-          src={form.profileImg}
+          src={form.photoURL}
           sx={{ width: "100px", height: "100px" }}
         />
         <input
@@ -295,6 +323,7 @@ function Step4({ form, onChangeHandler }) {
     </StyledStep>
   );
 }
+
 const StyledProfileSetup = styled.section`
   margin-top: var(--section-margin);
   min-height: var(--section-height);
