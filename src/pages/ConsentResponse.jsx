@@ -6,16 +6,14 @@ import Footer from '../components/Footer'
 export default function ConsentNotFound() {
   return (
     <>
+      <Navbar />
 
-    <Navbar/>
-
-    <StyledConsent>
-      <h4>Sorry, we only have jobs for high school.</h4>
-    </StyledConsent>
-    <Footer/>
-
+      <StyledConsent>
+        <h4>Sorry, we only have jobs for high school.</h4>
+      </StyledConsent>
+      <Footer />
     </>
-  )
+  );
 }
 
 const StyledConsent = styled.div`
@@ -26,7 +24,6 @@ const StyledConsent = styled.div`
   justify-content: center; 
   align-items: center;
   h4 {
-    font-weight: 600;
     text-align: center;
   }
 `;

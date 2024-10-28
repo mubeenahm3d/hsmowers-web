@@ -141,7 +141,7 @@ const About = styled.div`
   margin: var(--section-margin) auto;
   p {
     text-align: center;
-    max-width: 40ch;
+    max-width: 50ch;
   }
 
   @media (min-width: 600px) {
