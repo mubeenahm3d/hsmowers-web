@@ -5,16 +5,19 @@ import { Avatar } from "@mui/material";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import { collection, setDoc } from "firebase/firestore";
+import { collection, doc, setDoc } from "firebase/firestore";
 import { auth, db } from "../authentication/firebase";
 import { useNavigate } from "react-router";
 import LoadingButton from "../components/LoadingButton";
+import uploadImg from "../utils/uploadImg";
+import { updateProfile } from "firebase/auth";
 
 let services = [];
+const currentUser = auth?.currentUser;
 export default function ProfileSetup() {
   const [stepNum, setStepNum] = useState(1);
   const [form, setForm] = useState({
-    fullName: "",
+    displayName: currentUser?.displayName,
     userName: "",
     phoneNumber: "",
     zipCode: "",
@@ -27,30 +30,58 @@ export default function ProfileSetup() {
   });
   const [submitLoading, setSubmitLoading] = useState(false);
   const navigate = useNavigate();
-  const currentUser = auth?.currentUser;
 
   function onChangeHandler(e) {
-    console.log("e", e.target.name, e.target.value);
     setForm((current) => ({ ...current, [e.target.name]: e.target.value }));
   }
-  console.log("form", form);
+
+  async function getImgURL() {
+    let photoURL = "";
+    try {
+      photoURL = form.photoURL
+        ? await uploadImg(
+            { name: form.userName, data: form.photoURL },
+            "profilePics"
+          )
+        : currentUser.photoURL;
+
+      console.log("image url", photoURL);
+
+      await updateProfile(currentUser, {
+        photoURL,
+      });
+      return photoURL;
+    } catch (e) {
+      photoURL = currentUser.photoURL;
+      console.log("err while uploading profile pic", e);
+    }
+  }
+
   async function submitHandler(e) {
     e.preventDefault();
+    let photoURL = currentUser.photoURL;
     if (stepNum < 4) {
-      setStepNum((current) => current + 1);
+      const nextStep = stepNum + 1;
+      setStepNum(nextStep);
+      console.log("next step", nextStep);
+      if (nextStep === 4) {
+        photoURL = getImgURL(form.photoURL);
+      }
       return;
     }
     setSubmitLoading(true);
     try {
-      await setDoc(collection(db, "userInfo"), {
+      await setDoc(doc(db, "userInfo", currentUser?.uid), {
         email: currentUser?.email,
         uid: currentUser?.uid,
+        photoURL,
         ...form,
       });
 
       console.log("form", {
         email: currentUser?.email,
         uid: currentUser?.uid,
+        photoURL,
         ...form,
       });
 
@@ -98,7 +129,11 @@ export default function ProfileSetup() {
               >
                 <ArrowBackIcon fontSize="small" /> Back
               </button>
-              <LoadingButton type="submit" title={"Next"} />
+              <LoadingButton
+                loading={submitLoading}
+                type="submit"
+                title={"Next"}
+              />
             </div>
           </form>
           <div className="progress">
@@ -123,8 +158,8 @@ function Step1({ form, onChangeHandler }) {
           type={"text"}
           minLength={3}
           placeholder="Enter Full Name"
-          name={"fullName"}
-          value={form.fullName}
+          name={"displayName"}
+          value={form.displayName}
           onChange={onChangeHandler}
           required
         />
@@ -218,56 +253,25 @@ function Step2({ form, onChangeHandler }) {
 
 function Step3({ form, onChangeHandler }) {
   const fileSelectedHandler = (e) => {
-    // setLoading(true);
-    let img = {};
     const reader = new FileReader();
     reader.onload = async () => {
       if (reader.readyState === 2) {
-        img = { name: e.target.files[0].name, data: reader.result };
-        onChangeHandler({ target: { name: "profileImg", value: img.data } });
-        // setProfileImg(img.data);
-        // try {
-        //   const imageUrl = img.data && (await uploadImg(img, "profilePics"));
-        //   console.log("image url", imageUrl);
-
-        //   await updateProfile(auth.currentUser, {
-        //     photoURL: imageUrl,
-        //   });
-        //   dispatch(userActions.setUserImage(imageUrl));
-        //   dispatch(
-        //     alertActions.setAlert({
-        //       title: "Profile picture changed",
-        //       messageType: "success",
-        //     })
-        //   );
-        // } catch (error) {
-        //   console.log("e", error);
-        //   dispatch(
-        //     alertActions.setAlert({
-        //       title: "Failed to change profile picture",
-        //       messageType: "error",
-        //     })
-        //   );
-        // }
+        onChangeHandler({ target: { name: "photoURL", value: reader.result } });
       }
     };
     reader.readAsDataURL(e.target.files[0]);
-
-    // setLoading(false);
   };
 
   return (
     <StyledStep className="step3">
       <div className="field">
-        <label htmlFor="fullName">Profile Picture</label>
-        <Avatar
-          src={form.photoURL}
-          sx={{ width: "100px", height: "100px" }}
-        />
+        <label htmlFor="photoURL">Profile Picture</label>
+        <Avatar src={form.photoURL} sx={{ width: "100px", height: "100px" }} />
         <input
           style={{ display: "none" }}
           type="file"
           accept="image/*"
+          name="photoURL"
           onChange={(e) => fileSelectedHandler(e)}
           id="img-upload"
         />
