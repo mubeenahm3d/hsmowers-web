@@ -66,6 +66,7 @@ export default function LandingPage() {
 
 const HeroSection = styled.div`
   min-height: var(--section-height);
+  margin-bottom: var(--section-margin);
 
   .hero-container {
     position: relative;
@@ -97,7 +98,7 @@ const HeroSection = styled.div`
 
     @media (min-width: 1024px) {
       .card-container {
-        left: 20%;
+        left: 22%;
         max-width: 400px;
       }
       .image-container {

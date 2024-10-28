@@ -106,6 +106,7 @@ export default function About() {
 }
 
 const AboutContainer = styled.div`
+  min-height: var(--section-height);
   width: var(--section-width);
   margin: var(--section-margin) auto;
   h2 {
