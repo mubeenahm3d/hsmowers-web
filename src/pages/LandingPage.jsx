@@ -66,7 +66,7 @@ export default function LandingPage() {
 
 const HeroSection = styled.div`
   min-height: var(--section-height);
-  
+
   .hero-container {
     position: relative;
 
