@@ -27,5 +27,6 @@ const StyledConsent = styled.div`
   align-items: center;
   h4 {
     font-weight: 600;
+    text-align: center;
   }
 `;
