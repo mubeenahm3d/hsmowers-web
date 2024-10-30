@@ -13,7 +13,7 @@ import { auth } from "../authentication/firebase";
 import { alertActions } from "../store/alertSlice";
 import { useDispatch } from "react-redux";
 import BackdropWrapper from "../components/modals/BackdropWrapper";
-import logo from "../assets/logo-black.png";
+import logo from "../assets/MowerLogo.png";
 import { Link } from "react-router-dom";
 import loginImg from "../assets/login-img.svg";
 import SignInWithoutEmail from "../authentication/SignInWithoutEmail";
@@ -165,8 +165,8 @@ const StyledSignup = styled.section`
       cursor: pointer;
     }
     .logo {
-      width: 200px;
-      margin-bottom: 10%;
+      width: 100px;
+      /* margin-bottom: 10%; */
     }
     .register-form {
       width: 70%;
@@ -174,7 +174,7 @@ const StyledSignup = styled.section`
         rgb(255, 255, 255, 0.9),
         rgb(255, 255, 255, 0.1) 95%
       );
-      padding: 10% 0;
+      padding: 5% 0;
       border-radius: var(--radius-20);
       form {
         display: grid;
