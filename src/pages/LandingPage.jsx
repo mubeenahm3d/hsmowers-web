@@ -119,6 +119,7 @@ const CardInfo = styled(CardContent)`
     span {
       color: var(--primary-color);
       font-size: inherit;
+      font-weight: inherit;
     }
   }
 

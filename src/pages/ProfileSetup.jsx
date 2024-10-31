@@ -43,7 +43,7 @@ export default function ProfileSetup() {
             { name: form.userName, data: form.photoURL },
             "profilePics"
           )
-        : currentUser.photoURL;
+        : currentUser?.photoURL;
 
       console.log("image url", photoURL);
 
@@ -52,14 +52,14 @@ export default function ProfileSetup() {
       });
       return photoURL;
     } catch (e) {
-      photoURL = currentUser.photoURL;
+      photoURL = currentUser?.photoURL;
       console.log("err while uploading profile pic", e);
     }
   }
 
   async function submitHandler(e) {
     e.preventDefault();
-    let photoURL = currentUser.photoURL;
+    let photoURL = currentUser?.photoURL;
     if (stepNum < 4) {
       const nextStep = stepNum + 1;
       setStepNum(nextStep);

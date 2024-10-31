@@ -1,15 +1,26 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import CloseIcon from "@mui/icons-material/Close";
+import { useNavigate } from "react-router";
 
 export default function UserConsent({ backdropHandler }) {
-  const [selectedOption, setSelectedOption] = useState("");
+  const [selectedOption, setSelectedOption] = useState(false);
+  const navigate = useNavigate();
 
   const handleOptionChange = (event) => {
     setSelectedOption(event.target.value);
   };
 
-  console.log('selected option', selectedOption)
+  function submitHandler(e) {
+    e.preventDefault();
+    if (selectedOption) {
+      navigate("/login");
+    } else {
+      navigate("/consent-response");
+    }
+  }
+
+  console.log("selected option", selectedOption);
   return (
     <StyledUserConsent>
       <div className="heading">
@@ -19,21 +30,39 @@ export default function UserConsent({ backdropHandler }) {
         </button>
       </div>
       <h4 className="mid-heading">Confirm Your Status</h4>
-      <div className="content">
+      <form onSubmit={submitHandler} className="content">
         <label htmlFor="1st">
-          <input type="radio" id="1st" name="consent" value={true} onChange={handleOptionChange}/>
+          <input
+            type="radio"
+            id="1st"
+            name="consent"
+            value={true}
+            onChange={handleOptionChange}
+          />
           Yes, I am over 13 years old and I am currently enrolled in High School
         </label>
         <label htmlFor="2nd">
-          <input type="radio" id="2nd" name="consent" value={false} onChange={handleOptionChange}/>
+          <input
+            type="radio"
+            id="2nd"
+            name="consent"
+            value={false}
+            onChange={handleOptionChange}
+          />
           No, I am not over 13 years old
         </label>
         <label htmlFor="3rd">
-          <input type="radio" id="3rd" name="consent" value={false} onChange={handleOptionChange}/>
+          <input
+            type="radio"
+            id="3rd"
+            name="consent"
+            value={false}
+            onChange={handleOptionChange}
+          />
           No, I am not currently enrolled in High School
         </label>
         <button onClick={backdropHandler}>Submit</button>
-      </div>
+      </form>
     </StyledUserConsent>
   );
 }
