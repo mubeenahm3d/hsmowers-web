@@ -11,58 +11,48 @@ import { FaCamera } from "react-icons/fa";
 export default function ProfilePage() {
   const currentUser = auth?.currentUser;
 
+  const [showNumber, setShowNumber] = useState(false);
   const [number, setNumber] = useState("Show Phone Number");
   const [isEditing, setIsEditing] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
 
   const shownumberHandle = () => {
-    setNumber("+1 9864638 78");
+    setNumber(true);
   };
 
   const handleImageClick = () => {
-    setIsEditing(true); 
+    setIsEditing(true);
   };
 
-  const EditProfile = () => {
-    const [actionModal, setActionModal] = useState(true);
+  const [actionModal, setActionModal] = useState(true);
 
-    const backdropHandler = () => {
-      setActionModal((current) => !current);
-      setIsEditing(false); 
-    };
-
-   
-    return (
-      <BackdropWrapper
-        open={actionModal}
-        smallSize={true}
-        backdropHandler={backdropHandler}
-        element={
-          <UploadModal
-            heading={"Upload Image"}
-            backdropHandler={backdropHandler}
-          />
-        }
-      />
-    );
+  const backdropHandler = () => {
+    setActionModal((current) => !current);
+    setIsEditing(false);
   };
-
-
 
   return (
     <>
       <Navbar />
       <StyledProfile>
+        <BackdropWrapper
+          open={actionModal}
+          smallSize={true}
+          backdropHandler={backdropHandler}
+          element={
+            <UploadModal
+              heading={"Upload Image"}
+              backdropHandler={backdropHandler}
+            />
+          }
+        />
         <div className="profile-container">
           <div
             className="image-container"
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
           >
-            <img
-              src={ProfileImg}
-              alt="Profile"
-            />
+            <img src={ProfileImg} alt="Profile" />
             {isHovered && (
               <FaCamera className="change-btn" onClick={handleImageClick} />
             )}
@@ -100,13 +90,9 @@ export default function ProfilePage() {
         </div>
       </StyledProfile>
       <Footer />
-
-      {isEditing && <EditProfile />}
     </>
   );
 }
-
-
 
 const StyledProfile = styled.div`
   width: 80%;
@@ -213,4 +199,3 @@ const StyledProfile = styled.div`
     }
   }
 `;
-

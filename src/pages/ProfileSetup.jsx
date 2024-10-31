@@ -11,10 +11,13 @@ import { useNavigate } from "react-router";
 import LoadingButton from "../components/LoadingButton";
 import uploadImg from "../utils/uploadImg";
 import { updateProfile } from "firebase/auth";
+import { userActions } from "../store/userSlice";
+import { useDispatch } from "react-redux";
 
 let services = [];
-const currentUser = auth?.currentUser;
 export default function ProfileSetup() {
+  const currentUser = auth?.currentUser;
+
   const [stepNum, setStepNum] = useState(1);
   const [form, setForm] = useState({
     displayName: currentUser?.displayName,
@@ -30,29 +33,24 @@ export default function ProfileSetup() {
   });
   const [submitLoading, setSubmitLoading] = useState(false);
   const navigate = useNavigate();
+  const dispatch = useDispatch()
 
   function onChangeHandler(e) {
     setForm((current) => ({ ...current, [e.target.name]: e.target.value }));
   }
 
   async function getImgURL() {
-    let photoURL = "";
     try {
-      photoURL = form.photoURL
-        ? await uploadImg(
-            { name: form.userName, data: form.photoURL },
-            "profilePics"
-          )
-        : currentUser?.photoURL;
-
-      console.log("image url", photoURL);
-
+      const photoURL = await uploadImg(
+        { name: form.userName, data: form.photoURL },
+        "profilePics"
+      );
+      
       await updateProfile(currentUser, {
         photoURL,
       });
       return photoURL;
     } catch (e) {
-      photoURL = currentUser?.photoURL;
       console.log("err while uploading profile pic", e);
     }
   }
@@ -60,32 +58,29 @@ export default function ProfileSetup() {
   async function submitHandler(e) {
     e.preventDefault();
     let photoURL = currentUser?.photoURL;
-    if (stepNum < 4) {
-      const nextStep = stepNum + 1;
-      setStepNum(nextStep);
-      console.log("next step", nextStep);
-      if (nextStep === 4) {
-        photoURL = getImgURL(form.photoURL);
-      }
-      return;
-    }
-    setSubmitLoading(true);
     try {
-      await setDoc(doc(db, "userInfo", currentUser?.uid), {
+      if (stepNum < 4) {
+        setStepNum((current) => current + 1);
+        return;
+      }
+      setSubmitLoading(true);
+      if (form.photoURL) {
+        photoURL = await getImgURL(form.photoURL);
+        console.log("photo url", photoURL)
+      }
+      const userInfo = {
+        ...form,
         email: currentUser?.email,
         uid: currentUser?.uid,
         photoURL,
-        ...form,
-      });
+      }
+      console.log("userInfo", userInfo, photoURL);
+      await setDoc(doc(db, "userInfo", currentUser?.uid), userInfo);
 
-      console.log("form", {
-        email: currentUser?.email,
-        uid: currentUser?.uid,
-        photoURL,
-        ...form,
-      });
+      dispatch(userActions.setUserInfo(userInfo))
+      dispatch(userActions.setUserImage(photoURL))
 
-      navigate(`/profile-page/@${form.userName}`);
+      navigate(`/profile-page/${form.userName}`);
     } catch (err) {
       console.log("error while saving user info", err);
     } finally {

@@ -9,6 +9,7 @@ const user = createSlice({
     photoURL: "",
     emailVerified: false,
     subscription: {},
+    userInfo: {}
   },
   reducers: {
     setCurrentUser(state, action) {
@@ -18,6 +19,10 @@ const user = createSlice({
       state.photoURL = action.payload.photoURL;
       state.emailVerified = action.payload.emailVerified;
       state.subscription = action.payload.subscription || {};
+      state.userInfo = action.payload.userInfo || {}
+    },
+    setUserInfo(state, action) {
+      state.userInfo = action.payload
     },
     setUserImage(state, action) {
       state.photoURL = action.payload;
