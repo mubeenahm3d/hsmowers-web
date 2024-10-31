@@ -64,7 +64,7 @@ const StyledInfo = styled.section`
     gap: 1rem;
     margin-top: 2rem;
     img {
-      max-width: 150px;
+      width: 150px;
       height: 150px;
       border-radius: 50%;
       object-fit: cover;

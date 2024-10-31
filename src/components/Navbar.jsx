@@ -20,12 +20,15 @@ import { auth } from "../authentication/firebase";
 import { useSelector } from "react-redux"; // Importing useSelector to fetch subscription status
 import CloseIcon from "@mui/icons-material/Close";
 import Info from "./modals/Info";
+import { useParams } from "react-router";
 
 export default function Navbar() {
   const [contactBackdrop, setContactBackdrop] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null); // State for menu anchor (avatar dropdown)
   const navigate = useNavigate();
+  
+  const { username } = useParams();
 
   const backdropHandler = () => {
     setContactBackdrop((current) => !current);
@@ -142,18 +145,16 @@ export default function Navbar() {
           {auth.currentUser ? (
             <>
               {/* Avatar and email inside the Drawer for logged-in users */}
-              <Link to="/profile-page">
-                <ListItem>
-                  <Avatar
-                    alt={auth.currentUser.email}
-                    src="/broken-image.jpg"
-                    sx={{ marginRight: "5px" }}
-                  />
-                  <ListItemText primary={auth.currentUser.email} />
-                </ListItem>
+              <Link to="/profile-page/:username">
+                <Avatar
+                  alt={auth.currentUser.email}
+                  src="/broken-image.jpg"
+                  sx={{ marginRight: "5px" }}
+                />
+                {/* <ListItemText primary={auth.currentUser.email} /> */}
               </Link>
 
-              {isPremiumUser && (
+              {/* {isPremiumUser && (
                 <ListItem sx={{ background: "var(--secondary-color)" }}>
                   <FaStar
                     style={{
@@ -168,7 +169,7 @@ export default function Navbar() {
                     Details
                   </button>
                 </ListItem>
-              )}
+              )} */}
               <Divider />
               <ListItem button onClick={() => handleNavigation("/")}>
                 <ListItemText primary="Home" />
@@ -184,9 +185,9 @@ export default function Navbar() {
               </ListItem> */}
               <Divider />
               {/* Sign out option at the bottom */}
-              <ListItem button onClick={handleSignOut}>
+              {/* <ListItem button onClick={handleSignOut}>
                 <ListItemText primary="Log Out" />
-              </ListItem>
+              </ListItem> */}
             </>
           ) : (
             <>
@@ -251,11 +252,11 @@ export default function Navbar() {
           </MenuItem>
         )}
 
-        <MenuItem onClick={handleMenuClose}>
+        {/* <MenuItem onClick={handleMenuClose}>
           <ListItemText primary={auth.currentUser?.email || "User"} />
         </MenuItem>
 
-        <MenuItem onClick={handleSignOut}>Log Out</MenuItem>
+        <MenuItem onClick={handleSignOut}>Log Out</MenuItem> */}
       </Menu>
     </StyledNavbar>
   );

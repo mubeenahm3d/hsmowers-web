@@ -118,6 +118,7 @@ a {
   font-weight: 500;
 }
 
+
 button {
   cursor: pointer;
   outline: none;
@@ -132,9 +133,9 @@ button {
   touch-action: pinch-zoom;
   white-space: nowrap;
 }
-button:hover {
+/* button:hover {
   background-color: var(--primary-dark-color);
-}
+} */
 .secondary-btn {
   background-color: var(--secondary-color);
 }
@@ -142,9 +143,15 @@ button:hover {
   background-color: var(--secondary-dark-color);
 }
 .outline-btn {
-  color: var(--text-white-color);
+  color: var(--text-gray-color);
   background-color: transparent;
-  border: 1px solid var(--text-white-color);
+  border: 1px solid var(--text-gray-color);
+  padding: 8px 10px;
+
+  &:hover {
+    border: 1px solid var(--primary-color);
+    color: var(--primary-color);
+  }
 }
 .icon {
   padding: 0;

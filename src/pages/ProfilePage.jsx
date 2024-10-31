@@ -1,27 +1,39 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import Navbar from "../components/Navbar";
-import ProfileImg from "../assets/profileimg.avif";
 import BackdropWrapper from "../components/modals/BackdropWrapper";
-import { auth } from "../authentication/firebase";
 import Footer from "../components/Footer";
 import UploadModal from "../components/modals/UploadModal";
 import { FaCamera } from "react-icons/fa";
 import { useParams } from "react-router";
 import { useSelector } from "react-redux";
+import CircularProgress from "@mui/material/CircularProgress";
+import { collection, query, where, getDocs } from "firebase/firestore";
+import { db } from "../authentication/firebase";
+import { auth } from "../authentication/firebase";
+import { useNavigate } from "react-router-dom";
 
 export default function ProfilePage() {
+  const userInfo = useSelector((state) => state.user.userInfo);
 
-  const currentUser = auth?.currentUser;
+  const uid = useSelector((state) => state.user.uid);
 
-  const userInfo = useSelector((state)=> state.user.userinfo)
+  const [userData, setUserData] = useState({});
+
   console.log(userInfo);
 
   const [showNumber, setShowNumber] = useState(false);
-  const [number, setNumber] = useState(false);
-  const [isEditing, setIsEditing] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
-  const {username} = useParams()
+  const [loading, setLoading] = useState(true);
+
+  const { username } = useParams();
+  const navigate = useNavigate();
+
+  const handleSignOut = () => {
+    auth.signOut().then(() => {
+      navigate("/login"); 
+    });
+  };
 
   const shownumberHandle = () => {
     setShowNumber((prev) => !prev);
@@ -37,68 +49,129 @@ export default function ProfilePage() {
     backdropHandler();
   };
 
+  const getData = async () => {
+    const collectionRef = collection(db, "userInfo");
+    const q = query(collectionRef, where("userName", "==", username)); 
+
+    try {
+      const querySnapshot = await getDocs(q);
+      let fetchedData = {};
+
+      querySnapshot.forEach((doc) => {
+        console.log(`${doc.id} =>`, doc.data());
+        fetchedData = doc.data(); 
+      });
+
+      if (Object.keys(fetchedData).length > 0) {
+        setUserData(fetchedData); 
+      }
+    } 
+    
+    catch (error) {
+      console.error("Error fetching documents: ", error);
+    } 
+
+    finally {
+      setLoading(false); 
+    }
+  };
+
+  useEffect(() => {
+    if (userInfo && Object.keys(userInfo).length > 0) {
+      setUserData(userInfo);
+      setLoading(false);
+    } else {
+      getData();
+    }
+  }, [userInfo, username]); 
+
   return (
     <>
       <Navbar />
       <StyledProfile>
-        <BackdropWrapper
-          open={uploadModal}
-          smallSize={true}
-          backdropHandler={backdropHandler}
-          element={
-            <UploadModal
-              heading={"Upload Image"}
-              backdropHandler={backdropHandler}
+        {loading ? (
+          <div className="loader-container">
+            <CircularProgress
+              style={{
+                color: "blue",
+              }}
             />
-          }
-        />
-
-        <div className="profile-container">
-          <div
-            className="image-container"
-            onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => setIsHovered(false)}
-          >
-            <img src={ProfileImg} alt="Profile" />
-            {isHovered && (
-              <FaCamera className="change-btn" onClick={actionModalFunction} />
-            )}
           </div>
+        ) : (
+          <>
+            <BackdropWrapper
+              open={uploadModal}
+              smallSize={true}
+              backdropHandler={backdropHandler}
+              element={
+                <UploadModal
+                  heading={"Upload Image"}
+                  backdropHandler={backdropHandler}
+                />
+              }
+            />
 
-          <div className="profile-details">
-            <h4>{userInfo.displayName}</h4>
-            <p>{username}</p>
-            <p>{userInfo.grade}</p>
-            {/* <p>City, State, USA</p> */}
-          </div>
+            <div className="profile-container">
+              <div
+                className="image-container"
+                onMouseEnter={() => setIsHovered(true)}
+                onMouseLeave={() => setIsHovered(false)}
+                onClick={actionModalFunction}
+              >
+                <img src={userData.photoURL} alt="Profile" />
+                {isHovered && <FaCamera className="change-btn" />}
+              </div>
 
+              <div className="profile-details">
+                <h4>{userData.displayName}</h4>
+                <p>{userData.userName}</p>
+                <p>
+                  {userData.grade === 9
+                    ? "Fresher"
+                    : userData.grade === 10
+                    ? "Sophomore"
+                    : userData.grade === 11
+                    ? "Junior"
+                    : userData.grade === 12
+                    ? "Senior"
+                    : "Unknown Grade"}
+                </p>
+              </div>
 
-          <div className="buttons">
-            {currentUser && <button>Edit Profile</button>}
-            <button onClick={shownumberHandle}>
-              {showNumber ? "+ 18888888" : "Show Number"}
-            </button>
-          </div>
-        </div>
+              <div className="buttons">
+                {uid && (
+                  <button onClick={handleSignOut} className="outline-btn">
+                    Logout
+                  </button>
+                )}
 
-        <hr />
+                {userData.phoneNumber && (
+                  <button onClick={shownumberHandle}>
+                    {showNumber ? userData.phoneNumber : "Show Number"}
+                  </button>
+                )}
+              </div>
+            </div>
 
-        <div className="info-container">
-          <p>
-            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Corrupti
-            numquam possimus corporis vel doloribus officia soluta, suscipit
-            nemo, repellendus, amet saepe neque molestias eum fuga tenetur
-            aliquid sunt maxime quae.
-          </p>
+            <hr />
 
-          <div className="profile-services">
-            <div className="service-btn">Mowing</div>
-            <div className="service-btn">Baby Sitting</div>
-            <div className="service-btn">Window Cleaning</div>
-            <div className="service-btn">Edging</div>
-            <div className="service-btn">Leaf Removal</div>
-          </div>
-        </div>
+            <div className="info-container">
+              <p>{userData.description}</p>
+
+              {userData.services && userData.services.length > 0 ? (
+                <div className="profile-services">
+                  {userData.services.map((service, index) => (
+                    <div key={index} className="service-btn">
+                      {service}
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p>No services available</p>
+              )}
+            </div>
+          </>
+        )}
       </StyledProfile>
       <Footer />
     </>
@@ -108,7 +181,14 @@ export default function ProfilePage() {
 const StyledProfile = styled.div`
   width: 80%;
   margin: var(--section-margin) auto;
-  height: auto;
+  height: var(--section-height);
+
+  .loader-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+  }
 
   hr {
     margin-top: 2rem;
@@ -131,7 +211,7 @@ const StyledProfile = styled.div`
       }
 
       img {
-        max-width: 150px;
+        width: 150px;
         height: 150px;
         border-radius: 50%;
         object-fit: cover;
@@ -158,7 +238,16 @@ const StyledProfile = styled.div`
   .buttons {
     display: flex;
     flex-wrap: wrap;
+    flex-direction: column;
     gap: 1rem;
+    /* .logout-btn {
+      min-width: 180px;
+      max-width: 180px;
+      color: var(--gray-color);
+      border: 1px solid var(--gray-color);
+      background-color: transparent;
+      padding: 4px 6px;
+    } */
     button {
       min-width: 180px;
       max-width: 180px;
@@ -186,22 +275,26 @@ const StyledProfile = styled.div`
   }
 
   @media (min-width: 600px) {
-    height: var(--section-height);
     .profile-container {
       align-items: flex-start;
       .buttons {
         align-self: flex-start;
+        .logout-btn {
+          padding: 8px 8px;
+        }
       }
     }
   }
 
   @media (min-width: 1024px) {
-    height: var(--section-height);
     .profile-container {
       align-items: flex-start;
       .buttons {
         align-self: flex-start;
         margin-left: auto;
+        .logout-btn {
+          padding: 8px 8px;
+        }
       }
     }
   }
