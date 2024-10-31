@@ -47,6 +47,8 @@ export default function ProfilePage() {
     );
   };
 
+
+
   return (
     <>
       <Navbar />
@@ -109,7 +111,7 @@ export default function ProfilePage() {
 const StyledProfile = styled.div`
   width: 80%;
   margin: var(--section-margin) auto;
-  height: var(--section-height);
+  height: auto;
 
   hr {
     margin-top: 2rem;
@@ -148,6 +150,7 @@ const StyledProfile = styled.div`
         width: 34px;
         height: 34px;
         z-index: 2;
+        cursor: pointer;
         pointer-events: auto;
         opacity: 1;
         transition: opacity 0.3s ease;
@@ -186,24 +189,11 @@ const StyledProfile = styled.div`
           color: var(--primary-color);
         }
       }
-
-      .service.active {
-        background-color: var(--primary-color);
-        color: white;
-        border-color: var(--primary-color);
-      }
-      /* button {
-        background: transparent;
-        color: var(--primary-color);
-        border: 1px solid var(--primary-color);
-        border-radius: var(--s-radius);
-        padding: 8px 16px;
-        font-weight: 700;
-      } */
     }
   }
 
   @media (min-width: 600px) {
+    height: var(--section-height);
     .profile-container {
       align-items: flex-start;
       .buttons {
@@ -213,6 +203,7 @@ const StyledProfile = styled.div`
   }
 
   @media (min-width: 1024px) {
+    height: var(--section-height);
     .profile-container {
       align-items: flex-start;
       .buttons {

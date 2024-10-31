@@ -142,9 +142,7 @@ export default function Navbar() {
           {auth.currentUser ? (
             <>
               {/* Avatar and email inside the Drawer for logged-in users */}
-              <Link
-                to="/profile-page"
-              >
+              <Link to="/profile-page">
                 <ListItem>
                   <Avatar
                     alt={auth.currentUser.email}
@@ -172,15 +170,18 @@ export default function Navbar() {
                 </ListItem>
               )}
               <Divider />
-              <ListItem button onClick={() => handleNavigation("/blog")}>
-                <ListItemText primary="Blog" />
+              <ListItem button onClick={() => handleNavigation("/")}>
+                <ListItemText primary="Home" />
+              </ListItem>
+              <ListItem button onClick={() => handleNavigation("/about")}>
+                <ListItemText primary="About" />
               </ListItem>
               <ListItem button onClick={() => handleNavigation("/upgrade")}>
-                <ListItemText primary="Upgrade" />
+                <ListItemText primary="Pricing" />
               </ListItem>
-              <ListItem button onClick={backdropHandler}>
+              {/* <ListItem button onClick={backdropHandler}>
                 <ListItemText primary="Contact Us" />
-              </ListItem>
+              </ListItem> */}
               <Divider />
               {/* Sign out option at the bottom */}
               <ListItem button onClick={handleSignOut}>
@@ -204,12 +205,12 @@ export default function Navbar() {
               <ListItem button onClick={() => handleNavigation("/upgrade")}>
                 <ListItemText primary="Pricing" />
               </ListItem>
-              <ListItem
+              {/* <ListItem
                 button
                 onClick={() => handleNavigation("/profile-page")}
               >
                 <ListItemText primary="User Profile" />
-              </ListItem>
+              </ListItem> */}
               {/* <ListItem button onClick={backdropHandler}>
                 <ListItemText primary="Contact Us" />
               </ListItem> */}
