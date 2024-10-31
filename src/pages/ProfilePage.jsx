@@ -9,10 +9,11 @@ import UploadModal from "../components/modals/UploadModal";
 import { FaCamera } from "react-icons/fa";
 
 export default function ProfilePage() {
+
   const currentUser = auth?.currentUser;
 
   const [showNumber, setShowNumber] = useState(false);
-  const [number, setNumber] = useState("Show Phone Number");
+  const [number, setNumber] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
 
@@ -54,7 +55,7 @@ export default function ProfilePage() {
           >
             <img src={ProfileImg} alt="Profile" />
             {isHovered && (
-              <FaCamera className="change-btn" onClick={handleImageClick} />
+              <FaCamera className="change-btn" onClick={e => handleImageClick()} />
             )}
           </div>
 
