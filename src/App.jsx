@@ -100,7 +100,7 @@ function App() {
         <Route path="/" element={<LandingPage />} />
         <Route path="/about" element={<About />} />
         <Route path="/consent-response" element={<ConsentResponse />} />
-        <Route path="/profile-page" element={<ProfilePage/>} />
+        <Route path="/profile-page/:username" element={<ProfilePage/>} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/get-started" element={<GetStarted />} />

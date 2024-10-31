@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import Navbar from "../components/Navbar";
 import ProfileImg from "../assets/profileimg.avif";
@@ -7,28 +7,31 @@ import { auth } from "../authentication/firebase";
 import Footer from "../components/Footer";
 import UploadModal from "../components/modals/UploadModal";
 import { FaCamera } from "react-icons/fa";
+import { useParams } from "react-router";
+import { useSelector } from "react-redux";
 
 export default function ProfilePage() {
   const currentUser = auth?.currentUser;
 
+  const userInfo = useSelector((state)=> state.user.userinfo)
+  console.log(userInfo);
+
   const [showNumber, setShowNumber] = useState(false);
-  const [number, setNumber] = useState("Show Phone Number");
-  const [isEditing, setIsEditing] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
+  const {username} = useParams()
 
   const shownumberHandle = () => {
-    setNumber(true);
+    setShowNumber((prev) => !prev);
   };
 
-  const handleImageClick = () => {
-    setIsEditing(true);
-  };
-
-  const [actionModal, setActionModal] = useState(true);
+  const [uploadModal, setUploadModal] = useState(false);
 
   const backdropHandler = () => {
-    setActionModal((current) => !current);
-    setIsEditing(false);
+    setUploadModal((current) => !current);
+  };
+
+  const actionModalFunction = () => {
+    backdropHandler();
   };
 
   return (
@@ -36,7 +39,7 @@ export default function ProfilePage() {
       <Navbar />
       <StyledProfile>
         <BackdropWrapper
-          open={actionModal}
+          open={uploadModal}
           smallSize={true}
           backdropHandler={backdropHandler}
           element={
@@ -46,6 +49,7 @@ export default function ProfilePage() {
             />
           }
         />
+
         <div className="profile-container">
           <div
             className="image-container"
@@ -54,19 +58,23 @@ export default function ProfilePage() {
           >
             <img src={ProfileImg} alt="Profile" />
             {isHovered && (
-              <FaCamera className="change-btn" onClick={handleImageClick} />
+              <FaCamera className="change-btn" onClick={actionModalFunction} />
             )}
           </div>
 
           <div className="profile-details">
-            <h4>Muhammad Shahzad</h4>
-            <p>User Name</p>
-            <p>Grade</p>
-            <p>City, State, USA</p>
+            <h4>{userInfo.displayName}</h4>
+            <p>{username}</p>
+            <p>{userInfo.grade}</p>
+            {/* <p>City, State, USA</p> */}
           </div>
+
+
           <div className="buttons">
             {currentUser && <button>Edit Profile</button>}
-            <button onClick={shownumberHandle}>{number}</button>
+            <button onClick={shownumberHandle}>
+              {showNumber ? "+ 18888888" : "Show Number"}
+            </button>
           </div>
         </div>
 
@@ -170,10 +178,6 @@ const StyledProfile = styled.div`
         color: var(--gray-color);
         background-color: transparent;
         padding: 4px 6px;
-        &:hover {
-          border-color: var(--primary-color);
-          color: var(--primary-color);
-        }
       }
     }
   }
