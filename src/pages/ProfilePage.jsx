@@ -11,12 +11,15 @@ import { useParams } from "react-router";
 import { useSelector } from "react-redux";
 
 export default function ProfilePage() {
+
   const currentUser = auth?.currentUser;
 
   const userInfo = useSelector((state)=> state.user.userinfo)
   console.log(userInfo);
 
   const [showNumber, setShowNumber] = useState(false);
+  const [number, setNumber] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const {username} = useParams()
 

@@ -17,7 +17,14 @@ import { userActions } from "./store/userSlice";
 import { auth, db } from "./authentication/firebase";
 import AuthLoader from "./components/AuthLoader";
 import Upgrade from "./pages/Upgrade";
-import { collection, getDocs, query, where } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  query,
+  where,
+} from "firebase/firestore";
 import PaymentResponse from "./pages/PaymentResponse";
 import Blogs from "./pages/Blogs";
 import BlogDetail from "./pages/BlogDetail";
@@ -67,13 +74,29 @@ function App() {
     }
   };
 
+  const fetchUserInfo = async (uid) => {
+    try {
+      const userInfo = await getDoc(doc(db, "userInfo", uid));
+      if (!userInfo.exists) {
+        return {};
+      } else {
+        return userInfo.data();
+      }
+    } catch (e) {
+      console.log("error while fetching user info", e);
+    }
+  };
+
   async function redirectURLHandler() {
     try {
       const result = await getRedirectResult(auth);
       console.log("redirect result", result);
       if (result?.user) {
-        const subscription = fetchSubscription(result.user.uid);
-        dispatch(userActions.setCurrentUser({ ...result.user, subscription }));
+        const subscription = fetchSubscription(result.user?.uid);
+        const userInfo = await fetchUserInfo(result.user?.uid);
+        dispatch(
+          userActions.setCurrentUser({ ...result.user, subscription, userInfo })
+        );
         let { from } = location.state || { from: { pathname: "/" } };
         navigate(from);
       } else {
@@ -81,7 +104,10 @@ function App() {
           console.log("user", user);
           if (user) {
             const subscription = await fetchSubscription(user.uid);
-            dispatch(userActions.setCurrentUser({ ...user, subscription }));
+            const userInfo = await fetchUserInfo(user?.uid);
+            dispatch(
+              userActions.setCurrentUser({ ...user, subscription, userInfo })
+            );
           }
         });
       }
