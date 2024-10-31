@@ -14,7 +14,7 @@ export default function ActionModal({
       <div className="heading">
         <h4>{heading}</h4>
         <button className="icon" onClick={backdropHandler}>
-        {<CloseIcon htmlColor="var(--primary-color)" fontSize="large" />}
+          {<CloseIcon htmlColor="var(--primary-color)" fontSize="large" />}
         </button>
       </div>
 

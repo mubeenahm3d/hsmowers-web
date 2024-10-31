@@ -137,10 +137,10 @@ export default function ProfileSetup() {
             </div>
           </form>
           <div className="progress">
-            <div className={`step ${stepNum >0  ? "active" : ""}`} />
-            <div className={`step ${stepNum >1 ? "active" : ""}`} />
-            <div className={`step ${stepNum >2 ? "active" : ""}`} />
-            <div className={`step ${stepNum >3 ? "active" : ""}`} />
+            <div className={`step ${stepNum > 0 ? "active" : ""}`} />
+            <div className={`step ${stepNum > 1 ? "active" : ""}`} />
+            <div className={`step ${stepNum > 2 ? "active" : ""}`} />
+            <div className={`step ${stepNum > 3 ? "active" : ""}`} />
           </div>
         </div>
       </StyledProfileSetup>

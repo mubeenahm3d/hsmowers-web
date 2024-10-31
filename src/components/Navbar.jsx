@@ -78,14 +78,21 @@ export default function Navbar() {
       </div>
       <div className="nav-items">
         <div className="item">
-          <Link to="/blog">Blog</Link>
+          <Link to="/">Home</Link>
         </div>
         <div className="item">
-          <Link to="/upgrade">Upgrade</Link>
+          <Link to="/about">About</Link>
         </div>
-        <div onClick={backdropHandler} className="item">
+
+        <div className="item">
+          <Link to="/upgrade">Pricing</Link>
+        </div>
+        {/* <div className="item">
+          <Link to="/profile-page">User Profile</Link>
+        </div> */}
+        {/* <div onClick={backdropHandler} className="item">
           <h5>Contact Us</h5>
-        </div>
+        </div> */}
         {/* Avatar or Login button for larger screens */}
         {auth.currentUser ? (
           <div className="avatar-section" onClick={handleAvatarClick}>
@@ -135,14 +142,17 @@ export default function Navbar() {
           {auth.currentUser ? (
             <>
               {/* Avatar and email inside the Drawer for logged-in users */}
-              <ListItem>
-                {/* <Avatar
-                  alt={auth.currentUser.email}
-                  src="/broken-image.jpg"
-                  sx={{ marginRight: "5px" }}
-                /> */}
-                <ListItemText primary={auth.currentUser.email} />
-              </ListItem>
+              <Link to="/profile-page">
+                <ListItem>
+                  <Avatar
+                    alt={auth.currentUser.email}
+                    src="/broken-image.jpg"
+                    sx={{ marginRight: "5px" }}
+                  />
+                  <ListItemText primary={auth.currentUser.email} />
+                </ListItem>
+              </Link>
+
               {isPremiumUser && (
                 <ListItem sx={{ background: "var(--secondary-color)" }}>
                   <FaStar
@@ -160,15 +170,18 @@ export default function Navbar() {
                 </ListItem>
               )}
               <Divider />
-              <ListItem button onClick={() => handleNavigation("/blog")}>
-                <ListItemText primary="Blog" />
+              <ListItem button onClick={() => handleNavigation("/")}>
+                <ListItemText primary="Home" />
+              </ListItem>
+              <ListItem button onClick={() => handleNavigation("/about")}>
+                <ListItemText primary="About" />
               </ListItem>
               <ListItem button onClick={() => handleNavigation("/upgrade")}>
-                <ListItemText primary="Upgrade" />
+                <ListItemText primary="Pricing" />
               </ListItem>
-              <ListItem button onClick={backdropHandler}>
+              {/* <ListItem button onClick={backdropHandler}>
                 <ListItemText primary="Contact Us" />
-              </ListItem>
+              </ListItem> */}
               <Divider />
               {/* Sign out option at the bottom */}
               <ListItem button onClick={handleSignOut}>
@@ -182,15 +195,25 @@ export default function Navbar() {
                 <ListItemText primary="Login" />
               </ListItem>
               <Divider />
-              <ListItem button onClick={() => handleNavigation("/blog")}>
-                <ListItemText primary="Blog" />
+              <ListItem button onClick={() => handleNavigation("/")}>
+                <ListItemText primary="Home" />
               </ListItem>
+              <ListItem button onClick={() => handleNavigation("/about")}>
+                <ListItemText primary="About" />
+              </ListItem>
+
               <ListItem button onClick={() => handleNavigation("/upgrade")}>
-                <ListItemText primary="Upgrade" />
+                <ListItemText primary="Pricing" />
               </ListItem>
-              <ListItem button onClick={backdropHandler}>
+              {/* <ListItem
+                button
+                onClick={() => handleNavigation("/profile-page")}
+              >
+                <ListItemText primary="User Profile" />
+              </ListItem> */}
+              {/* <ListItem button onClick={backdropHandler}>
                 <ListItemText primary="Contact Us" />
-              </ListItem>
+              </ListItem> */}
             </>
           )}
         </List>
