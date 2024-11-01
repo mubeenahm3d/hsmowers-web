@@ -13,7 +13,7 @@ export default function LandingMenu() {
             <img src={logo} alt="" />
             <h2>HighSchoolMowers</h2>
           </div>
-          <button onClick={() => navigate("/signup")}>
+          <button onClick={() => navigate("/get-started")}>
             Student? Signup!
           </button>
         </div>
