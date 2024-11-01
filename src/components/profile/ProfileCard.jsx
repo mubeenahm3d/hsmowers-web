@@ -2,25 +2,36 @@ import React from "react";
 import styled from "styled-components";
 
 export default function ProfileCard({ profileData }) {
-  const { profileImg, name, grade, city, stateAbb, services } = profileData;
+  const { photoURL, displayName, grade, city, stateAbb, services } = profileData ;
+
   return (
     <StyledProfileCard>
       <div className="info">
         <div className="pic">
-          <img src={profileImg} alt="" />
+          <img src={photoURL} alt="Profile" />
         </div>
         <div className="info-text">
-          <h4>{name.split(" ")[0] + " " + name.split(" ")[1][0]}.</h4>
-          <h5>{grade}</h5>
-          <p>
-            {city},{" " + stateAbb}
-          </p>
+          <h4>{displayName}</h4>
+          <h5>
+            {grade === 9
+              ? "Fresher"
+              : grade === 10
+              ? "Sophomore"
+              : grade === 11
+              ? "Junior"
+              :grade === 12
+              ? "Senior"
+              : "Unknown Grade"}
+          </h5>
+          
         </div>
       </div>
       <div className="services">
-        {Object.entries(services).map(([service, rate]) => (
-          <p>{service}</p>
-        ))}
+        {Array.isArray(services) && services.length > 0 ? (
+          services.map((service, index) => <p key={index}>{service}</p>)
+        ) : (
+          <p>Services Not Available</p>
+        )}
       </div>
     </StyledProfileCard>
   );
@@ -30,7 +41,6 @@ const StyledProfileCard = styled.section`
   width: 230px;
   min-height: 220px;
   border-radius: var(--l-radius);
-  /* border: 2px solid var(--primary-color); */
   box-shadow: 0px 0px 4px 2px var(--shadow-light);
   transition: transform 0.15s ease-in-out;
   cursor: pointer;

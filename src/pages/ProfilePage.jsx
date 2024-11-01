@@ -228,7 +228,7 @@ const StyledProfile = styled.div`
         height: 34px;
         z-index: 2;
         cursor: pointer;
-        pointer-events: auto;
+        pointer-events: none;
         opacity: 1;
         transition: opacity 0.3s ease;
       }
@@ -270,6 +270,7 @@ const StyledProfile = styled.div`
         color: var(--gray-color);
         background-color: transparent;
         padding: 4px 6px;
+        pointer-events: none;
       }
     }
   }

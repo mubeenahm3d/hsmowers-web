@@ -145,7 +145,7 @@ export default function Navbar() {
           {auth.currentUser ? (
             <>
               {/* Avatar and email inside the Drawer for logged-in users */}
-              <Link to="/profile-page/:username">
+              <Link to={`/profile-page/${username}`}>
                 <Avatar
                   alt={auth.currentUser.email}
                   src="/broken-image.jpg"
@@ -221,43 +221,7 @@ export default function Navbar() {
       </Drawer>
 
       {/* Menu for Avatar click */}
-      <Menu
-        anchorEl={anchorEl}
-        open={Boolean(anchorEl)}
-        onClose={handleMenuClose}
-        anchorOrigin={{
-          vertical: "bottom",
-          horizontal: "right",
-        }}
-        transformOrigin={{
-          vertical: "top",
-          horizontal: "right",
-        }}
-        disableScrollLock={true}
-      >
-        {isPremiumUser && (
-          <MenuItem>
-            <FaStar
-              style={{
-                width: 25,
-                height: 25,
-                marginRight: "10px",
-                color: "gold",
-              }}
-            />
-            <h5 style={{ marginRight: 10 }}>Premium User</h5>
-            <button onClick={() => navigate("/subscription-detail")}>
-              Details
-            </button>
-          </MenuItem>
-        )}
-
-        {/* <MenuItem onClick={handleMenuClose}>
-          <ListItemText primary={auth.currentUser?.email || "User"} />
-        </MenuItem>
-
-        <MenuItem onClick={handleSignOut}>Log Out</MenuItem> */}
-      </Menu>
+      
     </StyledNavbar>
   );
 }

@@ -5,7 +5,7 @@ import { Avatar } from "@mui/material";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import { collection, doc, setDoc } from "firebase/firestore";
+import { collection, doc, setDoc, serverTimestamp } from "firebase/firestore";
 import { auth, db } from "../authentication/firebase";
 import { useNavigate } from "react-router";
 import LoadingButton from "../components/LoadingButton";
@@ -73,7 +73,8 @@ export default function ProfileSetup() {
         email: currentUser?.email,
         uid: currentUser?.uid,
         photoURL,
-      }
+        createdAt: serverTimestamp(),
+      };
       console.log("userInfo", userInfo, photoURL);
       await setDoc(doc(db, "userInfo", currentUser?.uid), userInfo);
 
