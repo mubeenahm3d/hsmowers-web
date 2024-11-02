@@ -1,16 +1,16 @@
 import React from 'react'
-import LandingMenu from '../components/LandingMenu'
 import styled from "styled-components";
 import Img1 from '../assets/people.jpg'
 import Img2 from '../assets/customer.jpg'
 import Img3 from '../assets/win.jpg'
 import Img4 from "../assets/hire.jpg";
 import Footer from '../components/Footer';
+import Navbar from '../components/Navbar';
 
 export default function About() {
   return (
     <>
-      <LandingMenu />
+      <Navbar/>
 
       <AboutContainer>
         <h2>About Us</h2>

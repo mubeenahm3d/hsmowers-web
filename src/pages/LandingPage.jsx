@@ -1,13 +1,23 @@
-import React from 'react'
+import React, {useState} from 'react'
 import styled from "styled-components";
 import LandingMenu from '../components/LandingMenu'
 import BG from '../assets/bg4.jpg'
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Footer from '../components/Footer';
+import { useNavigate } from "react-router-dom";
 
 
 export default function LandingPage() {
+  const [zipCode, setZipCode] = useState("");
+  const navigate = useNavigate();
+
+  const handleFindMower = (e) => {
+    e.preventDefault(); 
+    if (zipCode) {
+      navigate(`/find-mowers?zip=${zipCode}`); 
+    }
+  };
   return (
     <>
       <LandingMenu />
@@ -34,9 +44,16 @@ export default function LandingPage() {
                   lawn
                 </p>
 
-                <form action="">
-                  <input type="text" placeholder="Enter Zip Code" />
-                  <button>Find a Mower</button>
+                <form action="" onSubmit={handleFindMower}>
+                  <input
+                    type="text"
+                    placeholder="Enter Zip Code"
+                    value={zipCode}
+                    minLength={5}
+                    required
+                    onChange={(e) => setZipCode(e.target.value)}
+                  />
+                  <button type="submit">Find a Mower</button>
                 </form>
               </CardInfo>
             </Card>

@@ -20,15 +20,23 @@ import { auth } from "../authentication/firebase";
 import { useSelector } from "react-redux"; // Importing useSelector to fetch subscription status
 import CloseIcon from "@mui/icons-material/Close";
 import Info from "./modals/Info";
-import { useParams } from "react-router";
 
 export default function Navbar() {
   const [contactBackdrop, setContactBackdrop] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null); // State for menu anchor (avatar dropdown)
   const navigate = useNavigate();
+ const userInfo = useSelector((state) => state.user.userInfo);
+ const fullName = userInfo?.displayName || ""; 
+
+
+ const [firstName, lastName] = fullName ? fullName.split(" ") : ["", ""];
+
+
+ const displayName = lastName
+   ? `${firstName} ${lastName.charAt(0)}.`
+   : firstName || "Guest";
   
-  const { username } = useParams();
 
   const backdropHandler = () => {
     setContactBackdrop((current) => !current);
@@ -99,17 +107,19 @@ export default function Navbar() {
         {/* Avatar or Login button for larger screens */}
         {auth.currentUser ? (
           <div className="avatar-section" onClick={handleAvatarClick}>
-            <Avatar
-              alt={auth.currentUser.email?.toUpperCase()}
-              src="/broken-image.jpg"
-              sx={{
-                cursor: "pointer",
-                width: 50,
-                height: 50,
-                marginRight: 1,
-                background: "var(--secondary-color)",
-              }}
-            />
+            <Link to={`/profile-page/${userInfo.userName}`}>
+              <Avatar
+                alt={auth.currentUser.email?.toUpperCase()}
+                src="/broken-image.jpg"
+                sx={{
+                  cursor: "pointer",
+                  width: 50,
+                  height: 50,
+                  marginRight: 1,
+                  background: "var(--secondary-color)",
+                }}
+              />
+            </Link>
           </div>
         ) : (
           <div className="login-section">
@@ -144,32 +154,20 @@ export default function Navbar() {
         <List>
           {auth.currentUser ? (
             <>
-              {/* Avatar and email inside the Drawer for logged-in users */}
-              <Link to={`/profile-page/${username}`}>
-                <Avatar
-                  alt={auth.currentUser.email}
-                  src="/broken-image.jpg"
-                  sx={{ marginRight: "5px" }}
-                />
-                {/* <ListItemText primary={auth.currentUser.email} /> */}
-              </Link>
-
-              {/* {isPremiumUser && (
-                <ListItem sx={{ background: "var(--secondary-color)" }}>
-                  <FaStar
-                    style={{
-                      width: 25,
-                      height: 25,
-                      marginRight: "10px",
-                      color: "gold",
-                    }}
+              <MobileUser>
+                <Link to={`/profile-page/${userInfo.userName}`}>
+                  <Avatar
+                    alt={auth.currentUser.email}
+                    src="/broken-image.jpg"
+                    sx={{ marginRight: "5px" }}
                   />
-                  <h5 style={{ color: "white" }}>Premium User</h5>
-                  <button onClick={() => navigate("/subscription-detail")}>
-                    Details
-                  </button>
-                </ListItem>
-              )} */}
+                  {/* <ListItemText primary={auth.currentUser.email} /> */}
+                </Link>
+
+                <h5>{displayName}</h5>
+              </MobileUser>
+              {/* Avatar and email inside the Drawer for logged-in users */}
+
               <Divider />
               <ListItem button onClick={() => handleNavigation("/")}>
                 <ListItemText primary="Home" />
@@ -221,7 +219,6 @@ export default function Navbar() {
       </Drawer>
 
       {/* Menu for Avatar click */}
-      
     </StyledNavbar>
   );
 }
@@ -325,6 +322,12 @@ const StyledNavbar = styled.section`
     }
   }
 `;
+
+const MobileUser = styled.div`
+display: flex;
+justify-content: flex-start;
+align-items: center;
+`
 
 // Styled component for the Drawer Header
 const DrawerHeader = styled.div`

@@ -85,6 +85,27 @@ export default function ProfilePage() {
     }
   }, [userInfo, username]); 
 
+   const generateMapUrl = (path) => {
+     const baseUrl = "https://maps.googleapis.com/maps/api/staticmap?";
+    const pathParam = `path=color:0xFF0000|weight:2|${path
+      .map((coord) => `${coord.lat},${coord.lng}`)
+      .join("|")}`;
+    const fillParam = `fillcolor:0x0000FF|weight:2|${path
+      .map((coord) => `${coord.lat},${coord.lng}`)
+      .join("|")}`;
+
+     const center =
+       path.length > 0 ? `center=${path[0].lat},${path[0].lng}` : "";
+     const size = "size=900x300";
+     const key = `${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`;
+
+     return `${baseUrl}${size}&${center}&${pathParam}&${fillParam}&key=${key}`;
+   };
+
+
+  const serviceAreaPath = userData.serviceArea?.path || [];
+  const mapUrl = generateMapUrl(serviceAreaPath);
+
   return (
     <>
       <Navbar />
@@ -126,28 +147,28 @@ export default function ProfilePage() {
                 <h4>{userData.displayName}</h4>
                 <p>{userData.userName}</p>
                 <p>
-                  {userData.grade === 9
+                  {Number(userData.grade) === 9
                     ? "Fresher"
-                    : userData.grade === 10
+                    : Number(userData.grade) === 10
                     ? "Sophomore"
-                    : userData.grade === 11
+                    : Number(userData.grade) === 11
                     ? "Junior"
-                    : userData.grade === 12
+                    : Number(userData.grade) === 12
                     ? "Senior"
                     : "Unknown Grade"}
                 </p>
               </div>
 
               <div className="buttons">
-                {uid && (
-                  <button onClick={handleSignOut} className="outline-btn">
-                    Logout
-                  </button>
-                )}
-
                 {userData.phoneNumber && (
                   <button onClick={shownumberHandle}>
                     {showNumber ? userData.phoneNumber : "Show Number"}
+                  </button>
+                )}
+
+                {uid && (
+                  <button onClick={handleSignOut} className="outline-btn">
+                    Logout
                   </button>
                 )}
               </div>
@@ -169,6 +190,28 @@ export default function ProfilePage() {
               ) : (
                 <p>No services available</p>
               )}
+
+              <div className="service-area">
+                <div className="service-area-header">
+                  <h5>Your Service Area</h5>
+                  {uid && (
+                    <button
+                      onClick={() => {
+                        navigate("/select-area");
+                      }}
+                    >
+                      Edit Service Area
+                    </button>
+                  )}
+                </div>
+                <div className="service-area-map">
+                  {serviceAreaPath.length > 0 ? (
+                    <img src={mapUrl} alt="Service Area Map" />
+                  ) : (
+                    <p>No service area defined</p>
+                  )}
+                </div>
+              </div>
             </div>
           </>
         )}
@@ -181,7 +224,7 @@ export default function ProfilePage() {
 const StyledProfile = styled.div`
   width: 80%;
   margin: var(--section-margin) auto;
-  height: var(--section-height);
+  /* height: var(--section-height); */
 
   .loader-container {
     display: flex;
@@ -271,6 +314,24 @@ const StyledProfile = styled.div`
         background-color: transparent;
         padding: 4px 6px;
         pointer-events: none;
+      }
+    }
+
+    .service-area {
+      margin-top: 3rem;
+      .service-area-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1rem;
+        flex-wrap: wrap;
+      }
+      .service-area-map {
+        margin-top: 3rem;
+        img {
+          width: 100%;
+          height: auto;
+        }
       }
     }
   }

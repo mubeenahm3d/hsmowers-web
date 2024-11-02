@@ -35,6 +35,8 @@ import ProfileSetup from "./pages/ProfileSetup";
 import About from "./pages/About";
 import ConsentResponse from "./pages/ConsentResponse";
 import ProfilePage from "./pages/ProfilePage";
+import Map from "./components/Map";
+import FindMowers from "./components/FindMowers";
 
 function App() {
   const [redirectLoading, setRedirectLoading] = useState(true);
@@ -125,8 +127,10 @@ function App() {
         {/* <Route path="/" element={<Home />} /> */}
         <Route path="/" element={<LandingPage />} />
         <Route path="/about" element={<About />} />
+        <Route path="/select-area" element={<Map />} />
+        <Route path="/find-mowers" element={<FindMowers/>} />
         <Route path="/consent-response" element={<ConsentResponse />} />
-        <Route path="/profile-page/:username" element={<ProfilePage/>} />
+        <Route path="/profile-page/:username" element={<ProfilePage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/get-started" element={<GetStarted />} />

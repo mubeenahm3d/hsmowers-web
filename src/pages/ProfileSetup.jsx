@@ -81,7 +81,9 @@ export default function ProfileSetup() {
       dispatch(userActions.setUserInfo(userInfo))
       dispatch(userActions.setUserImage(photoURL))
 
-      navigate(`/profile-page/${form.userName}`);
+      // navigate(`/profile-page/${form.userName}`);
+      navigate("/select-area");
+      
     } catch (err) {
       console.log("error while saving user info", err);
     } finally {
@@ -319,10 +321,25 @@ function Step4({ form, onChangeHandler }) {
           value={form.description}
           onChange={onChangeHandler}
         />
+        <label htmlFor="fullName">Enter Your Zip Code</label>
+        <input
+          type="number"
+          placeholder="Enter Zip Code"
+          required
+          minLength={5}
+          value={form.zipCode}
+          onChange={(e) =>
+            onChangeHandler({
+              target: { name: "zipCode", value: e.target.value },
+            })
+          }
+        />
       </div>
     </StyledStep>
   );
 }
+
+
 const StyledProfileSetup = styled.section`
   margin-top: var(--section-margin);
   min-height: var(--section-height);

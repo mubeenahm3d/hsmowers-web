@@ -1,27 +1,180 @@
-import React from 'react'
-import GoogleMapReact from "google-map-react";
+import React, { useEffect, useRef, useState } from "react";
+import { CircularProgress } from "@mui/material";
+import styled from "styled-components";
+import Navbar from "./Navbar";
+import Footer from "./Footer";
+import LoadingButton from "../components/LoadingButton";
+import { useSelector, useDispatch } from "react-redux";
+import { userActions } from "../store/userSlice";
+import { doc, setDoc } from "firebase/firestore";
+import { db } from "../authentication/firebase";
+import { useNavigate } from "react-router";
 
-const AnyReactComponent = ({ text }) => <div>{text}</div>;
+const Map = () => {
+  const [value, setValue] = useState(null);
+  const [loading, setLoading] = useState(false); 
+  const mapRef = useRef(null);
+  const dispatch = useDispatch();
+  const navigate = useNavigate()
 
-export default function Map() {
-    const defaultProps = {
-      center: {
-        lat: 10.99835602,
-        lng: 77.01502627,
-      },
-      zoom: 11,
+  const userInfo = useSelector((state) => state.user.userInfo);
+
+  const handleSave = async () => {
+    setLoading(true); 
+    try {
+      const updatedUserInfo = { ...userInfo, serviceArea: value };
+
+      await setDoc(doc(db, "userInfo", userInfo.uid), {
+        ...updatedUserInfo,
+      });
+
+      dispatch(userActions.setUserInfo(updatedUserInfo));
+
+      console.log("Service area saved successfully.");
+      navigate(`/profile-page/${userInfo.userName}`);
+
+    } catch (error) {
+      console.error("Error saving service area:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchCoordinates = async (zipCode) => {
+    try {
+      const response = await fetch(
+        `https://nominatim.openstreetmap.org/search?postalcode=${zipCode}&country=US&format=json`
+      );
+      const data = await response.json();
+      if (data.length > 0) {
+        return {
+          lat: parseFloat(data[0].lat),
+          lng: parseFloat(data[0].lon),
+        };
+      }
+    } catch (error) {
+      console.error("Error fetching coordinates:", error);
+    }
+    return { lat: 40.7128, lng: -74.006 };
+  };
+
+  useEffect(() => {
+    const initMap = async () => {
+      const coordinates = await fetchCoordinates(userInfo.zipCode || "");
+
+      const map = new window.google.maps.Map(mapRef.current, {
+        center: coordinates,
+        zoom: 8,
+      });
+
+      const drawingManager = new window.google.maps.drawing.DrawingManager({
+        drawingMode: window.google.maps.drawing.OverlayType.MARKER,
+        drawingControl: true,
+        drawingControlOptions: {
+          position: window.google.maps.ControlPosition.TOP_CENTER,
+          drawingModes: [window.google.maps.drawing.OverlayType.POLYLINE],
+        },
+        polygonOptions: {
+          fillColor: "#00ff00",
+          fillOpacity: 0.5,
+          strokeWeight: 5,
+          clickable: false,
+          editable: true,
+          zIndex: 1,
+        },
+      });
+
+      drawingManager.setMap(map);
+
+      window.google.maps.event.addListener(
+        drawingManager,
+        "polylinecomplete",
+        (polyline) => {
+          const path = polyline
+            .getPath()
+            .getArray()
+            .map((latLng) => latLng.toJSON());
+          const polylineData = {
+            type: "polyline",
+            path: path,
+          };
+          setValue(polylineData);
+        }
+      );
     };
+
+    const script = document.createElement("script");
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}&libraries=drawing`;
+    script.async = true;
+    script.onload = initMap;
+    script.onerror = () => {
+      console.error("Google Maps script failed to load.");
+    };
+    document.head.appendChild(script);
+
+    return () => {
+      document.head.removeChild(script);
+    };
+  }, [userInfo.zipCode]);
+
   return (
     <>
-      <div style={{ height: "100vh", width: "100%" }}>
-        <GoogleMapReact
-          bootstrapURLKeys={{ key: "" }}
-          defaultCenter={defaultProps.center}
-          defaultZoom={defaultProps.zoom}
-        >
-          <AnyReactComponent lat={59.955413} lng={30.337844} text="My Marker" />
-        </GoogleMapReact>
-      </div>
+      <Navbar />
+      <MapContainer>
+        <h3>Draw your area</h3>
+        <div ref={mapRef} className="map-container" />
+
+        <div className="save-area-btn">
+          {/* <button onClick={handleSave} disabled={loading}>
+            {loading ? (
+              <div className="loader-container">
+                <CircularProgress
+                  size={20}
+                  style={{ color: "inherit", margin: 0 }}
+                />
+              </div>
+            ) : (
+              "Save Area"
+            )}
+          </button> */}
+          <LoadingButton
+            onClick={handleSave}
+            loading={loading}
+            type="submit"
+            title={"Save Area"}
+          />
+        </div>
+      </MapContainer>
+      <Footer />
     </>
   );
-}
+};
+
+export default Map;
+
+const MapContainer = styled.div`
+  min-height: var(--section-height);
+  margin: var(--section-margin) auto;
+  width: 90%;
+  h3 {
+    text-align: center;
+    margin-bottom: var(--section-margin);
+  }
+  .map-container {
+    width: 100%;
+    height: 500px;
+  }
+  .save-area-btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 2rem;
+
+    .loader-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+    }
+  }
+`;
