@@ -60,7 +60,9 @@ const StyledProfileCard = styled.section`
       align-items: center;
       justify-content: center;
       img {
-        width: 100%;
+        width: 60px; 
+        height: 60px;
+        overflow: hidden; 
         border-radius: 50%;
       }
     }
