@@ -225,6 +225,7 @@ const StyledProfile = styled.div`
   width: 80%;
   margin: var(--section-margin) auto;
   /* height: var(--section-height); */
+  min-height: calc(100vh - 80px);
 
   .loader-container {
     display: flex;
