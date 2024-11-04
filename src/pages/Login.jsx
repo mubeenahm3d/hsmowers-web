@@ -14,7 +14,7 @@ import { useDispatch } from "react-redux";
 import logo from "../assets/MowerLogo.png";
 import ForgotPass from "../components/modals/ForgotPass";
 import { Link } from "react-router-dom";
-import loginImg from "../assets/login-img.svg";
+import loginImg from "../assets/login-logo.png";
 import SignInWithoutEmail from "../authentication/SignInWithoutEmail";
 
 export default function Login() {
@@ -32,7 +32,7 @@ export default function Login() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  let { from } = location.state || { from: "/" };
+  let { from } = location.state || { from: "/profile-setup" };
 
   function inputChangeHandler(event) {
     setInputs((current) => ({
@@ -171,6 +171,10 @@ const StyledLogin = styled.section`
   width: 100%;
   .left {
     flex-basis: 50%;
+    img {
+      width: 100%;
+      height: auto;
+    }
   }
   .right {
     display: flex;

@@ -108,8 +108,11 @@ const FindMowers = () => {
 
 const initMap = () => {
   const map = new window.google.maps.Map(document.getElementById("map"), {
-    zoom: 6,
+    zoom: 8,
     center: latLng,
+    zoomControlOptions: {
+      position: window.google.maps.ControlPosition.TOP_CENTER, 
+    },
   });
 
   serviceAreas.forEach((area) => {

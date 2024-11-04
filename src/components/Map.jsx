@@ -65,6 +65,9 @@ const Map = () => {
       const map = new window.google.maps.Map(mapRef.current, {
         center: coordinates,
         zoom: 8,
+        zoomControlOptions: {
+          position: window.google.maps.ControlPosition.BOTTOM_CENTER,
+        },
       });
 
       const drawingManager = new window.google.maps.drawing.DrawingManager({

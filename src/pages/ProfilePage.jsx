@@ -3,6 +3,7 @@ import styled from "styled-components";
 import Navbar from "../components/Navbar";
 import BackdropWrapper from "../components/modals/BackdropWrapper";
 import Footer from "../components/Footer";
+import ProfileImg from "../assets/profilesvg.svg";
 import UploadModal from "../components/modals/UploadModal";
 import { FaCamera } from "react-icons/fa";
 import { useParams } from "react-router";
@@ -29,12 +30,6 @@ export default function ProfilePage() {
   const { username } = useParams();
   const navigate = useNavigate();
 
-  const handleSignOut = () => {
-    auth.signOut().then(() => {
-      navigate("/login"); 
-    });
-  };
-
   const shownumberHandle = () => {
     setShowNumber((prev) => !prev);
   };
@@ -60,6 +55,7 @@ export default function ProfilePage() {
       querySnapshot.forEach((doc) => {
         console.log(`${doc.id} =>`, doc.data());
         fetchedData = doc.data(); 
+        console.log("fetched Data is:",fetchedData)
       });
 
       if (Object.keys(fetchedData).length > 0) {
@@ -77,13 +73,13 @@ export default function ProfilePage() {
   };
 
   useEffect(() => {
-    if (userInfo && Object.keys(userInfo).length > 0) {
+    if (userInfo && Object.keys(userInfo).length > 0 && username===userInfo.userName) {
       setUserData(userInfo);
       setLoading(false);
     } else {
       getData();
     }
-  }, [userInfo, username]); 
+  }, [userInfo]); 
 
    const generateMapUrl = (path) => {
      const baseUrl = "https://maps.googleapis.com/maps/api/staticmap?";
@@ -135,12 +131,14 @@ export default function ProfilePage() {
             <div className="profile-container">
               <div
                 className="image-container"
-                onMouseEnter={() => setIsHovered(true)}
-                onMouseLeave={() => setIsHovered(false)}
+                onMouseEnter={() => userData.uid === uid && setIsHovered(true)}
+                onMouseLeave={() => userData.uid === uid && setIsHovered(false)}
                 onClick={actionModalFunction}
               >
-                <img src={userData.photoURL} alt="Profile" />
-                {isHovered && <FaCamera className="change-btn" />}
+                <img src={userData.photoURL || ProfileImg} alt="Profile" />
+                {userData.uid === uid && isHovered && (
+                  <FaCamera className="change-btn" />
+                )}
               </div>
 
               <div className="profile-details">
@@ -166,11 +164,11 @@ export default function ProfilePage() {
                   </button>
                 )}
 
-                {uid && (
+                {/* {uid && (
                   <button onClick={handleSignOut} className="outline-btn">
                     Logout
                   </button>
-                )}
+                )} */}
               </div>
             </div>
 
@@ -194,7 +192,7 @@ export default function ProfilePage() {
               <div className="service-area">
                 <div className="service-area-header">
                   <h5>Your Service Area</h5>
-                  {uid && (
+                  {uid === userData.uid && (
                     <button
                       onClick={() => {
                         navigate("/select-area");

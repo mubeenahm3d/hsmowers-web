@@ -15,6 +15,7 @@ import {
   Avatar,
   Menu,
   MenuItem,
+  Box,
 } from "@mui/material";
 import { auth } from "../authentication/firebase";
 import { useSelector } from "react-redux"; // Importing useSelector to fetch subscription status
@@ -26,8 +27,8 @@ export default function Navbar() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null); // State for menu anchor (avatar dropdown)
   const navigate = useNavigate();
- const userInfo = useSelector((state) => state.user.userInfo);
- const fullName = userInfo?.displayName || ""; 
+  const userInfo = useSelector((state) => state.user.userInfo);
+  const fullName = userInfo?.displayName || ""; 
 
 
  const [firstName, lastName] = fullName ? fullName.split(" ") : ["", ""];
@@ -53,12 +54,17 @@ export default function Navbar() {
 
   const handleSignOut = () => {
     auth.signOut().then(() => {
+      handleMenuClose();
       navigate("/login"); // Navigate to login page after sign out
     });
   };
 
   const handleAvatarClick = (event) => {
-    setAnchorEl(event.currentTarget); // Set anchor element for the dropdown menu
+    if (anchorEl) {
+      handleMenuClose(); 
+    } else {
+      setAnchorEl(event.currentTarget); 
+    }
   };
 
   const handleMenuClose = () => {
@@ -107,19 +113,36 @@ export default function Navbar() {
         {/* Avatar or Login button for larger screens */}
         {auth.currentUser ? (
           <div className="avatar-section" onClick={handleAvatarClick}>
-            <Link to={`/profile-page/${userInfo.userName}`}>
-              <Avatar
-                alt={auth.currentUser.email?.toUpperCase()}
-                src="/broken-image.jpg"
-                sx={{
-                  cursor: "pointer",
-                  width: 50,
-                  height: 50,
-                  marginRight: 1,
-                  background: "var(--secondary-color)",
-                }}
-              />
-            </Link>
+            {/* <Link to={`/profile-page/${userInfo.userName}`}> */}
+            <Avatar
+              alt={auth.currentUser.email?.toUpperCase()}
+              src="/broken-image.jpg"
+              sx={{
+                cursor: "pointer",
+                width: 50,
+                height: 50,
+                marginRight: 1,
+                background: "var(--secondary-color)",
+              }}
+            />
+            <Menu
+              anchorEl={anchorEl}
+              open={Boolean(anchorEl)}
+              onClose={handleMenuClose}
+              anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+              transformOrigin={{ vertical: "top", horizontal: "right" }}
+              disableScrollLock
+            >
+              <Link to={`/profile-page/${userInfo.userName}`}>
+                <MenuItem onClick={handleMenuClose}>Profile Page</MenuItem>
+              </Link>{" "}
+              <Link to="/profile-setup">
+                {" "}
+                <MenuItem onClick={handleMenuClose}>Edit Profile</MenuItem>
+              </Link>
+              <MenuItem onClick={handleSignOut}>Logout</MenuItem>
+            </Menu>
+            {/* </Link> */}
           </div>
         ) : (
           <div className="login-section">
@@ -216,6 +239,22 @@ export default function Navbar() {
             </>
           )}
         </List>
+
+        {auth.currentUser && (
+          <Box>
+            <ListItem
+              button
+              onClick={() => {
+                navigate("/profile-setup");
+              }}
+            >
+              <ListItemText primary="Edit Profile" />
+            </ListItem>
+            <ListItem button onClick={handleSignOut}>
+              <ListItemText primary="Log Out" />
+            </ListItem>
+          </Box>
+        )}
       </Drawer>
 
       {/* Menu for Avatar click */}
@@ -327,6 +366,7 @@ const MobileUser = styled.div`
 display: flex;
 justify-content: flex-start;
 align-items: center;
+margin-left: 0.5rem;
 `
 
 // Styled component for the Drawer Header

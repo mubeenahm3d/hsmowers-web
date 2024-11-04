@@ -15,7 +15,7 @@ import { useDispatch } from "react-redux";
 import BackdropWrapper from "../components/modals/BackdropWrapper";
 import logo from "../assets/MowerLogo.png";
 import { Link } from "react-router-dom";
-import loginImg from "../assets/login-img.svg";
+import loginImg from "../assets/login-logo.png";
 import SignInWithoutEmail from "../authentication/SignInWithoutEmail";
 
 export default function Signup() {
@@ -146,6 +146,10 @@ const StyledSignup = styled.section`
   width: 100%;
   .left {
     flex-basis: 50%;
+    img{
+      width: 100%;
+      height: auto;
+    }
   }
   .right {
     display: flex;

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import PhoneInput from "react-phone-input-2";
 import styled from "styled-components";
 import { Avatar } from "@mui/material";
@@ -12,25 +12,37 @@ import LoadingButton from "../components/LoadingButton";
 import uploadImg from "../utils/uploadImg";
 import { updateProfile } from "firebase/auth";
 import { userActions } from "../store/userSlice";
-import { useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 
 let services = [];
 export default function ProfileSetup() {
+  const userInfo = useSelector((state) => state.user.userInfo);
   const currentUser = auth?.currentUser;
 
   const [stepNum, setStepNum] = useState(1);
+
   const [form, setForm] = useState({
-    displayName: currentUser?.displayName,
-    userName: "",
-    phoneNumber: "",
-    zipCode: "",
-    grade: 9,
-    description: "",
-    schoolName: "",
-    profileImg: "",
-    services: [],
-    serviceDistance: 0.5,
+    displayName: userInfo?.displayName || "",
+    userName: userInfo?.userName || "",
+    phoneNumber: userInfo?.phoneNumber || "",
+    zipCode: userInfo?.zipCode || "",
+    grade: userInfo?.grade || 9,
+    description: userInfo?.description || "",
+    schoolName: userInfo?.schoolName || "",
+    profileImg: userInfo?.photoURL || "",
+    services: userInfo?.services || [],
+    serviceDistance: userInfo?.serviceDistance || 0.5,
   });
+
+  useEffect(() => {
+    if (userInfo && Object.keys(userInfo).length > 0) {
+      setForm((currentForm) => ({
+        ...currentForm,
+        ...userInfo,
+      }));
+    }
+  }, [userInfo]);
+
   const [submitLoading, setSubmitLoading] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch()
@@ -57,16 +69,16 @@ export default function ProfileSetup() {
 
   async function submitHandler(e) {
     e.preventDefault();
-    let photoURL = currentUser?.photoURL;
+    let photoURL = userInfo?.photoURL;
     try {
       if (stepNum < 4) {
         setStepNum((current) => current + 1);
         return;
       }
       setSubmitLoading(true);
-      if (form.photoURL) {
+      if (form.photoURL && form.photoURL.substring(0, 5) !== "https") {
         photoURL = await getImgURL(form.photoURL);
-        console.log("photo url", photoURL)
+        console.log("photo url", photoURL);
       }
       const userInfo = {
         ...form,
@@ -192,17 +204,26 @@ function Step1({ form, onChangeHandler }) {
 }
 
 function Step2({ form, onChangeHandler }) {
+  const isActive = (service) =>
+    form.services.includes(service.toLowerCase().split(" ").join("-"));
+
   function servicesBtnClicked(e) {
     e.preventDefault();
     const { classList, value } = e.target;
+    const serviceValue = value;
+
+    let updatedServices = [...form.services];
+
     if (classList.contains("active")) {
-      services = services.filter((service) => value !== service);
+      updatedServices = updatedServices.filter(
+        (service) => service !== serviceValue
+      );
       classList.remove("active");
     } else {
-      services.push(value);
+      updatedServices.push(serviceValue);
       classList.add("active");
     }
-    onChangeHandler({ target: { name: "services", value: services } });
+    onChangeHandler({ target: { name: "services", value: updatedServices } });
   }
 
   const servicesOptions = [
@@ -222,7 +243,7 @@ function Step2({ form, onChangeHandler }) {
           {servicesOptions.map((service, index) => (
             <button
               key={index}
-              className="gray-btn"
+              className={`gray-btn ${isActive(service) ? "active" : ""}`}
               value={service.toLowerCase().split(" ").join("-")}
               onClick={servicesBtnClicked}
             >
