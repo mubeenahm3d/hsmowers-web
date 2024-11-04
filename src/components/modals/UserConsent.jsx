@@ -8,11 +8,12 @@ export default function UserConsent({ backdropHandler }) {
   const navigate = useNavigate();
 
   const handleOptionChange = (event) => {
-    setSelectedOption(event.target.value);
+    setSelectedOption(parseInt(event.target.value));
   };
 
   function submitHandler(e) {
     e.preventDefault();
+    console.log("selected option", )
     if (selectedOption) {
       navigate("/login");
     } else {
@@ -36,7 +37,7 @@ export default function UserConsent({ backdropHandler }) {
             type="radio"
             id="1st"
             name="consent"
-            value={true}
+            value={1}
             onChange={handleOptionChange}
           />
           Yes, I am over 13 years old and I am currently enrolled in High School
@@ -46,7 +47,7 @@ export default function UserConsent({ backdropHandler }) {
             type="radio"
             id="2nd"
             name="consent"
-            value={false}
+            value={0}
             onChange={handleOptionChange}
           />
           No, I am not over 13 years old
@@ -56,7 +57,7 @@ export default function UserConsent({ backdropHandler }) {
             type="radio"
             id="3rd"
             name="consent"
-            value={false}
+            value={0}
             onChange={handleOptionChange}
           />
           No, I am not currently enrolled in High School
