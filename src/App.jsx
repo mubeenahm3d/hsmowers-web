@@ -42,7 +42,6 @@ import FindMowers from "./components/FindMowers";
 function App() {
   const [redirectLoading, setRedirectLoading] = useState(true);
   const reduxuserInfo = useSelector((state) => state.user.userInfo);
-  console.log("Redux User Info:", reduxuserInfo);
   const alert = useSelector((state) => state.alert);
 
   const dispatch = useDispatch();
@@ -50,6 +49,7 @@ function App() {
   const location = useLocation();
 
   useEffect(() => {
+  console.log("in user auth")
     redirectURLHandler();
   }, [auth]);
 
@@ -87,7 +87,6 @@ function App() {
          console.log("User info does not exist");
         return {};
       } else {
-         console.log("userData fetched from firebase", userInfo.data());
         return userInfo.data();
        
       }
@@ -99,6 +98,7 @@ function App() {
 
  async function redirectURLHandler() {
    try {
+
      const result = await getRedirectResult(auth);
      console.log("redirect result", result);
 
@@ -107,7 +107,7 @@ function App() {
        const subscription = await fetchSubscription(result.user.uid);
        const userInfo = await fetchUserInfo(result.user.uid);
        console.log("userInfo", Object.keys(userInfo).length);
-       if (userInfo && Object.keys(userInfo).length === 0) {
+       if (!userInfo && Object.keys(userInfo)?.length === 0) {
          const newUserInfo = {
            uid: result.user.uid,
            email: result.user.email,
@@ -143,20 +143,21 @@ function App() {
      } else {
        onAuthStateChanged(auth, async (user) => {
          console.log("user", user);
-          if (result?.user) {
-            const subscription = await fetchSubscription(result.user.uid);
-            const userInfo = await fetchUserInfo(result.user.uid);
+          if (user) {
+            const subscription = await fetchSubscription(user.uid);
+            const userInfo = await fetchUserInfo(user.uid);
 
+            console.log("userInfo", userInfo)
             if (userInfo && Object.keys(userInfo).length === 0) {
               const newUserInfo = {
-                uid: result.user.uid,
-                email: result.user.email,
+                uid: user.uid,
+                email: user.email,
                 ...reduxuserInfo,
               };
                console.log("new Data", newUserInfo);
 
               try {
-                await setDoc(doc(db, "userInfo", result.user.uid), newUserInfo);
+                await setDoc(doc(db, "userInfo", user.uid), newUserInfo);
               } catch (error) {
                 console.error("Error saving user info:", error);
               }

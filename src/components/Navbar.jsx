@@ -27,9 +27,8 @@ export default function Navbar() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null); // State for menu anchor (avatar dropdown)
   const navigate = useNavigate();
-  const userInfo = useSelector((state) => state.user.userInfo);
-  const fullName = userInfo?.displayName || ""; 
-
+  const user = useSelector((state) => state.user);
+  const fullName = user?.displayName || ""; 
 
  const [firstName, lastName] = fullName ? fullName.split(" ") : ["", ""];
 
@@ -113,7 +112,7 @@ export default function Navbar() {
         {/* Avatar or Login button for larger screens */}
         {auth.currentUser ? (
           <div className="avatar-section" onClick={handleAvatarClick}>
-            {/* <Link to={`/profile-page/${userInfo.userName}`}> */}
+            {/* <Link to={`/profile-page/${user.userName}`}> */}
             <Avatar
               alt={auth.currentUser.email?.toUpperCase()}
               src="/broken-image.jpg"
@@ -133,7 +132,7 @@ export default function Navbar() {
               transformOrigin={{ vertical: "top", horizontal: "right" }}
               disableScrollLock
             >
-              <Link to={`/profile-page/${userInfo.userName}`}>
+              <Link to={`/profile-page/${user.userName}`}>
                 <MenuItem onClick={handleMenuClose}>Profile Page</MenuItem>
               </Link>{" "}
               <Link to="/profile-setup">
@@ -178,7 +177,7 @@ export default function Navbar() {
           {auth.currentUser ? (
             <>
               <MobileUser>
-                <Link to={`/profile-page/${userInfo.userName}`}>
+                <Link to={`/profile-page/${user.userName}`}>
                   <Avatar
                     alt={auth.currentUser.email}
                     src="/broken-image.jpg"

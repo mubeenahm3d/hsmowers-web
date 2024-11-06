@@ -51,7 +51,6 @@ export default function Login() {
         inputs.password
       );
       if (user.emailVerified) {
-        // console.log("user data", user);
         console.log("from", from);
         navigate(from);
         // if (!response.user.displayName) {
