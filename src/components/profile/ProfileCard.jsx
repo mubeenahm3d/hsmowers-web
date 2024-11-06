@@ -1,29 +1,44 @@
 import React from "react";
 import styled from "styled-components";
+import ProfileImg from '../../assets/profilesvg.svg'
+import { useNavigate } from "react-router-dom";
+
 
 export default function ProfileCard({ profileData }) {
-  const { photoURL, displayName, grade, city, stateAbb, services } = profileData ;
+  const { photoURL, displayName, grade, city, stateAbb, services, userName } = profileData; ;
+  const navigate = useNavigate(); 
+
+  const fullName = displayName || "";
+  const [firstName, lastName] = fullName ? fullName.split(" ") : ["", ""];
+
+  
+ const carduserName = lastName
+   ? `${firstName} ${lastName.charAt(0)}.`
+   : firstName || "Guest";
+
+   const handleCardClick = () => {
+     navigate(`/profile-page/${userName}`);
+   };
 
   return (
-    <StyledProfileCard>
+    <StyledProfileCard onClick={handleCardClick}>
       <div className="info">
         <div className="pic">
-          <img src={photoURL} alt="Profile" />
+          <img src={photoURL || ProfileImg} alt="Profile" />
         </div>
         <div className="info-text">
-          <h4>{displayName}</h4>
+          <h4>{carduserName}</h4>
           <h5>
-            {grade === 9
+            {Number(grade) === 9
               ? "Fresher"
-              : grade === 10
+              : Number(grade) === 10
               ? "Sophomore"
-              : grade === 11
+              : Number(grade) === 11
               ? "Junior"
-              :grade === 12
+              : Number(grade) === 12
               ? "Senior"
               : "Unknown Grade"}
           </h5>
-          
         </div>
       </div>
       <div className="services">

@@ -1,69 +1,89 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import CloseIcon from "@mui/icons-material/Close";
-import { useNavigate } from "react-router";
+import BackdropWrapper from "../../components/modals/BackdropWrapper";
+import ProfileSetupModal from "./ProfileSetupModal";
 
 export default function UserConsent({ backdropHandler }) {
-  const [selectedOption, setSelectedOption] = useState(false);
-  const navigate = useNavigate();
+  const [selectedOption, setSelectedOption] = useState(null);
+  const [consent, setConsent] = useState(false);
+  const [profileModal, setProfileModal] = useState(false);
 
   const handleOptionChange = (event) => {
-    setSelectedOption(event.target.value);
+    setSelectedOption(event.target.value === "true");
   };
 
   function submitHandler(e) {
     e.preventDefault();
     if (selectedOption) {
-      navigate("/login");
-    } else {
-      navigate("/consent-response");
+      // backdropHandler(false);
+      setProfileModal(true);
+    }
+     else {
+      // setConsent(true);
+      setProfileModal(false);
     }
   }
 
-  console.log("selected option", selectedOption);
   return (
-    <StyledUserConsent>
+    !profileModal ? (<StyledUserConsent>
       <div className="heading">
         <h4>User Consent</h4>
-        <button className="icon" onClick={(e) => backdropHandler(false)}>
-          {<CloseIcon htmlColor="var(--primary-color)" fontSize="large" />}
+        <button className="icon" onClick={() => backdropHandler(false)}>
+          <CloseIcon htmlColor="var(--primary-color)" fontSize="large" />
         </button>
       </div>
       <h4 className="mid-heading">Confirm Your Status</h4>
-      <form onSubmit={submitHandler} className="content">
-        <label htmlFor="1st">
-          <input
-            type="radio"
-            id="1st"
-            name="consent"
-            value={true}
-            onChange={handleOptionChange}
-          />
-          Yes, I am over 13 years old and I am currently enrolled in High School
-        </label>
-        <label htmlFor="2nd">
-          <input
-            type="radio"
-            id="2nd"
-            name="consent"
-            value={false}
-            onChange={handleOptionChange}
-          />
-          No, I am not over 13 years old
-        </label>
-        <label htmlFor="3rd">
-          <input
-            type="radio"
-            id="3rd"
-            name="consent"
-            value={false}
-            onChange={handleOptionChange}
-          />
-          No, I am not currently enrolled in High School
-        </label>
-        <button onClick={backdropHandler}>Submit</button>
-      </form>
-    </StyledUserConsent>
+      {consent ? (
+        <div className="consent-resonse">
+          <p>Sorry, we only have jobs for high school students.</p>
+          <button type="submit" onClick={() => backdropHandler(false)}>
+            Close
+          </button>
+        </div>
+      ) : (
+        <form onSubmit={submitHandler} className="content">
+          <label htmlFor="1st">
+            <input
+              type="radio"
+              id="1st"
+              name="consent"
+              value="true"
+              onChange={handleOptionChange}
+            />
+            Yes, I am over 13 years old and I am currently enrolled in High
+            School
+          </label>
+          <label htmlFor="2nd">
+            <input
+              type="radio"
+              id="2nd"
+              name="consent"
+              value="false"
+              onChange={handleOptionChange}
+            />
+            No, I am not over 13 years old
+          </label>
+          <label htmlFor="3rd">
+            <input
+              type="radio"
+              id="3rd"
+              name="consent"
+              value="false"
+              onChange={handleOptionChange}
+            />
+            No, I am not currently enrolled in High School.
+          </label>
+          <button type="submit">Submit</button>
+        </form>
+      )}
+
+    </StyledUserConsent> ):  (
+      <ProfileSetupModal
+              heading={"Profile Setup"}
+              backdropHandler={() => setProfileModal(false)}
+            />
+    )
   );
 }
 
@@ -73,6 +93,14 @@ const StyledUserConsent = styled.section`
   flex-direction: column;
   .heading {
     width: 100%;
+  }
+  .consent-resonse {
+    margin-top: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
   }
   .content {
     display: flex;

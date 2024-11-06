@@ -109,9 +109,8 @@ export default function ProfilePage() {
         {loading ? (
           <div className="loader-container">
             <CircularProgress
-              style={{
-                color: "blue",
-              }}
+              style={{ color: "var(--primary-color)" }}
+              size={30}
             />
           </div>
         ) : (

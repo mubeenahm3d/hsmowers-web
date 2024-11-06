@@ -40,7 +40,7 @@ export default function ProfileCards() {
     <StyledProfileCards>
       {loading ? (
         <div className="loader-container">
-          <CircularProgress style={{ color: "blue" }} />
+          <CircularProgress style={{ color: "var(--primary-color)" }} size ={30}/>
         </div>
       ) : (
         userData.map((profile) => (

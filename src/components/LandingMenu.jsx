@@ -1,10 +1,10 @@
 import React from 'react'
 import styled from "styled-components";
 import logo from "../assets/MowerLogo.png";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 export default function LandingMenu() {
-  const navigate = useNavigate();
+
   return (
     <>
       <StyledNavbar>
@@ -13,9 +13,12 @@ export default function LandingMenu() {
             <img src={logo} alt="" />
             <h2>HighSchoolMowers</h2>
           </div>
-          <button onClick={() => navigate("/get-started")}>
+          <Link
+            to="/get-started"
+            style={{ textDecoration: "underline" }}
+          >
             Student? Signup!
-          </button>
+          </Link>
         </div>
       </StyledNavbar>
     </>

@@ -13,6 +13,7 @@ import { useNavigate } from "react-router";
 const Map = () => {
   const [value, setValue] = useState(null);
   const [loading, setLoading] = useState(false); 
+  const [maploading, setMapLoading] = useState(true);
   const mapRef = useRef(null);
   const dispatch = useDispatch();
   const navigate = useNavigate()
@@ -60,11 +61,12 @@ const Map = () => {
 
   useEffect(() => {
     const initMap = async () => {
+      setMapLoading(true);
       const coordinates = await fetchCoordinates(userInfo.zipCode || "");
 
       const map = new window.google.maps.Map(mapRef.current, {
         center: coordinates,
-        zoom: 8,
+        zoom: 10,
         zoomControlOptions: {
           position: window.google.maps.ControlPosition.BOTTOM_CENTER,
         },
@@ -104,6 +106,7 @@ const Map = () => {
           setValue(polylineData);
         }
       );
+      setMapLoading(false);
     };
 
     const script = document.createElement("script");
@@ -112,6 +115,7 @@ const Map = () => {
     script.onload = initMap;
     script.onerror = () => {
       console.error("Google Maps script failed to load.");
+      setMapLoading(false);
     };
     document.head.appendChild(script);
 
@@ -125,21 +129,19 @@ const Map = () => {
       <Navbar />
       <MapContainer>
         <h3>Draw your area</h3>
+
+        {maploading ? (
+          <div className="loader-container">
+            <CircularProgress
+              style={{ color: "var(--primary-color)" }}
+              size={30}
+            />
+          </div>
+        ) : null}
+
         <div ref={mapRef} className="map-container" />
 
         <div className="save-area-btn">
-          {/* <button onClick={handleSave} disabled={loading}>
-            {loading ? (
-              <div className="loader-container">
-                <CircularProgress
-                  size={20}
-                  style={{ color: "inherit", margin: 0 }}
-                />
-              </div>
-            ) : (
-              "Save Area"
-            )}
-          </button> */}
           <LoadingButton
             onClick={handleSave}
             loading={loading}
@@ -162,6 +164,13 @@ const MapContainer = styled.div`
   h3 {
     text-align: center;
     margin-bottom: var(--section-margin);
+  }
+
+  .loader-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
   }
   .map-container {
     width: 100%;

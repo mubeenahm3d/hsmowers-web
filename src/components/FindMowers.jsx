@@ -7,6 +7,7 @@ import Navbar from "./Navbar";
 import Footer from "./Footer";
 import { useNavigate } from "react-router-dom";
 import { createRoot } from "react-dom/client";
+import CircularProgress from "@mui/material/CircularProgress";
 
 const UserInfoWindow = ({ user, onNavigate }) => (
   <div style={{ margin: "5px" }}>
@@ -43,6 +44,8 @@ const FindMowers = () => {
   const [mapLoaded, setMapLoaded] = useState(false);
   const [googleMapsLoaded, setGoogleMapsLoaded] = useState(false);
   const [searchParams] = useSearchParams();
+  const [noMowersFound, setNoMowersFound] = useState(false);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -66,6 +69,7 @@ const FindMowers = () => {
 
       setMatchingUsers(users);
       console.log(users);
+       setNoMowersFound(users.length === 0); 
 
       if (users.length > 0) {
         fetchServiceAreas(zip);
@@ -104,65 +108,61 @@ const FindMowers = () => {
     }
   };
 
-
-
-const initMap = () => {
-  const map = new window.google.maps.Map(document.getElementById("map"), {
-    zoom: 8,
-    center: latLng,
-    zoomControlOptions: {
-      position: window.google.maps.ControlPosition.TOP_CENTER, 
-    },
-  });
-
-  serviceAreas.forEach((area) => {
-    const polygon = new window.google.maps.Polygon({
-      paths: area.path,
-      strokeColor: "#FF0000",
-      strokeOpacity: 0.8,
-      strokeWeight: 2,
-      fillColor: "#FF0000",
-      fillOpacity: 0.35,
-    });
-    polygon.setMap(map);
-  });
-
-  matchingUsers.forEach((user) => {
-    const userCoordinates = user.serviceArea?.path[0];
-    const position = userCoordinates
-      ? { lat: userCoordinates.lat, lng: userCoordinates.lng }
-      : latLng;
-
-    const marker = new window.google.maps.Marker({
-      position: position,
-      map: map,
-      title: user.userName,
+  const initMap = () => {
+    setLoading(false)
+    const map = new window.google.maps.Map(document.getElementById("map"), {
+      zoom: 11,
+      center: latLng,
+      zoomControlOptions: {
+        position: window.google.maps.ControlPosition.TOP_CENTER,
+      },
     });
 
-   
-    const infoWindow = new window.google.maps.InfoWindow();
+    serviceAreas.forEach((area) => {
+      const polygon = new window.google.maps.Polygon({
+        paths: area.path,
+        strokeColor: "#FF0000",
+        strokeOpacity: 0.8,
+        strokeWeight: 2,
+        fillColor: "#FF0000",
+        fillOpacity: 0.35,
+      });
+      polygon.setMap(map);
+    });
 
-  
-    const userInfoDiv = document.createElement("div");
-    const root = createRoot(userInfoDiv);
-    root.render(
-      <UserInfoWindow
-        user={{
-          userName: user.userName,
-          grade: user.grade,
-          photoURL: user.photoURL,
-        }}
-        onNavigate={() => {
-          navigate(`/profile-page/${user.userName}`);
-        }}
-      />
-    );
+    matchingUsers.forEach((user) => {
+      const userCoordinates = user.serviceArea?.path[0];
+      const position = userCoordinates
+        ? { lat: userCoordinates.lat, lng: userCoordinates.lng }
+        : latLng;
 
-    infoWindow.setContent(userInfoDiv);
-    infoWindow.open(map, marker);
-  });
-};
+      const marker = new window.google.maps.Marker({
+        position: position,
+        map: map,
+        title: user.userName,
+      });
 
+      const infoWindow = new window.google.maps.InfoWindow();
+
+      const userInfoDiv = document.createElement("div");
+      const root = createRoot(userInfoDiv);
+      root.render(
+        <UserInfoWindow
+          user={{
+            userName: user.userName,
+            grade: user.grade,
+            photoURL: user.photoURL,
+          }}
+          onNavigate={() => {
+            navigate(`/profile-page/${user.userName}`);
+          }}
+        />
+      );
+
+      infoWindow.setContent(userInfoDiv);
+      infoWindow.open(map, marker);
+    });
+  };
 
   useEffect(() => {
     if (mapLoaded && googleMapsLoaded) {
@@ -178,27 +178,40 @@ const initMap = () => {
     document.body.appendChild(script);
   };
 
-
-
   useEffect(() => {
     loadGoogleMaps();
   }, []);
 
-
+  const userName = localStorage.getItem("location");
+  const displayLocation = userName || zipCode;
 
   return (
     <>
       <Navbar />
       <StyledMowers>
-        <h3>Mowers in Area: {zipCode}</h3>
-        <div id="map" className="mower-map" />
+        <h3>Mowers in Area</h3>
+        <h4>{displayLocation}</h4>
+
+        {loading && (
+          <div className="loader-container">
+            <CircularProgress
+              style={{ color: "var(--primary-color)" }}
+              size={30}
+            />
+          </div>
+        )}
+
+        <div
+          id="map"
+          className="mower-map"
+          style={{ display: loading ? "none" : "block" }}
+        />
+        {!loading && noMowersFound && <p>No mowers found in this area.</p>}
       </StyledMowers>
       <Footer />
     </>
   );
 };
-
-
 
 export default FindMowers;
 
@@ -206,7 +219,17 @@ const StyledMowers = styled.div`
   min-height: var(--section-height);
   margin: var(--section-margin) auto;
   width: 90%;
-  h3 {
+
+  .loader-container {
+    position: absolute;
+    top: 50%; 
+    left: 50%; 
+    transform: translate(-50%, -50%); 
+  }
+
+  h3,
+  h4,
+  p {
     text-align: center;
   }
 
