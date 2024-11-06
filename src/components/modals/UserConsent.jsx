@@ -10,11 +10,12 @@ export default function UserConsent({ backdropHandler }) {
   const [profileModal, setProfileModal] = useState(false);
 
   const handleOptionChange = (event) => {
-    setSelectedOption(event.target.value === "true");
+    setSelectedOption(parseInt(event.target.value));
   };
 
   function submitHandler(e) {
     e.preventDefault();
+    console.log("selected option", )
     if (selectedOption) {
       // backdropHandler(false);
       setProfileModal(true);
