@@ -96,10 +96,11 @@ export default function ProfileSetupModal({ backdropHandler, heading }) {
       localStorage.setItem("userInfo", JSON.stringify(userInfo));
 
       // navigate(`/profile-page/${form.userName}`);
-      setTimeout(() => {
-        navigate("/login");
-        setSubmitLoading(false);
-      }, 5000);
+     setTimeout(() => {
+       setSubmitLoading(false);
+       navigate("/login");
+       
+     }, 5000);
     } catch (err) {
       setSubmitLoading(false);
       console.log("error while saving user info", err);
