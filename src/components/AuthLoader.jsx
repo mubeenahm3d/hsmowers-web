@@ -5,7 +5,7 @@ import styled from "styled-components";
 export default function AuthLoader() {
   return (
     <StyledAuthLoader>
-      <CircularProgress color="inherit" />
+      <CircularProgress color="primary" style={{color: "var(--primary-color)"}} />
     </StyledAuthLoader>
   );
 }

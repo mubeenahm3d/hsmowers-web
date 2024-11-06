@@ -90,25 +90,32 @@ function App() {
   async function setUserInfo(currentUser) {
     const subscription = await fetchSubscription(currentUser.uid);
     const userInfo = await fetchUserInfo(currentUser.uid);
-    const localUserInfo = JSON.parse(localStorage.getItem("userInfo"))
+    const localUserInfo = JSON.parse(localStorage.getItem("userInfo"));
     console.log("firebase userInfo", userInfo, "local userInfo", localUserInfo);
     if (!userInfo && localUserInfo && Object.keys(localUserInfo)?.length > 0) {
-      console.log("saving in firebase")
+      console.log("saving in firebase");
       const newUserInfo = {
         uid: currentUser.uid,
         email: currentUser.email,
         ...localUserInfo,
       };
       console.log("new Data", newUserInfo);
+      dispatch(
+        userActions.setCurrentUser({
+          ...currentUser,
+          subscription,
+          userInfo: newUserInfo,
+        })
+      );
 
       try {
         await setDoc(doc(db, "userInfo", currentUser.uid), newUserInfo);
-        localStorage.removeItem("userInfo")
+        localStorage.removeItem("userInfo");
       } catch (error) {
         console.error("Error saving user info:", error);
       }
     } else {
-      console.log("saving in redux")
+      console.log("saving in redux");
       dispatch(
         userActions.setCurrentUser({
           ...currentUser,
@@ -141,7 +148,7 @@ function App() {
     }
   }
 
-  return (
+  return redirectLoading ? <AuthLoader /> : (
     <div className="App">
       <AlertBar alertStates={alert} />
       <Routes>
