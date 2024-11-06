@@ -32,7 +32,7 @@ export default function Login() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  let { from } = location.state || { from: "/profile-setup" };
+  let { from } = location.state || { from: "/select-area" };
 
   function inputChangeHandler(event) {
     setInputs((current) => ({
