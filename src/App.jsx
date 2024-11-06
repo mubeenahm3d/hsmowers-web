@@ -41,7 +41,6 @@ import FindMowers from "./components/FindMowers";
 
 function App() {
   const [redirectLoading, setRedirectLoading] = useState(true);
-  const reduxuserInfo = useSelector((state) => state.user.userInfo);
   const alert = useSelector((state) => state.alert);
 
   const dispatch = useDispatch();
@@ -49,7 +48,7 @@ function App() {
   const location = useLocation();
 
   useEffect(() => {
-  console.log("in user auth")
+    console.log("in user auth");
     redirectURLHandler();
   }, [auth]);
 
@@ -82,112 +81,65 @@ function App() {
   const fetchUserInfo = async (uid) => {
     try {
       const userInfo = await getDoc(doc(db, "userInfo", uid));
-    
-      if (!userInfo.exists) {
-         console.log("User info does not exist");
-        return {};
-      } else {
-        return userInfo.data();
-       
-      }
+      return userInfo.data();
     } catch (e) {
       console.log("error while fetching user info", e);
     }
   };
 
+  async function setUserInfo(currentUser) {
+    const subscription = await fetchSubscription(currentUser.uid);
+    const userInfo = await fetchUserInfo(currentUser.uid);
+    const localUserInfo = JSON.parse(localStorage.getItem("userInfo"))
+    console.log("firebase userInfo", userInfo, "local userInfo", localUserInfo);
+    if (!userInfo && localUserInfo && Object.keys(localUserInfo)?.length > 0) {
+      console.log("saving in firebase")
+      const newUserInfo = {
+        uid: currentUser.uid,
+        email: currentUser.email,
+        ...localUserInfo,
+      };
+      console.log("new Data", newUserInfo);
 
- async function redirectURLHandler() {
-   try {
+      try {
+        await setDoc(doc(db, "userInfo", currentUser.uid), newUserInfo);
+        localStorage.removeItem("userInfo")
+      } catch (error) {
+        console.error("Error saving user info:", error);
+      }
+    } else {
+      console.log("saving in redux")
+      dispatch(
+        userActions.setCurrentUser({
+          ...currentUser,
+          subscription,
+          userInfo,
+        })
+      );
+    }
+  }
 
-     const result = await getRedirectResult(auth);
-     console.log("redirect result", result);
+  async function redirectURLHandler() {
+    try {
+      const result = await getRedirectResult(auth);
+      console.log("redirect result", result);
 
-    
-     if (result?.user) {
-       const subscription = await fetchSubscription(result.user.uid);
-       const userInfo = await fetchUserInfo(result.user.uid);
-       console.log("userInfo", Object.keys(userInfo).length);
-       if (!userInfo && Object.keys(userInfo)?.length === 0) {
-         const newUserInfo = {
-           uid: result.user.uid,
-           email: result.user.email,
-           ...reduxuserInfo,
-         };
-         console.log("new Data", newUserInfo)
-
-         try {
-           await setDoc(doc(db, "userInfo", result.user.uid), newUserInfo);
-         } catch (error) {
-           console.error("Error saving user info:", error);
-         }
-
-         dispatch(
-           userActions.setCurrentUser({
-             ...result?.user,
-             subscription,
-             userInfo: newUserInfo,
-           })
-         );
-       } else {
-         dispatch(
-           userActions.setCurrentUser({
-             ...result?.user,
-             subscription,
-             userInfo,
-           })
-         );
-       }
-
-       let { from } = location.state || { from: { pathname: "/" } };
-       navigate(from);
-     } else {
-       onAuthStateChanged(auth, async (user) => {
-         console.log("user", user);
-          if (user) {
-            const subscription = await fetchSubscription(user.uid);
-            const userInfo = await fetchUserInfo(user.uid);
-
-            console.log("userInfo", userInfo)
-            if (userInfo && Object.keys(userInfo).length === 0) {
-              const newUserInfo = {
-                uid: user.uid,
-                email: user.email,
-                ...reduxuserInfo,
-              };
-               console.log("new Data", newUserInfo);
-
-              try {
-                await setDoc(doc(db, "userInfo", user.uid), newUserInfo);
-              } catch (error) {
-                console.error("Error saving user info:", error);
-              }
-
-              dispatch(
-                userActions.setCurrentUser({
-                  ...result?.user,
-                  subscription,
-                  userInfo: newUserInfo,
-                })
-              );
-            } else {
-              dispatch(
-                userActions.setCurrentUser({
-                  ...result?.user,
-                  subscription,
-                  userInfo,
-                })
-              );
-            }
-          }
-       });
-     }
-   } catch (error) {
-     console.error("Error while redirecting Google URL", error);
-   } finally {
-     setRedirectLoading(false);
-   }
- }
-
+      if (result?.user) {
+        setUserInfo(result.user);
+        let { from } = location.state || { from: { pathname: "/" } };
+        navigate(from);
+      } else {
+        onAuthStateChanged(auth, async (user) => {
+          console.log("user", user?.uid);
+          user && setUserInfo(user);
+        });
+      }
+    } catch (error) {
+      console.error("Error while redirecting Google URL", error);
+    } finally {
+      setRedirectLoading(false);
+    }
+  }
 
   return (
     <div className="App">

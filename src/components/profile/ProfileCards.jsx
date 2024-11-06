@@ -18,7 +18,6 @@ export default function ProfileCards() {
       const fetchedData = [];
 
       querySnapshot.forEach((doc) => {
-        console.log(`${doc.id} =>`, doc.data());
         fetchedData.push({ id: doc.id, ...doc.data() });
       });
 

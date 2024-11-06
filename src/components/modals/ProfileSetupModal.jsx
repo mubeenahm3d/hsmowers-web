@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import PhoneInput from "react-phone-input-2";
 import styled from "styled-components";
-import { Avatar, } from "@mui/material";
+import { Avatar } from "@mui/material";
 import LoadingButton from "../LoadingButton";
 import CloseIcon from "@mui/icons-material/Close";
 import { useSelector, useDispatch } from "react-redux";
@@ -27,7 +27,7 @@ export default function ProfileSetupModal({ backdropHandler, heading }) {
     grade: userInfo?.grade || 9,
     description: userInfo?.description || "",
     schoolName: userInfo?.schoolName || "",
-    profileImg: userInfo?.photoURL || "",
+    photoURL: userInfo?.photoURL || "",
     services: userInfo?.services || [],
     serviceDistance: userInfo?.serviceDistance || 0.5,
   });
@@ -68,13 +68,14 @@ export default function ProfileSetupModal({ backdropHandler, heading }) {
   async function submitHandler(e) {
     e.preventDefault();
     let photoURL = userInfo?.photoURL;
-    
+
     try {
       if (stepNum < 4) {
         setStepNum((current) => current + 1);
         return;
       }
       setSubmitLoading(true);
+
       if (form.photoURL && form.photoURL.substring(0, 5) !== "https") {
         photoURL = await getImgURL(form.photoURL);
         console.log("photo url", photoURL);
@@ -83,26 +84,26 @@ export default function ProfileSetupModal({ backdropHandler, heading }) {
         ...form,
         // email: currentUser?.email,
         // uid: currentUser?.uid,
-        photoURL,
+        photoURL: photoURL || "",
         // createdAt: serverTimestamp(),
       };
       // console.log("userInfo", userInfo, currentUser.uid);
       // await setDoc(doc(db, "userInfo", currentUser?.uid), userInfo);
 
-      dispatch(userActions.setUserInfo(userInfo));
-      dispatch(userActions.setUserImage(photoURL));
+      // dispatch(userActions.setUserInfo(userInfo));
+      // dispatch(userActions.setUserImage(photoURL));
+
+      localStorage.setItem("userInfo", JSON.stringify(userInfo));
 
       // navigate(`/profile-page/${form.userName}`);
-     setTimeout(() => {
-       navigate("/login");
-       
-     }, 5000);
+      setTimeout(() => {
+        navigate("/login");
+        setSubmitLoading(false);
+      }, 5000);
     } catch (err) {
+      setSubmitLoading(false);
       console.log("error while saving user info", err);
     } 
-    finally {
-      setSubmitLoading(false);
-    }
   }
   function backBtnHandler(e) {
     e.preventDefault();
@@ -152,8 +153,6 @@ export default function ProfileSetupModal({ backdropHandler, heading }) {
                 type="submit"
                 title={"Next"}
               />
-
-             
             </div>
           </form>
           <div className="progress">
