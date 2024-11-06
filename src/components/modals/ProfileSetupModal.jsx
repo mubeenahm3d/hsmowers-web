@@ -12,6 +12,8 @@ import { collection, doc, setDoc, serverTimestamp } from "firebase/firestore";
 import uploadImg from "../../utils/uploadImg";
 import { updateProfile } from "firebase/auth";
 import { useNavigate } from "react-router";
+import Lottie from "lottie-react";
+import LoaderAnimation from '../../assets/animation.json'
 
 export default function ProfileSetupModal({ backdropHandler, heading }) {
   const userInfo = useSelector((state) => state.user.userInfo);
@@ -70,11 +72,11 @@ export default function ProfileSetupModal({ backdropHandler, heading }) {
     let photoURL = userInfo?.photoURL;
 
     try {
-      if (stepNum < 4) {
+      if (stepNum < 5) {
         setStepNum((current) => current + 1);
         return;
       }
-      setSubmitLoading(true);
+      // setSubmitLoading(true);
 
       if (form.photoURL && form.photoURL.substring(0, 5) !== "https") {
         photoURL = await getImgURL(form.photoURL);
@@ -94,15 +96,13 @@ export default function ProfileSetupModal({ backdropHandler, heading }) {
       // dispatch(userActions.setUserImage(photoURL));
 
       localStorage.setItem("userInfo", JSON.stringify(userInfo));
-
-      // navigate(`/profile-page/${form.userName}`);
-     setTimeout(() => {
-       setSubmitLoading(false);
-       navigate("/login");
+    //  setTimeout(() => {
+    //    setSubmitLoading(false);
+    //    navigate("/login");
        
-     }, 5000);
+    //  }, 5000);
     } catch (err) {
-      setSubmitLoading(false);
+      // setSubmitLoading(false);
       console.log("error while saving user info", err);
     } 
   }
@@ -121,6 +121,8 @@ export default function ProfileSetupModal({ backdropHandler, heading }) {
         return <Step3 form={form} onChangeHandler={onChangeHandler} />;
       case 4:
         return <Step4 form={form} onChangeHandler={onChangeHandler} />;
+      case 5:
+        return <Step5 />;
       default:
         return <Step1 form={form} onChangeHandler={onChangeHandler} />;
     }
@@ -150,8 +152,8 @@ export default function ProfileSetupModal({ backdropHandler, heading }) {
               </button>
 
               <LoadingButton
-                loading={submitLoading}
-                type="submit"
+                // loading={submitLoading}
+                // type="submit"
                 title={"Next"}
               />
             </div>
@@ -368,6 +370,40 @@ function Step4({ form, onChangeHandler }) {
     </StyledStep>
   );
 }
+
+
+function Step5() {
+   const navigate = useNavigate();
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      navigate("/login");
+    }, 5000);
+
+    return () => clearTimeout(timer);
+  }, [navigate]);
+  
+
+  return (
+    <>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          flexDirection:'column'
+        }}
+      >
+        <Lottie
+          animationData={LoaderAnimation}
+          loop={true}
+          style={{ width: 200, height: 200 }}
+        />
+        <p style={{marginBottom: '34px'}}>Creating your account</p>
+      </div>
+    </>
+  );
+}
+
 
 const StyledProfileSetup = styled.section`
   margin-top: var(--section-margin);
