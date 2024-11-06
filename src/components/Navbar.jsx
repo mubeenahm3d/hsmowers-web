@@ -21,22 +21,22 @@ import { auth } from "../authentication/firebase";
 import { useSelector } from "react-redux"; // Importing useSelector to fetch subscription status
 import CloseIcon from "@mui/icons-material/Close";
 import Info from "./modals/Info";
+import { CircularProgress } from "@mui/material"; 
 
 export default function Navbar() {
   const [contactBackdrop, setContactBackdrop] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const [anchorEl, setAnchorEl] = useState(null); // State for menu anchor (avatar dropdown)
+  const [anchorEl, setAnchorEl] = useState(null); 
+  const [loading, setLoading] = useState(false); 
   const navigate = useNavigate();
-  const user = useSelector((state) => state.user);
-  const fullName = user?.displayName || ""; 
+  const userInfo = useSelector((state) => state.user.userInfo);
+  const fullName = userInfo?.displayName || "";
 
- const [firstName, lastName] = fullName ? fullName.split(" ") : ["", ""];
+  const [firstName, lastName] = fullName ? fullName.split(" ") : ["", ""];
 
-
- const displayName = lastName
-   ? `${firstName} ${lastName.charAt(0)}.`
-   : firstName || "Guest";
-  
+  const displayName = lastName
+    ? `${firstName} ${lastName.charAt(0)}.`
+    : firstName || "Guest";
 
   const backdropHandler = () => {
     setContactBackdrop((current) => !current);
@@ -51,18 +51,25 @@ export default function Navbar() {
     setDrawerOpen(false); // Close drawer on navigation
   };
 
-  const handleSignOut = () => {
-    auth.signOut().then(() => {
-      handleMenuClose();
-      navigate("/login"); // Navigate to login page after sign out
-    });
+  const handleSignOut = async (event) => {
+     event.stopPropagation();
+    setLoading(true);
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 3000));
+      await auth.signOut();
+      navigate("/login");
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false); 
+    }
   };
 
   const handleAvatarClick = (event) => {
     if (anchorEl) {
-      handleMenuClose(); 
+      handleMenuClose();
     } else {
-      setAnchorEl(event.currentTarget); 
+      setAnchorEl(event.currentTarget);
     }
   };
 
@@ -112,7 +119,7 @@ export default function Navbar() {
         {/* Avatar or Login button for larger screens */}
         {auth.currentUser ? (
           <div className="avatar-section" onClick={handleAvatarClick}>
-            {/* <Link to={`/profile-page/${user.userName}`}> */}
+            {/* <Link to={`/profile-page/${userInfo.userName}`}> */}
             <Avatar
               alt={auth.currentUser.email?.toUpperCase()}
               src="/broken-image.jpg"
@@ -132,14 +139,35 @@ export default function Navbar() {
               transformOrigin={{ vertical: "top", horizontal: "right" }}
               disableScrollLock
             >
-              <Link to={`/profile-page/${user.userName}`}>
+              <Link to={`/profile-page/${userInfo.userName}`}>
                 <MenuItem onClick={handleMenuClose}>Profile Page</MenuItem>
               </Link>{" "}
               <Link to="/profile-setup">
                 {" "}
                 <MenuItem onClick={handleMenuClose}>Edit Profile</MenuItem>
               </Link>
-              <MenuItem onClick={handleSignOut}>Logout</MenuItem>
+              <MenuItem
+                onClick={handleSignOut}
+                sx={{ display: "flex", alignItems: "center" }}
+              >
+                Logout
+              </MenuItem>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                {loading && (
+                  <CircularProgress
+                    size={20}
+                    sx={{
+                      color: "var(--primary-color)",
+                    }}
+                  />
+                )}
+              </div>
             </Menu>
             {/* </Link> */}
           </div>
@@ -177,7 +205,7 @@ export default function Navbar() {
           {auth.currentUser ? (
             <>
               <MobileUser>
-                <Link to={`/profile-page/${user.userName}`}>
+                <Link to={`/profile-page/${userInfo.userName}`}>
                   <Avatar
                     alt={auth.currentUser.email}
                     src="/broken-image.jpg"
@@ -249,9 +277,26 @@ export default function Navbar() {
             >
               <ListItemText primary="Edit Profile" />
             </ListItem>
+
             <ListItem button onClick={handleSignOut}>
               <ListItemText primary="Log Out" />
             </ListItem>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              {loading && (
+                <CircularProgress
+                  size={20}
+                  sx={{
+                    color: "var(--primary-color)",
+                  }}
+                />
+              )}
+            </div>
           </Box>
         )}
       </Drawer>
@@ -362,11 +407,11 @@ const StyledNavbar = styled.section`
 `;
 
 const MobileUser = styled.div`
-display: flex;
-justify-content: flex-start;
-align-items: center;
-margin-left: 0.5rem;
-`
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  margin-left: 0.5rem;
+`;
 
 // Styled component for the Drawer Header
 const DrawerHeader = styled.div`

@@ -94,15 +94,16 @@ export default function ProfileSetupModal({ backdropHandler, heading }) {
 
       // navigate(`/profile-page/${form.userName}`);
      setTimeout(() => {
+       setSubmitLoading(false);
        navigate("/login");
        
      }, 5000);
     } catch (err) {
       console.log("error while saving user info", err);
     } 
-    finally {
-      setSubmitLoading(false);
-    }
+    // finally {
+    //   setSubmitLoading(false);
+    // }
   }
   function backBtnHandler(e) {
     e.preventDefault();
