@@ -15,7 +15,7 @@ import { useNavigate } from "react-router";
 
 export default function ProfileSetupModal({ backdropHandler, heading }) {
   const userInfo = useSelector((state) => state.user.userInfo);
-  const currentUser = auth?.currentUser;
+  // const currentUser = auth?.currentUser;
 
   const [stepNum, setStepNum] = useState(1);
 
@@ -81,10 +81,10 @@ export default function ProfileSetupModal({ backdropHandler, heading }) {
       }
       const userInfo = {
         ...form,
-        email: currentUser?.email,
-        uid: currentUser?.uid,
+        // email: currentUser?.email,
+        // uid: currentUser?.uid,
         photoURL,
-        createdAt: serverTimestamp(),
+        // createdAt: serverTimestamp(),
       };
       // console.log("userInfo", userInfo, currentUser.uid);
       // await setDoc(doc(db, "userInfo", currentUser?.uid), userInfo);

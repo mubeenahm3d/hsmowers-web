@@ -41,6 +41,8 @@ import FindMowers from "./components/FindMowers";
 
 function App() {
   const [redirectLoading, setRedirectLoading] = useState(true);
+  const reduxuserInfo = useSelector((state) => state.user.userInfo);
+  console.log("Redux User Info:", reduxuserInfo);
   const alert = useSelector((state) => state.alert);
 
   const dispatch = useDispatch();
@@ -80,54 +82,111 @@ function App() {
   const fetchUserInfo = async (uid) => {
     try {
       const userInfo = await getDoc(doc(db, "userInfo", uid));
+    
       if (!userInfo.exists) {
+         console.log("User info does not exist");
         return {};
       } else {
+         console.log("userData fetched from firebase", userInfo.data());
         return userInfo.data();
+       
       }
     } catch (e) {
       console.log("error while fetching user info", e);
     }
   };
 
-  async function redirectURLHandler() {
-    try {
-      const result = await getRedirectResult(auth);
-      console.log("redirect result", result);
-      if (result?.user) {
-        const subscription = fetchSubscription(result.user?.uid);
-        const userInfo = await fetchUserInfo(result.user?.uid);
-        if (Object.keys(userInfo)?.length === 0) {
-          await setDoc(doc(db, "userInfo", result.user?.uid), {...userInfo, uid: result.user.uid, email: result.user.email});
-        } else {
-          dispatch(
-            userActions.setCurrentUser({
-              ...result.user,
-              subscription,
-              userInfo,
-            })
-          );
-        }
-        let { from } = location.state || { from: { pathname: "/" } };
-        navigate(from);
-      } else {
-        onAuthStateChanged(auth, async (user) => {
-          console.log("user", user);
-          if (user) {
-            const subscription = await fetchSubscription(user.uid);
-            const userInfo = await fetchUserInfo(user?.uid);
-            dispatch(
-              userActions.setCurrentUser({ ...user, subscription, userInfo })
-            );
+
+ async function redirectURLHandler() {
+   try {
+     const result = await getRedirectResult(auth);
+     console.log("redirect result", result);
+
+    
+     if (result?.user) {
+       const subscription = await fetchSubscription(result.user.uid);
+       const userInfo = await fetchUserInfo(result.user.uid);
+       console.log("userInfo", Object.keys(userInfo).length);
+       if (userInfo && Object.keys(userInfo).length === 0) {
+         const newUserInfo = {
+           uid: result.user.uid,
+           email: result.user.email,
+           ...reduxuserInfo,
+         };
+         console.log("new Data", newUserInfo)
+
+         try {
+           await setDoc(doc(db, "userInfo", result.user.uid), newUserInfo);
+         } catch (error) {
+           console.error("Error saving user info:", error);
+         }
+
+         dispatch(
+           userActions.setCurrentUser({
+             ...result?.user,
+             subscription,
+             userInfo: newUserInfo,
+           })
+         );
+       } else {
+         dispatch(
+           userActions.setCurrentUser({
+             ...result?.user,
+             subscription,
+             userInfo,
+           })
+         );
+       }
+
+       let { from } = location.state || { from: { pathname: "/" } };
+       navigate(from);
+     } else {
+       onAuthStateChanged(auth, async (user) => {
+         console.log("user", user);
+          if (result?.user) {
+            const subscription = await fetchSubscription(result.user.uid);
+            const userInfo = await fetchUserInfo(result.user.uid);
+
+            if (userInfo && Object.keys(userInfo).length === 0) {
+              const newUserInfo = {
+                uid: result.user.uid,
+                email: result.user.email,
+                ...reduxuserInfo,
+              };
+               console.log("new Data", newUserInfo);
+
+              try {
+                await setDoc(doc(db, "userInfo", result.user.uid), newUserInfo);
+              } catch (error) {
+                console.error("Error saving user info:", error);
+              }
+
+              dispatch(
+                userActions.setCurrentUser({
+                  ...result?.user,
+                  subscription,
+                  userInfo: newUserInfo,
+                })
+              );
+            } else {
+              dispatch(
+                userActions.setCurrentUser({
+                  ...result?.user,
+                  subscription,
+                  userInfo,
+                })
+              );
+            }
           }
-        });
-      }
-    } catch (error) {
-      console.error("error while redirecting google url", error);
-    } finally {
-      setRedirectLoading(false);
-    }
-  }
+       });
+     }
+   } catch (error) {
+     console.error("Error while redirecting Google URL", error);
+   } finally {
+     setRedirectLoading(false);
+   }
+ }
+
 
   return (
     <div className="App">
