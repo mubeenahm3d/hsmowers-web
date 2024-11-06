@@ -58,9 +58,9 @@ export default function ProfileSetup() {
         "profilePics"
       );
       
-      await updateProfile(currentUser, {
-        photoURL,
-      });
+      // await updateProfile(currentUser, {
+      //   photoURL,
+      // });
       return photoURL;
     } catch (e) {
       console.log("err while uploading profile pic", e);
@@ -75,7 +75,7 @@ export default function ProfileSetup() {
         setStepNum((current) => current + 1);
         return;
       }
-      setSubmitLoading(true);
+      // setSubmitLoading(true);
       if (form.photoURL && form.photoURL.substring(0, 5) !== "https") {
         photoURL = await getImgURL(form.photoURL);
         console.log("photo url", photoURL);
@@ -88,7 +88,7 @@ export default function ProfileSetup() {
         createdAt: serverTimestamp(),
       };
       console.log("userInfo", userInfo, photoURL);
-      await setDoc(doc(db, "userInfo", currentUser?.uid), userInfo);
+      // await setDoc(doc(db, "userInfo", currentUser?.uid), userInfo);
 
       dispatch(userActions.setUserInfo(userInfo))
       dispatch(userActions.setUserImage(photoURL))

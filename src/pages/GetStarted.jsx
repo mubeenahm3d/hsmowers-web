@@ -4,7 +4,6 @@ import Navbar from "../components/Navbar";
 import ProfileCards from "../components/profile/ProfileCards";
 import Footer from "../components/Footer";
 import BackdropWrapper from "../components/modals/BackdropWrapper";
-import Info from "../components/modals/Info";
 import UserConsent from "../components/modals/UserConsent";
 
 export default function GetStarted() {

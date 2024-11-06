@@ -15,19 +15,20 @@ export default function UserConsent({ backdropHandler }) {
 
   function submitHandler(e) {
     e.preventDefault();
-    console.log("selected option", )
+    console.log("selected option");
     if (selectedOption) {
       // backdropHandler(false);
       setProfileModal(true);
-    }
-     else {
-      // setConsent(true);
+    } else {
+      setConsent(true);
       setProfileModal(false);
     }
   }
 
-  return (
-    !profileModal ? (<StyledUserConsent>
+  console.log("profile modal", profileModal, selectedOption)
+
+  return !profileModal ? (
+    <StyledUserConsent>
       <div className="heading">
         <h4>User Consent</h4>
         <button className="icon" onClick={() => backdropHandler(false)}>
@@ -38,7 +39,7 @@ export default function UserConsent({ backdropHandler }) {
       {consent ? (
         <div className="consent-resonse">
           <p>Sorry, we only have jobs for high school students.</p>
-          <button type="submit" onClick={() => backdropHandler(false)}>
+          <button type="submit" onClick={backdropHandler}>
             Close
           </button>
         </div>
@@ -49,7 +50,7 @@ export default function UserConsent({ backdropHandler }) {
               type="radio"
               id="1st"
               name="consent"
-              value="true"
+              value={1}
               onChange={handleOptionChange}
             />
             Yes, I am over 13 years old and I am currently enrolled in High
@@ -60,7 +61,7 @@ export default function UserConsent({ backdropHandler }) {
               type="radio"
               id="2nd"
               name="consent"
-              value="false"
+              value={0}
               onChange={handleOptionChange}
             />
             No, I am not over 13 years old
@@ -70,7 +71,7 @@ export default function UserConsent({ backdropHandler }) {
               type="radio"
               id="3rd"
               name="consent"
-              value="false"
+              value={0}
               onChange={handleOptionChange}
             />
             No, I am not currently enrolled in High School.
@@ -78,13 +79,12 @@ export default function UserConsent({ backdropHandler }) {
           <button type="submit">Submit</button>
         </form>
       )}
-
-    </StyledUserConsent> ):  (
-      <ProfileSetupModal
-              heading={"Profile Setup"}
-              backdropHandler={() => setProfileModal(false)}
-            />
-    )
+    </StyledUserConsent>
+  ) : (
+    <ProfileSetupModal
+      heading={"Profile Setup"}
+      backdropHandler={backdropHandler}
+    />
   );
 }
 

@@ -23,6 +23,7 @@ import {
   getDoc,
   getDocs,
   query,
+  setDoc,
   where,
 } from "firebase/firestore";
 import PaymentResponse from "./pages/PaymentResponse";
@@ -96,9 +97,17 @@ function App() {
       if (result?.user) {
         const subscription = fetchSubscription(result.user?.uid);
         const userInfo = await fetchUserInfo(result.user?.uid);
-        dispatch(
-          userActions.setCurrentUser({ ...result.user, subscription, userInfo })
-        );
+        if (Object.keys(userInfo)?.length === 0) {
+          await setDoc(doc(db, "userInfo", result.user?.uid), {...userInfo, uid: result.user.uid, email: result.user.email});
+        } else {
+          dispatch(
+            userActions.setCurrentUser({
+              ...result.user,
+              subscription,
+              userInfo,
+            })
+          );
+        }
         let { from } = location.state || { from: { pathname: "/" } };
         navigate(from);
       } else {
@@ -128,7 +137,7 @@ function App() {
         <Route path="/" element={<LandingPage />} />
         <Route path="/about" element={<About />} />
         <Route path="/select-area" element={<Map />} />
-        <Route path="/find-mowers" element={<FindMowers/>} />
+        <Route path="/find-mowers" element={<FindMowers />} />
         <Route path="/consent-response" element={<ConsentResponse />} />
         <Route path="/profile-page/:username" element={<ProfilePage />} />
         <Route path="/login" element={<Login />} />

@@ -56,9 +56,9 @@ export default function ProfileSetupModal({ backdropHandler, heading }) {
         "profilePics"
       );
 
-      await updateProfile(currentUser, {
-        photoURL,
-      });
+      // await updateProfile(currentUser, {
+      //   photoURL,
+      // });
       return photoURL;
     } catch (e) {
       console.log("err while uploading profile pic", e);
@@ -86,8 +86,8 @@ export default function ProfileSetupModal({ backdropHandler, heading }) {
         photoURL,
         createdAt: serverTimestamp(),
       };
-      console.log("userInfo", userInfo, photoURL);
-      await setDoc(doc(db, "userInfo", currentUser?.uid), userInfo);
+      // console.log("userInfo", userInfo, currentUser.uid);
+      // await setDoc(doc(db, "userInfo", currentUser?.uid), userInfo);
 
       dispatch(userActions.setUserInfo(userInfo));
       dispatch(userActions.setUserImage(photoURL));
@@ -100,9 +100,9 @@ export default function ProfileSetupModal({ backdropHandler, heading }) {
     } catch (err) {
       console.log("error while saving user info", err);
     } 
-    // finally {
-    //   setSubmitLoading(false);
-    // }
+    finally {
+      setSubmitLoading(false);
+    }
   }
   function backBtnHandler(e) {
     e.preventDefault();
@@ -128,7 +128,7 @@ export default function ProfileSetupModal({ backdropHandler, heading }) {
     <>
       <div className="heading">
         <h4>{heading}</h4>
-        <button className="icon" onClick={() => backdropHandler(false)}>
+        <button className="icon" onClick={backdropHandler}>
           <CloseIcon htmlColor="var(--primary-color)" fontSize="large" />
         </button>
       </div>
