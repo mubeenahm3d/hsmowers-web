@@ -179,7 +179,7 @@ const CardInfo = styled(CardContent)`
   form {
     margin-top: 1rem;
     input {
-      width: 195px;
+      width: 200px;
       border-top-right-radius: 0rem;
       border-bottom-right-radius: 0rem;
     }

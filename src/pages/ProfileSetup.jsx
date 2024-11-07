@@ -71,7 +71,7 @@ export default function ProfileSetup() {
     e.preventDefault();
     let photoURL = userInfo?.photoURL;
     try {
-      if (stepNum < 4) {
+      if (stepNum === 4) {
         setStepNum((current) => current + 1);
         return;
       }
@@ -126,9 +126,9 @@ export default function ProfileSetup() {
     <>
       <Navbar />
       <StyledProfileSetup>
-        <h3>Profile Setup</h3>
+        <h3>Edit Profile</h3>
         <div className="content">
-          <h4>Create your business page</h4>
+          <h4>Edit your business page</h4>
           <form onSubmit={submitHandler}>
             {renderSteps()}
             <div className="btns">

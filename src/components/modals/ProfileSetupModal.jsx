@@ -58,9 +58,7 @@ export default function ProfileSetupModal({ backdropHandler, heading }) {
         "profilePics"
       );
 
-      // await updateProfile(currentUser, {
-      //   photoURL,
-      // });
+      
       return photoURL;
     } catch (e) {
       console.log("err while uploading profile pic", e);
@@ -69,43 +67,46 @@ export default function ProfileSetupModal({ backdropHandler, heading }) {
 
   async function submitHandler(e) {
     e.preventDefault();
-    let photoURL = userInfo?.photoURL;
-
     try {
       if (stepNum < 5) {
         setStepNum((current) => current + 1);
         return;
       }
-      // setSubmitLoading(true);
-
-      if (form.photoURL && form.photoURL.substring(0, 5) !== "https") {
-        photoURL = await getImgURL(form.photoURL);
-        console.log("photo url", photoURL);
-      }
-      const userInfo = {
-        ...form,
-        // email: currentUser?.email,
-        // uid: currentUser?.uid,
-        photoURL: photoURL || "",
-        // createdAt: serverTimestamp(),
-      };
-      // console.log("userInfo", userInfo, currentUser.uid);
-      // await setDoc(doc(db, "userInfo", currentUser?.uid), userInfo);
-
-      // dispatch(userActions.setUserInfo(userInfo));
-      // dispatch(userActions.setUserImage(photoURL));
-
-      localStorage.setItem("userInfo", JSON.stringify(userInfo));
-    //  setTimeout(() => {
-    //    setSubmitLoading(false);
-    //    navigate("/login");
-       
-    //  }, 5000);
     } catch (err) {
-      // setSubmitLoading(false);
-      console.log("error while saving user info", err);
-    } 
+      console.log("error while handling submit", err);
+    }
   }
+
+
+  useEffect(() => {
+    if (stepNum === 5) {
+      let photoURL = form.photoURL;
+
+      if (photoURL && photoURL.substring(0, 5) !== "https") {
+        const saveInfo = async () => {
+          try {
+            photoURL = await getImgURL(photoURL);
+            const userInfo = {
+              ...form,
+              photoURL: photoURL || "",
+            };
+            localStorage.setItem("userInfo", JSON.stringify(userInfo));
+          } catch (err) {
+            console.log("error while saving user info", err);
+          }
+        };
+        saveInfo();
+      } else {
+        const userInfo = {
+          ...form,
+          photoURL: photoURL || "",
+        };
+        localStorage.setItem("userInfo", JSON.stringify(userInfo));
+      }
+    }
+  }, [stepNum]);
+
+  
   function backBtnHandler(e) {
     e.preventDefault();
     setStepNum((current) => current - 1);
@@ -381,6 +382,8 @@ function Step5() {
 
     return () => clearTimeout(timer);
   }, [navigate]);
+
+ 
   
 
   return (

@@ -18,7 +18,11 @@ const UserInfoWindow = ({ user, onNavigate }) => (
       style={{ width: "50px", height: "50px", borderRadius: "50%" }}
     />
     <p
-      style={{ textDecoration: "underline", cursor: "pointer" }}
+      style={{
+        textDecoration: "underline",
+        cursor: "pointer",
+        fontWeight: "bold",
+      }}
       onClick={onNavigate}
     >
       {user.userName}
@@ -70,7 +74,6 @@ const FindMowers = () => {
 
       setMatchingUsers(users);
       console.log(users);
-      // setNoMowersFound(users.length === 0);
 
       if (users.length > 0) {
         fetchServiceAreas(zip);
@@ -191,26 +194,34 @@ const FindMowers = () => {
   return (
     <>
       <Navbar />
-      <StyledMowers>
+      <Heading>
         <h3>Mowers in Area</h3>
         <h4>{displayLocation}</h4>
+      </Heading>
 
-        {loading && (
-          <div className="loader-container">
-            <CircularProgress
-              style={{ color: "var(--primary-color)" }}
-              size={30}
+      <StyledMowers>
+       
+          {loading && (
+            <div className="loader-container">
+              <CircularProgress
+                style={{ color: "var(--primary-color)" }}
+                size={30}
+              />
+            </div>
+          )}
+
+          {!loading && noMowersFound ? (
+            <p>No mowers found in this area.</p>
+          ) : (
+            <div
+              id="map"
+              className="mower-map"
+              style={{ display: loading ? "none" : "block" }}
             />
-          </div>
-        )}
-
-        <div
-          id="map"
-          className="mower-map"
-          style={{ display: loading ? "none" : "block" }}
-        />
-        {!loading && noMowersFound && <p>No mowers found in this area.</p>}
+          )}
+      
       </StyledMowers>
+
       <Footer />
     </>
   );
@@ -222,6 +233,10 @@ const StyledMowers = styled.div`
   min-height: var(--section-height);
   margin: var(--section-margin) auto;
   width: 90%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 
   .loader-container {
     position: absolute;
@@ -230,8 +245,6 @@ const StyledMowers = styled.div`
     transform: translate(-50%, -50%);
   }
 
-  h3,
-  h4,
   p {
     text-align: center;
   }
@@ -241,4 +254,12 @@ const StyledMowers = styled.div`
     width: 100%;
     height: 500px;
   }
+`;
+
+const Heading = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  margin-top: 2rem;
 `;
