@@ -71,11 +71,13 @@ const Map = () => {
           position: window.google.maps.ControlPosition.BOTTOM_CENTER,
         },
         mapTypeControl: false,
+        fullscreenControl: false,
       });
 
       const drawingManager = new window.google.maps.drawing.DrawingManager({
         drawingMode: window.google.maps.drawing.OverlayType.MARKER,
         drawingControl: true,
+
         drawingControlOptions: {
           position: window.google.maps.ControlPosition.TOP_CENTER,
           drawingModes: [window.google.maps.drawing.OverlayType.POLYLINE],
