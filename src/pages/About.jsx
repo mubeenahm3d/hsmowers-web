@@ -133,7 +133,7 @@ const AboutContainer = styled.div`
       }
       p {
         text-align: center;
-        max-width: 47ch;
+        /* max-width: 47ch; */
       }
     }
 

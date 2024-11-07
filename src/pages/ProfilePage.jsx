@@ -16,13 +16,9 @@ import { useNavigate } from "react-router-dom";
 
 export default function ProfilePage() {
   const userInfo = useSelector((state) => state.user.userInfo);
-
   const uid = useSelector((state) => state.user.uid);
 
   const [userData, setUserData] = useState({});
-
-  console.log(userInfo);
-
   const [showNumber, setShowNumber] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -44,60 +40,59 @@ export default function ProfilePage() {
     backdropHandler();
   };
 
-  const getData = async () => {
-    const collectionRef = collection(db, "userInfo");
-    const q = query(collectionRef, where("userName", "==", username)); 
+   const getData = async () => {
+     const collectionRef = collection(db, "userInfo");
+     const q = query(collectionRef, where("userName", "==", username));
 
-    try {
-      const querySnapshot = await getDocs(q);
-      let fetchedData = {};
+     try {
+       const querySnapshot = await getDocs(q);
+       let fetchedData = {};
 
-      querySnapshot.forEach((doc) => {
-        console.log(`${doc.id} =>`, doc.data());
-        fetchedData = doc.data(); 
-        console.log("fetched Data is:",fetchedData)
-      });
+       querySnapshot.forEach((doc) => {
+         console.log(`${doc.id} =>`, doc.data());
+         fetchedData = doc.data();
+         console.log("fetched Data is:", fetchedData);
+       });
 
-      if (Object.keys(fetchedData).length > 0) {
-        setUserData(fetchedData); 
-      }
-    } 
-    
-    catch (error) {
-      console.error("Error fetching documents: ", error);
-    } 
+       if (Object.keys(fetchedData).length > 0) {
+         setUserData(fetchedData);
+       }
+     } catch (error) {
+       console.error("Error fetching documents: ", error);
+     } finally {
+       setLoading(false);
+     }
+   };
 
-    finally {
-      setLoading(false); 
-    }
-  };
 
   useEffect(() => {
-    if (userInfo && Object.keys(userInfo).length > 0 && username===userInfo.userName) {
+    if (
+      userInfo &&
+      Object.keys(userInfo).length > 0 &&
+      username === userInfo.userName
+    ) {
       setUserData(userInfo);
       setLoading(false);
     } else {
       getData();
+      setLoading(false); 
     }
-  }, [userInfo]); 
+  }, [userInfo]);
 
-   const generateMapUrl = (path) => {
-     const baseUrl = "https://maps.googleapis.com/maps/api/staticmap?";
+  const generateMapUrl = (path) => {
+    const baseUrl = "https://maps.googleapis.com/maps/api/staticmap?";
     const pathParam = `path=color:0xFF0000|weight:2|${path
       .map((coord) => `${coord.lat},${coord.lng}`)
       .join("|")}`;
     const fillParam = `fillcolor:0x0000FF|weight:2|${path
       .map((coord) => `${coord.lat},${coord.lng}`)
       .join("|")}`;
-
-     const center =
-       path.length > 0 ? `center=${path[0].lat},${path[0].lng}` : "";
-     const size = "size=900x300";
-     const key = `${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`;
-
-     return `${baseUrl}${size}&${center}&${pathParam}&${fillParam}&key=${key}`;
-   };
-
+    const center =
+      path.length > 0 ? `center=${path[0].lat},${path[0].lng}` : "";
+    const size = "size=900x300";
+    const key = `${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`;
+    return `${baseUrl}${size}&${center}&${pathParam}&${fillParam}&key=${key}`;
+  };
 
   const serviceAreaPath = userData.serviceArea?.path || [];
   const mapUrl = generateMapUrl(serviceAreaPath);
@@ -152,7 +147,7 @@ export default function ProfilePage() {
                     ? "Junior"
                     : Number(userData.grade) === 12
                     ? "Senior"
-                    : "Unknown Grade"}
+                    : null}
                 </p>
               </div>
 
@@ -162,12 +157,6 @@ export default function ProfilePage() {
                     {showNumber ? userData.phoneNumber : "Show Number"}
                   </button>
                 )}
-
-                {/* {uid && (
-                  <button onClick={handleSignOut} className="outline-btn">
-                    Logout
-                  </button>
-                )} */}
               </div>
             </div>
 
@@ -190,13 +179,9 @@ export default function ProfilePage() {
 
               <div className="service-area">
                 <div className="service-area-header">
-                  <h5>Your Service Area</h5>
+                  <h5>Service Area</h5>
                   {uid === userData.uid && (
-                    <button
-                      onClick={() => {
-                        navigate("/select-area");
-                      }}
-                    >
+                    <button onClick={() => navigate("/select-area")}>
                       Edit Service Area
                     </button>
                   )}
@@ -205,7 +190,7 @@ export default function ProfilePage() {
                   {serviceAreaPath.length > 0 ? (
                     <img src={mapUrl} alt="Service Area Map" />
                   ) : (
-                    <p>No service area defined</p>
+                    <p>No service area Available</p>
                   )}
                 </div>
               </div>

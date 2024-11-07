@@ -153,7 +153,7 @@ export default function ProfileSetupModal({ backdropHandler, heading }) {
 
               <LoadingButton
                 // loading={submitLoading}
-                // type="submit"
+                type="submit"
                 title={"Next"}
               />
             </div>

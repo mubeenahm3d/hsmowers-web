@@ -37,7 +37,7 @@ export default function ProfileCard({ profileData }) {
               ? "Junior"
               : Number(grade) === 12
               ? "Senior"
-              : "Unknown Grade"}
+              : null}
           </h5>
         </div>
       </div>
@@ -53,7 +53,7 @@ export default function ProfileCard({ profileData }) {
 }
 
 const StyledProfileCard = styled.section`
-  width: 230px;
+  min-width: 250px;
   min-height: 220px;
   border-radius: var(--l-radius);
   box-shadow: 0px 0px 4px 2px var(--shadow-light);
@@ -69,6 +69,7 @@ const StyledProfileCard = styled.section`
     gap: 10px;
     padding: 6px 10px;
     border-bottom: 2px solid var(--primary-color);
+    
     .pic {
       width: 30%;
       display: flex;

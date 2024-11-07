@@ -25,6 +25,7 @@ import {
   query,
   setDoc,
   where,
+  serverTimestamp,
 } from "firebase/firestore";
 import PaymentResponse from "./pages/PaymentResponse";
 import Blogs from "./pages/Blogs";
@@ -97,6 +98,7 @@ function App() {
       const newUserInfo = {
         uid: currentUser.uid,
         email: currentUser.email,
+        createdAt: serverTimestamp(),
         ...localUserInfo,
       };
       console.log("new Data", newUserInfo);

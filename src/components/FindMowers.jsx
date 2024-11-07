@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { useSearchParams } from "react-router-dom";
 import { db } from "../authentication/firebase";
 import { collection, getDocs, query, where } from "firebase/firestore";
+import ProfileImg from "../assets/profilesvg.svg";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
 import { useNavigate } from "react-router-dom";
@@ -12,7 +13,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 const UserInfoWindow = ({ user, onNavigate }) => (
   <div style={{ margin: "5px" }}>
     <img
-      src={user.photoURL}
+      src={user.photoURL || ProfileImg}
       alt={user.userName}
       style={{ width: "50px", height: "50px", borderRadius: "50%" }}
     />
@@ -69,12 +70,14 @@ const FindMowers = () => {
 
       setMatchingUsers(users);
       console.log(users);
-       setNoMowersFound(users.length === 0); 
+      // setNoMowersFound(users.length === 0);
 
       if (users.length > 0) {
         fetchServiceAreas(zip);
       } else {
         console.log("No users found with the provided zip code.");
+        setNoMowersFound(true);
+        setMapLoaded(true);
       }
     } catch (error) {
       console.log(error.message);
@@ -109,7 +112,7 @@ const FindMowers = () => {
   };
 
   const initMap = () => {
-    setLoading(false)
+    setLoading(false);
     const map = new window.google.maps.Map(document.getElementById("map"), {
       zoom: 11,
       center: latLng,
@@ -222,9 +225,9 @@ const StyledMowers = styled.div`
 
   .loader-container {
     position: absolute;
-    top: 50%; 
-    left: 50%; 
-    transform: translate(-50%, -50%); 
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
   }
 
   h3,

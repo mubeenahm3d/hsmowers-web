@@ -56,9 +56,6 @@ export default function LandingPage() {
       <HeroSection>
         <div className="hero-container">
           {" "}
-          <div className="image-container">
-            <img src={BG} alt="" />
-          </div>
           <div className="card-container">
             <Card
               sx={{
@@ -86,6 +83,9 @@ export default function LandingPage() {
                 </form>
               </CardInfo>
             </Card>
+          </div>
+          <div className="image-container">
+            <img src={BG} alt="" />
           </div>
         </div>
 
@@ -117,6 +117,7 @@ const HeroSection = styled.div`
     position: relative;
 
     .image-container {
+      margin-top: 2rem;
       img {
         width: 100%;
         height: 320px;
@@ -125,17 +126,22 @@ const HeroSection = styled.div`
     }
 
     .card-container {
-      position: absolute;
-      top: 50%;
+      position: static;
+      /* top: 50%;
       left: 50%;
-      transform: translate(-50%, -50%);
+      transform: translate(-50%, -50%); */
       width: 95%;
+      margin: auto;
       min-width: 320px;
       z-index: 10;
     }
 
     @media (min-width: 600px) {
       .card-container {
+        position: absolute;
+        top: 50%;
+        /* left: 50%; */
+        transform: translate(-50%, -50%);
         left: 32%;
         max-width: 400px;
       }
@@ -143,6 +149,10 @@ const HeroSection = styled.div`
 
     @media (min-width: 1024px) {
       .card-container {
+        position: absolute;
+        top: 50%;
+        /* left: 50%; */
+        transform: translate(-50%, -50%);
         left: 22%;
         max-width: 400px;
       }
@@ -169,7 +179,7 @@ const CardInfo = styled(CardContent)`
   form {
     margin-top: 1rem;
     input {
-      width: 200px;
+      width: 195px;
       border-top-right-radius: 0rem;
       border-bottom-right-radius: 0rem;
     }
