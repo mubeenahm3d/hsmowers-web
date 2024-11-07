@@ -178,20 +178,28 @@ const CardInfo = styled(CardContent)`
 
   form {
     margin-top: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 1rem;
     input {
-      width: 200px;
-      border-top-right-radius: 0rem;
-      border-bottom-right-radius: 0rem;
-    }
-    button {
-      border-top-left-radius: 0rem;
-      border-bottom-left-radius: 0rem;
+      width: 300px;
     }
 
     @media (min-width: 640px) {
-      input {
-        width: 220px;
-      }
+
+        display: block;
+        input {
+          width: 220px;
+          border-top-right-radius: 0rem;
+          border-bottom-right-radius: 0rem;
+        }
+        button {
+          border-top-left-radius: 0rem;
+          border-bottom-left-radius: 0rem;
+        }
+      
     }
   }
 `;

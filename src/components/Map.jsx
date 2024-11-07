@@ -70,6 +70,7 @@ const Map = () => {
         zoomControlOptions: {
           position: window.google.maps.ControlPosition.BOTTOM_CENTER,
         },
+        mapTypeControl: false,
       });
 
       const drawingManager = new window.google.maps.drawing.DrawingManager({

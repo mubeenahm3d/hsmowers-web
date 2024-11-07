@@ -127,7 +127,11 @@ export default function ProfilePage() {
                 className="image-container"
                 onMouseEnter={() => userData.uid === uid && setIsHovered(true)}
                 onMouseLeave={() => userData.uid === uid && setIsHovered(false)}
-                onClick={actionModalFunction}
+                onClick={() => {
+                  if (userData.uid === uid) {
+                    actionModalFunction();
+                  }
+                }}
               >
                 <img src={userData.photoURL || ProfileImg} alt="Profile" />
                 {userData.uid === uid && isHovered && (
@@ -206,7 +210,6 @@ export default function ProfilePage() {
 const StyledProfile = styled.div`
   width: 80%;
   margin: var(--section-margin) auto;
-  /* height: var(--section-height); */
   min-height: calc(100vh - 80px);
 
   .loader-container {

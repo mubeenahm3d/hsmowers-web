@@ -25,7 +25,7 @@ const UserInfoWindow = ({ user, onNavigate }) => (
       }}
       onClick={onNavigate}
     >
-      {user.userName}
+      {user.userName || null}
     </p>
     <p>
       {Number(user.grade) === 9
@@ -122,6 +122,7 @@ const FindMowers = () => {
       zoomControlOptions: {
         position: window.google.maps.ControlPosition.TOP_CENTER,
       },
+      mapTypeControl: false,
     });
 
     serviceAreas.forEach((area) => {

@@ -16,6 +16,7 @@ import { getRedirectResult, onAuthStateChanged } from "firebase/auth";
 import { userActions } from "./store/userSlice";
 import { auth, db } from "./authentication/firebase";
 import AuthLoader from "./components/AuthLoader";
+import { useParams } from "react-router";
 import Upgrade from "./pages/Upgrade";
 import {
   collection,
@@ -39,6 +40,7 @@ import ConsentResponse from "./pages/ConsentResponse";
 import ProfilePage from "./pages/ProfilePage";
 import Map from "./components/Map";
 import FindMowers from "./components/FindMowers";
+import Page404 from "./components/Page404";
 
 function App() {
   const [redirectLoading, setRedirectLoading] = useState(true);
@@ -150,7 +152,9 @@ function App() {
     }
   }
 
-  return redirectLoading ? <AuthLoader /> : (
+  return redirectLoading ? (
+    <AuthLoader />
+  ) : (
     <div className="App">
       <AlertBar alertStates={alert} />
       <Routes>
@@ -158,9 +162,10 @@ function App() {
         <Route path="/" element={<LandingPage />} />
         <Route path="/about" element={<About />} />
         <Route path="/select-area" element={<Map />} />
+        <Route path="/page-not-found" element={<Page404 />} />
         <Route path="/find-mowers" element={<FindMowers />} />
         <Route path="/consent-response" element={<ConsentResponse />} />
-        <Route path="/profile-page/:username" element={<ProfilePage />} />
+        <Route path="/profile-page/:username" element={<ProfilePageRoute />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/get-started" element={<GetStarted />} />
@@ -171,9 +176,22 @@ function App() {
         <Route path="/payment-successful" element={<PaymentResponse />} />
         <Route path="/payment-cancelled" element={<PaymentResponse />} />
         <Route path="/subscription-detail" element={<SubscriptionDetail />} />
+
+        <Route path="*" element={<Navigate to="/page-not-found" />} />
       </Routes>
     </div>
   );
+}
+
+
+function ProfilePageRoute() {
+  const { username } = useParams();
+
+  if (!username || username === "undefined") {
+
+    return <Navigate to="/page-not-found" />;
+  }
+  return <ProfilePage username={username} />;
 }
 
 export default App;
