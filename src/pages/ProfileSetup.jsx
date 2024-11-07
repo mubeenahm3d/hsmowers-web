@@ -71,7 +71,7 @@ export default function ProfileSetup() {
     e.preventDefault();
     let photoURL = userInfo?.photoURL;
     try {
-      if (stepNum === 4) {
+      if (stepNum < 4) {
         setStepNum((current) => current + 1);
         return;
       }
