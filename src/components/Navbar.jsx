@@ -209,12 +209,12 @@ export default function Navbar() {
                   <Avatar
                     alt={auth.currentUser.email}
                     src="/broken-image.jpg"
-                    sx={{ marginRight: "5px" }}
+                    sx={{ marginRight: "5px", marginBottom: "0.7rem" }}
                   />
                   {/* <ListItemText primary={auth.currentUser.email} /> */}
                 </Link>
 
-                <h5>{displayName}</h5>
+                <h5 style={{ marginBottom: "0.6rem" }}>{displayName}</h5>
               </MobileUser>
               {/* Avatar and email inside the Drawer for logged-in users */}
 
