@@ -120,9 +120,10 @@ const FindMowers = () => {
       zoom: 11,
       center: latLng,
       zoomControlOptions: {
-        position: window.google.maps.ControlPosition.TOP_CENTER,
+        position: window.google.maps.ControlPosition.BOTTOM_CENTER,
       },
       mapTypeControl: false,
+      fullscreenControl: false,
     });
 
     serviceAreas.forEach((area) => {
