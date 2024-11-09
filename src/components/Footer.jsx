@@ -48,6 +48,15 @@ export default function Footer() {
           </div>
         </div>
       </div>
+
+      <div className="conditions">
+        <Link to="/privacy-policy" className="condition-links">
+          Privacy Policy
+        </Link>
+        <Link to="/terms-of-service" className="condition-links">
+          Terms of Service
+        </Link>
+      </div>
     </StyledFooter>
   );
 }
@@ -172,6 +181,18 @@ const StyledFooter = styled.section`
         max-height: 30px;
         color: var(--primary-color);
       }
+    }
+  }
+
+  .conditions{
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-top: 2rem;
+    .condition-links{
+      color: black;
+      text-decoration: underline;
     }
   }
 `;

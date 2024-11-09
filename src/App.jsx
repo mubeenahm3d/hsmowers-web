@@ -9,6 +9,7 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Home from "./pages/Home";
 // import PrivateRoute from "./authentication/PrivateRoute";
+import { getFunctions, httpsCallable } from "firebase/functions";
 import AlertBar from "./components/modals/AlertBar";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
@@ -28,6 +29,7 @@ import {
   where,
   serverTimestamp,
 } from "firebase/firestore";
+
 import PaymentResponse from "./pages/PaymentResponse";
 import Blogs from "./pages/Blogs";
 import BlogDetail from "./pages/BlogDetail";
@@ -41,6 +43,8 @@ import ProfilePage from "./pages/ProfilePage";
 import Map from "./components/Map";
 import FindMowers from "./components/FindMowers";
 import Page404 from "./components/Page404";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import TermOfService from "./pages/TermOfService";
 
 function App() {
   const [redirectLoading, setRedirectLoading] = useState(true);
@@ -54,6 +58,37 @@ function App() {
     console.log("in user auth");
     redirectURLHandler();
   }, [auth]);
+
+
+ async function sendWelcomeEmailOnLogin(user) {
+   console.log("Sending welcome email to:", user.email);
+
+   try {
+   
+     const response = await fetch(
+       "http://localhost:5001/hs-mowers-cb290/us-central1/sendWelcomeEmailOnLogin",
+       {
+         method: "POST",
+         headers: { "Content-Type": "application/json" },
+         body: JSON.stringify({ email: user.email }),
+       }
+     );
+     const data = await response.json();
+     console.log("Result:", data);
+
+     if (data.success) {
+       console.log("Welcome email sent successfully");
+     } else {
+       console.log("Failed to send email", data.error);
+     }
+   } catch (error) {
+     console.error("Error triggering welcome email:", error);
+   }
+ }
+
+
+
+
 
   const fetchSubscription = async (uid) => {
     const subsRef = collection(db, "customers", uid, "subscriptions");
@@ -140,9 +175,14 @@ function App() {
         let { from } = location.state || { from: { pathname: "/" } };
         navigate(from);
       } else {
-        onAuthStateChanged(auth, async (user) => {
-          console.log("user", user?.uid);
-          user && setUserInfo(user);
+        onAuthStateChanged(auth, (user) => {
+          if (user) {
+            console.log("User is logged in:", user.email); 
+            setUserInfo(user);
+            sendWelcomeEmailOnLogin(user); 
+          } else {
+            console.log("No user logged in");
+          }
         });
       }
     } catch (error) {
@@ -176,7 +216,8 @@ function App() {
         <Route path="/payment-successful" element={<PaymentResponse />} />
         <Route path="/payment-cancelled" element={<PaymentResponse />} />
         <Route path="/subscription-detail" element={<SubscriptionDetail />} />
-
+        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+        <Route path="/terms-of-service" element={<TermOfService/>} />
         <Route path="*" element={<Navigate to="/page-not-found" />} />
       </Routes>
     </div>

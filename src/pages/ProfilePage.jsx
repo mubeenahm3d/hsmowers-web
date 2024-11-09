@@ -5,7 +5,7 @@ import BackdropWrapper from "../components/modals/BackdropWrapper";
 import Footer from "../components/Footer";
 import ProfileImg from "../assets/profilesvg.svg";
 import UploadModal from "../components/modals/UploadModal";
-import { FaCamera } from "react-icons/fa";
+import { FaCamera, FaPhoneAlt } from "react-icons/fa";
 import { useParams } from "react-router";
 import { useSelector } from "react-redux";
 import CircularProgress from "@mui/material/CircularProgress";
@@ -49,9 +49,9 @@ export default function ProfilePage() {
        let fetchedData = {};
 
        querySnapshot.forEach((doc) => {
-         console.log(`${doc.id} =>`, doc.data());
+        //  console.log(`${doc.id} =>`, doc.data());
          fetchedData = doc.data();
-         console.log("fetched Data is:", fetchedData);
+        //  console.log("fetched Data is:", fetchedData);
        });
 
        if (Object.keys(fetchedData).length > 0) {
@@ -158,6 +158,7 @@ export default function ProfilePage() {
               <div className="buttons">
                 {userData.phoneNumber && (
                   <button onClick={shownumberHandle}>
+                    <FaPhoneAlt style={{ marginRight: "5px", marginTop:'2px' }} />
                     {showNumber ? userData.phoneNumber : "Show Number"}
                   </button>
                 )}
