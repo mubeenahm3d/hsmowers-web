@@ -8,15 +8,16 @@ import CloseIcon from "@mui/icons-material/Close";
 import { useSelector, useDispatch } from "react-redux";
 import { userActions } from "../../store/userSlice";
 import { auth, db } from "../../authentication/firebase";
-import { collection, doc, setDoc, serverTimestamp } from "firebase/firestore";
+import { collection, query, where, getDocs } from "firebase/firestore";
 import uploadImg from "../../utils/uploadImg";
 import { updateProfile } from "firebase/auth";
 import { useNavigate } from "react-router";
 import Lottie from "lottie-react";
-import LoaderAnimation from '../../assets/animation.json'
+import LoaderAnimation from "../../assets/animation.json";
 
 export default function ProfileSetupModal({ backdropHandler, heading }) {
   const userInfo = useSelector((state) => state.user.userInfo);
+  const [checkUser, setCheckUser] = useState(false);
   // const currentUser = auth?.currentUser;
 
   const [stepNum, setStepNum] = useState(1);
@@ -58,25 +59,23 @@ export default function ProfileSetupModal({ backdropHandler, heading }) {
         "profilePics"
       );
 
-      
       return photoURL;
     } catch (e) {
       console.log("err while uploading profile pic", e);
     }
   }
 
-  async function submitHandler(e) {
+  const submitHandler = (e) => {
     e.preventDefault();
-    try {
-      if (stepNum < 5) {
-        setStepNum((current) => current + 1);
-        return;
-      }
-    } catch (err) {
-      console.log("error while handling submit", err);
+    if (!checkUser) {
+      alert("Please check username availability before proceeding.");
+      return;
     }
-  }
 
+    if (stepNum < 5) {
+      setStepNum((current) => current + 1);
+    }
+  };
 
   useEffect(() => {
     if (stepNum === 5) {
@@ -106,7 +105,6 @@ export default function ProfileSetupModal({ backdropHandler, heading }) {
     }
   }, [stepNum]);
 
-  
   function backBtnHandler(e) {
     e.preventDefault();
     setStepNum((current) => current - 1);
@@ -115,7 +113,14 @@ export default function ProfileSetupModal({ backdropHandler, heading }) {
   function renderSteps() {
     switch (stepNum) {
       case 1:
-        return <Step1 form={form} onChangeHandler={onChangeHandler} />;
+        return (
+          <Step1
+            form={form}
+            onChangeHandler={onChangeHandler}
+            setCheckUser={setCheckUser}
+            checkUser={checkUser}
+          />
+        );
       case 2:
         return <Step2 form={form} onChangeHandler={onChangeHandler} />;
       case 3:
@@ -125,7 +130,14 @@ export default function ProfileSetupModal({ backdropHandler, heading }) {
       case 5:
         return <Step5 />;
       default:
-        return <Step1 form={form} onChangeHandler={onChangeHandler} />;
+        return (
+          <Step1
+            form={form}
+            onChangeHandler={onChangeHandler}
+            setCheckUser={setCheckUser}
+            checkUser={checkUser}
+          />
+        );
     }
   }
 
@@ -154,6 +166,7 @@ export default function ProfileSetupModal({ backdropHandler, heading }) {
 
               <LoadingButton
                 // loading={submitLoading}
+                disabled={!checkUser}
                 type="submit"
                 title={"Next"}
               />
@@ -171,7 +184,27 @@ export default function ProfileSetupModal({ backdropHandler, heading }) {
   );
 }
 
-function Step1({ form, onChangeHandler }) {
+function Step1({ form, onChangeHandler, setCheckUser, checkUser }) {
+  const [isChecked, setIsChecked] = useState(false);
+
+  const checkAvailabilityHandler = async (e) => {
+    e.preventDefault();
+    setIsChecked(true); 
+    try {
+      const userRef = collection(db, "userInfo");
+      const q = query(userRef, where("userName", "==", form.userName));
+      const querySnapshot = await getDocs(q);
+
+      if (querySnapshot.empty) {
+        setCheckUser(true);
+      } else {
+        setCheckUser(false);
+      }
+    } catch (err) {
+      console.error("Error checking username availability:", err);
+    }
+  };
+
   return (
     <StyledStep>
       <div className="field">
@@ -197,6 +230,7 @@ function Step1({ form, onChangeHandler }) {
           onChange={onChangeHandler}
           required
         />
+        <button onClick={checkAvailabilityHandler}>Check Availability</button>
       </div>
       <div className="field">
         <label htmlFor="phoneNumber">Phone Number</label>
@@ -211,9 +245,13 @@ function Step1({ form, onChangeHandler }) {
           required
         />
       </div>
+      {isChecked && (
+        <p style={{color:'red'}}>{checkUser ? "Username Available" : "Username Not Available"}</p>
+      )}
     </StyledStep>
   );
 }
+
 
 function Step2({ form, onChangeHandler }) {
   const isActive = (service) =>
@@ -372,9 +410,8 @@ function Step4({ form, onChangeHandler }) {
   );
 }
 
-
 function Step5() {
-   const navigate = useNavigate();
+  const navigate = useNavigate();
   useEffect(() => {
     const timer = setTimeout(() => {
       navigate("/login");
@@ -383,9 +420,6 @@ function Step5() {
     return () => clearTimeout(timer);
   }, [navigate]);
 
- 
-  
-
   return (
     <>
       <div
@@ -393,7 +427,7 @@ function Step5() {
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-          flexDirection:'column'
+          flexDirection: "column",
         }}
       >
         <Lottie
@@ -401,12 +435,11 @@ function Step5() {
           loop={true}
           style={{ width: 200, height: 200 }}
         />
-        <p style={{marginBottom: '34px'}}>Creating your account</p>
+        <p style={{ marginBottom: "34px" }}>Creating your account</p>
       </div>
     </>
   );
 }
-
 
 const StyledProfileSetup = styled.section`
   margin-top: var(--section-margin);
@@ -472,7 +505,7 @@ const StyledProfileSetup = styled.section`
 `;
 
 const StyledStep = styled.div`
-  /* min-height: 370px; */
+  min-height: 370px;
   display: flex;
   align-items: center;
   flex-direction: column;

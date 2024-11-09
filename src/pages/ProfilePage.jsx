@@ -66,16 +66,14 @@ export default function ProfilePage() {
 
 
   useEffect(() => {
-    if (
-      userInfo &&
-      Object.keys(userInfo).length > 0 &&
-      username === userInfo.userName
-    ) {
-      setUserData(userInfo);
-      setLoading(false);
+    if (userInfo && username === userInfo.userName) {
+      setTimeout(() => {
+        setUserData(userInfo); 
+        setLoading(false); 
+      }, 2000); 
     } else {
       getData();
-      setLoading(false); 
+      // setLoading(false);
     }
   }, [userInfo]);
 
@@ -320,6 +318,7 @@ const StyledProfile = styled.div`
         img {
           width: 100%;
           height: auto;
+          border-radius: var(--l-radius);
         }
       }
     }

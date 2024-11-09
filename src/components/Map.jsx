@@ -178,6 +178,7 @@ const MapContainer = styled.div`
   .map-container {
     width: 100%;
     height: 500px;
+    border-radius: var(--l-radius);
   }
   .save-area-btn {
     display: flex;

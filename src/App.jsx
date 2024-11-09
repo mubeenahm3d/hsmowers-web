@@ -64,7 +64,6 @@ function App() {
    console.log("Sending welcome email to:", user.email);
 
    try {
-   
      const response = await fetch(
        "http://localhost:5001/hs-mowers-cb290/us-central1/sendWelcomeEmailOnLogin",
        {

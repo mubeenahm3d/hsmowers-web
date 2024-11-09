@@ -5,7 +5,9 @@ import { Avatar } from "@mui/material";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import { collection, doc, setDoc, serverTimestamp } from "firebase/firestore";
+import {
+  serverTimestamp,
+} from "firebase/firestore";
 import { auth, db } from "../authentication/firebase";
 import { useNavigate } from "react-router";
 import LoadingButton from "../components/LoadingButton";
@@ -102,6 +104,8 @@ export default function ProfileSetup() {
       setSubmitLoading(false);
     }
   }
+
+
   function backBtnHandler(e) {
     e.preventDefault();
     setStepNum((current) => current - 1);
@@ -110,7 +114,12 @@ export default function ProfileSetup() {
   function renderSteps() {
     switch (stepNum) {
       case 1:
-        return <Step1 form={form} onChangeHandler={onChangeHandler} />;
+        return (
+          <Step1
+            form={form}
+            onChangeHandler={onChangeHandler}
+          />
+        );
       case 2:
         return <Step2 form={form} onChangeHandler={onChangeHandler} />;
       case 3:
@@ -118,7 +127,12 @@ export default function ProfileSetup() {
       case 4:
         return <Step4 form={form} onChangeHandler={onChangeHandler} />;
       default:
-        return <Step1 form={form} onChangeHandler={onChangeHandler} />;
+        return (
+          <Step1
+            form={form}
+            onChangeHandler={onChangeHandler}
+          />
+        );
     }
   }
 
@@ -159,7 +173,7 @@ export default function ProfileSetup() {
   );
 }
 
-function Step1({ form, onChangeHandler }) {
+function Step1({ form, onChangeHandler}) {
   return (
     <StyledStep>
       <div className="field">
@@ -184,6 +198,8 @@ function Step1({ form, onChangeHandler }) {
           value={form.userName}
           onChange={onChangeHandler}
           required
+          readOnly
+          title="Username cannot be changed"
         />
       </div>
       <div className="field">
@@ -379,6 +395,7 @@ const StyledProfileSetup = styled.section`
     max-width: 650px;
     margin: var(--section-margin) auto;
     border-radius: var(--l-radius);
+    
     padding: 30px;
     h4 {
       margin-bottom: 20px;

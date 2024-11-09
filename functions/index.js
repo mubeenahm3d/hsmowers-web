@@ -1,9 +1,8 @@
 const functions = require("firebase-functions");
 const admin = require("firebase-admin");
-const {Resend} = require("resend"); 
+const { Resend } = require("resend");
 
 admin.initializeApp();
-
 
 const resendClient = new Resend("re_awpTm59S_41WKFGVtUMnbno5gXH4zpUEY");
 
@@ -28,5 +27,3 @@ exports.sendWelcomeEmailOnLogin = functions.https.onRequest(
     }
   }
 );
-
-

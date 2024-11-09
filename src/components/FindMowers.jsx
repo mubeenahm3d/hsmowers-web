@@ -4,6 +4,7 @@ import { useSearchParams } from "react-router-dom";
 import { db } from "../authentication/firebase";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import ProfileImg from "../assets/profilesvg.svg";
+import axios from "axios"; 
 import Navbar from "./Navbar";
 import Footer from "./Footer";
 import { useNavigate } from "react-router-dom";
@@ -51,6 +52,7 @@ const FindMowers = () => {
   const [searchParams] = useSearchParams();
   const [noMowersFound, setNoMowersFound] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [searchInput, setSearchInput] = useState(""); 
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -60,6 +62,32 @@ const FindMowers = () => {
       fetchMatchingUsers(zip);
     }
   }, [searchParams]);
+
+
+  const isZipCode = (input) => /^[0-9]{5}$/.test(input);
+
+
+  const geocodeLocationToZipCode = async (location) => {
+    try {
+      const response = await axios.get(
+        `https://maps.googleapis.com/maps/api/geocode/json`,
+        {
+          params: {
+            address: location,
+            key: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
+          },
+        }
+      );
+      const zipComponent = response.data.results[0].address_components.find(
+        (component) => component.types.includes("postal_code")
+      );
+      return zipComponent ? zipComponent.long_name : null;
+    } catch (error) {
+      console.log("Error geocoding location:", error);
+      return null;
+    }
+  };
+
 
   const fetchMatchingUsers = async (zip) => {
     try {
@@ -193,6 +221,25 @@ const FindMowers = () => {
   const userName = localStorage.getItem("location");
   const displayLocation = userName || zipCode;
 
+
+  const handleSearch = async () => {
+    let zip = "";
+    if (isZipCode(searchInput)) {
+      zip = searchInput;
+    } else {
+      const locationZipCode = await geocodeLocationToZipCode(searchInput);
+      if (locationZipCode) {
+        zip = locationZipCode;
+      } else {
+        console.log("Invalid location.");
+        return;
+      }
+    }
+    setZipCode(zip);
+    fetchMatchingUsers(zip);
+  };
+
+
   return (
     <>
       <Navbar />
@@ -201,27 +248,35 @@ const FindMowers = () => {
         <h4>{displayLocation}</h4>
       </Heading>
 
-      <StyledMowers>
-       
-          {loading && (
-            <div className="loader-container">
-              <CircularProgress
-                style={{ color: "var(--primary-color)" }}
-                size={30}
-              />
-            </div>
-          )}
+      <Search>
+        <input
+          type="text"
+          placeholder="Enter Zip Code or Address"
+          value={searchInput}
+          onChange={(e) => setSearchInput(e.target.value)}
+        />
+        <button onClick={handleSearch}>Search</button>
+      </Search>
 
-          {!loading && noMowersFound ? (
-            <p>No mowers found in this area.</p>
-          ) : (
-            <div
-              id="map"
-              className="mower-map"
-              style={{ display: loading ? "none" : "block" }}
+      <StyledMowers>
+        {loading && (
+          <div className="loader-container">
+            <CircularProgress
+              style={{ color: "var(--primary-color)" }}
+              size={30}
             />
-          )}
-      
+          </div>
+        )}
+
+        {!loading && noMowersFound ? (
+          <p>No mowers found in this area.</p>
+        ) : (
+          <div
+            id="map"
+            className="mower-map"
+            style={{ display: loading ? "none" : "block" }}
+          />
+        )}
       </StyledMowers>
 
       <Footer />
@@ -255,6 +310,7 @@ const StyledMowers = styled.div`
     margin-top: 3rem;
     width: 100%;
     height: 500px;
+    border-radius: var(--l-radius);
   }
 `;
 
@@ -264,4 +320,19 @@ const Heading = styled.div`
   align-items: center;
   flex-direction: column;
   margin-top: 2rem;
+`;
+
+const Search = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 16px;
+  input {
+    border-top-right-radius: 0rem;
+    border-bottom-right-radius: 0rem;
+  }
+  button {
+    border-top-left-radius: 0rem;
+    border-bottom-left-radius: 0rem;
+  }
 `;
