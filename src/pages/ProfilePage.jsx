@@ -158,8 +158,10 @@ export default function ProfilePage() {
               <div className="buttons">
                 {userData.phoneNumber && (
                   <button onClick={shownumberHandle}>
-                    <FaPhoneAlt style={{ marginRight: "5px", marginTop:'2px' }} />
-                    {showNumber ? userData.phoneNumber : "Show Number"}
+                    <FaPhoneAlt
+                      style={{ marginRight: "5px" }}
+                    />
+                    {showNumber ? `+1 ${userData.phoneNumber}` : "Show Number"}
                   </button>
                 )}
               </div>
