@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios"; 
 
 export default function LandingPage() {
-   const [location, setLocation] = useState("");
+  const [location, setLocation] = useState("");
   const navigate = useNavigate();
 
   const handleFindMower = async (e) => {
@@ -108,6 +108,7 @@ export default function LandingPage() {
     </>
   );
 }
+
 
 const HeroSection = styled.div`
   min-height: var(--section-height);

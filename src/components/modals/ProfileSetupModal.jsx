@@ -27,6 +27,7 @@ export default function ProfileSetupModal({ backdropHandler, heading }) {
     userName: userInfo?.userName || "",
     phoneNumber: userInfo?.phoneNumber || "",
     zipCode: userInfo?.zipCode || "",
+    address: userInfo?.address || "",
     grade: userInfo?.grade || 9,
     description: userInfo?.description || "",
     schoolName: userInfo?.schoolName || "",
@@ -402,6 +403,19 @@ function Step4({ form, onChangeHandler }) {
           onChange={(e) =>
             onChangeHandler({
               target: { name: "zipCode", value: e.target.value },
+            })
+          }
+        />
+
+        <label htmlFor="fullName">Enter Your Address</label>
+        <input
+          type="text"
+          placeholder="Enter Address"
+          required
+          value={form.address}
+          onChange={(e) =>
+            onChangeHandler({
+              target: { name: "address", value: e.target.value },
             })
           }
         />
