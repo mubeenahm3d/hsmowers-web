@@ -18,7 +18,7 @@ const PricingCard = ({ priceInfo, subscription }) => {
   });
 
   const navigate = useNavigate();
-
+  
   const upgradeHandler = async () => {
     const uid = auth.currentUser?.uid;
     if (!uid) {

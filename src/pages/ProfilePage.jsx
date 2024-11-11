@@ -13,6 +13,7 @@ import { collection, query, where, getDocs } from "firebase/firestore";
 import { db } from "../authentication/firebase";
 import { auth } from "../authentication/firebase";
 import { useNavigate } from "react-router-dom";
+import ActionModal from '../components/modals/ActionModal'
 
 export default function ProfilePage() {
   const userInfo = useSelector((state) => state.user.userInfo);
@@ -22,6 +23,11 @@ export default function ProfilePage() {
   const [showNumber, setShowNumber] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const [loading, setLoading] = useState(true);
+  // const [actionModal, setActionModal] = useState(false);
+  const [uploadModal, setUploadModal] = useState(false);
+  const [upgradeModal, setUpgradeModal] = useState(false);
+  const [isSubscribed, setIsSubscribed] = useState(false);
+
 
   const { username } = useParams();
   const navigate = useNavigate();
@@ -30,7 +36,7 @@ export default function ProfilePage() {
     setShowNumber((prev) => !prev);
   };
 
-  const [uploadModal, setUploadModal] = useState(false);
+  
 
   const backdropHandler = () => {
     setUploadModal((current) => !current);
@@ -39,6 +45,29 @@ export default function ProfilePage() {
   const actionModalFunction = () => {
     backdropHandler();
   };
+
+
+  const checkSubscription = async (email) => {
+    const customerRef = collection(db, "customers");
+    const q = query(customerRef, where("email", "==", email));
+
+    try {
+      const querySnapshot = await getDocs(q);
+      if (!querySnapshot.empty) {
+        
+        console.log("User is subscribed.");
+        return true;
+      } else {
+        
+        console.log("User is not subscribed.");
+        return false;
+      }
+    } catch (error) {
+      console.error("Error checking subscription status:", error);
+      return false;
+    }
+  };
+
 
    const getData = async () => {
      const collectionRef = collection(db, "userInfo");
@@ -56,6 +85,14 @@ export default function ProfilePage() {
 
        if (Object.keys(fetchedData).length > 0) {
          setUserData(fetchedData);
+
+        const isSubscribed = await checkSubscription(fetchedData.email);
+        setIsSubscribed(isSubscribed); 
+        setUserData((prevData) => ({ ...prevData, isSubscribed }));
+
+        if (!isSubscribed) {
+          setTimeout(() => setUpgradeModal(true), 7000);
+        }
        }
      } catch (error) {
        console.error("Error fetching documents: ", error);
@@ -95,9 +132,40 @@ export default function ProfilePage() {
   const serviceAreaPath = userData.serviceArea?.path || [];
   const mapUrl = generateMapUrl(serviceAreaPath);
 
+
+   const actionModalfunc = () => {
+     backdropHandlerUpgrade();
+     navigate("/upgrade");
+   };
+
+   const upgradeHandle = () => {
+    navigate("/upgrade");
+   }
+
+   const backdropHandlerUpgrade = () => {
+     setUpgradeModal((current) => !current);
+   };
+
+
   return (
     <>
       <Navbar />
+
+      <BackdropWrapper
+        open={upgradeModal}
+        smallSize={true}
+        backdropHandler={backdropHandlerUpgrade}
+        element={
+          <ActionModal
+            heading={"Publish Profile"}
+            msg={"Make your profile public and start getting customers."}
+            backdropHandler={backdropHandlerUpgrade}
+            buttonName={"Publish"}
+            action={actionModalfunc}
+          />
+        }
+      />
+
       <StyledProfile>
         {loading ? (
           <div className="loader-container">
@@ -154,11 +222,14 @@ export default function ProfilePage() {
               </div>
 
               <div className="buttons">
+                {!isSubscribed && (
+                  <button onClick={upgradeHandle} className="upgrade-btn">
+                    Upgrade
+                  </button>
+                )}
                 {userData.phoneNumber && (
                   <button onClick={shownumberHandle}>
-                    <FaPhoneAlt
-                      style={{ marginRight: "5px" }}
-                    />
+                    <FaPhoneAlt style={{ marginRight: "5px" }} />
                     {showNumber ? `+1 ${userData.phoneNumber}` : "Show Number"}
                   </button>
                 )}
@@ -282,6 +353,14 @@ const StyledProfile = styled.div`
       min-width: 180px;
       max-width: 180px;
       white-space: nowrap;
+      background: transparent;
+      border: 2px solid var(--primary-color);
+      color: var(--primary-color);
+    }
+
+    .upgrade-btn {
+      background-color: var(--primary-color);
+      color: white;
     }
   }
 
@@ -312,6 +391,11 @@ const StyledProfile = styled.div`
         align-items: center;
         gap: 1rem;
         flex-wrap: wrap;
+        button {
+          background: transparent;
+          border: 2px solid var(--primary-color);
+          color: var(--primary-color);
+        }
       }
       .service-area-map {
         margin-top: 3rem;

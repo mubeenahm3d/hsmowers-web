@@ -60,6 +60,7 @@ function App() {
   }, [auth]);
 
 
+
  async function sendWelcomeEmailOnLogin(user) {
    console.log("Sending welcome email to:", user.email);
 
