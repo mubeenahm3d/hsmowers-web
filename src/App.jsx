@@ -178,7 +178,7 @@ function App() {
           if (user) {
             console.log("User is logged in:", user.email); 
             setUserInfo(user);
-            sendWelcomeEmailOnLogin(user); 
+            // sendWelcomeEmailOnLogin(user); 
           } else {
             console.log("No user logged in");
           }
