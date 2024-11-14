@@ -126,6 +126,7 @@ const FindMowers = () => {
 
 
 
+
   useEffect(() => {
     const zip = searchParams.get("zip");
     if (zip) {
@@ -223,13 +224,20 @@ const FindMowers = () => {
   const initMap = () => {
     setLoading(false);
 
-   
     const mapElement = document.getElementById("map");
     if (!mapElement) return;
 
+    const defaultLatLng = { lat: 40.7128, lng: -74.006 }; 
+
+
+    const centerLatLng =
+      matchingUsers.length > 0
+        ? calculatePolygonCentroid(matchingUsers[0].serviceArea.path) 
+        : defaultLatLng;
+
     const map = new window.google.maps.Map(mapElement, {
       zoom: 14,
-      center: latLng,
+      center: centerLatLng,
       zoomControlOptions: {
         position: window.google.maps.ControlPosition.BOTTOM_CENTER,
       },
@@ -254,7 +262,7 @@ const FindMowers = () => {
     matchingUsers.forEach((user, index) => {
       const centroid = user.serviceArea?.path
         ? calculatePolygonCentroid(user.serviceArea.path)
-        : latLng;
+        : centerLatLng; 
 
       const marker = new window.google.maps.Marker({
         position: centroid,
@@ -296,8 +304,6 @@ const FindMowers = () => {
   };
 
 
-
-
   useEffect(() => {
     if (mapLoaded && googleMapsLoaded) {
       initMap();
@@ -320,27 +326,32 @@ const FindMowers = () => {
   // const displayLocation = userName || zipCode;
 
 
-  const handleSearch = async () => {
-    setLoading(true);
-    let zip = "";
-    if (isZipCode(searchInput)) {
-      zip = searchInput;
-    } else {
-      const locationZipCode = await geocodeLocationToZipCode(searchInput);
-      if (locationZipCode) {
-        zip = locationZipCode;
-      } else {
-        console.log("Invalid location.");
-        setLoading(false);
-        return;
-      }
-    }
-    setZipCode(zip);
-    navigate(`?zipcode=${zip}`);
-    setDisplaylocation(zip);
-    await fetchMatchingUsers(zip);
-    setLoading(false);
-  };
+ const handleSearch = async () => {
+   setLoading(true);
+   let zip = "";
+   let displayLocation = searchInput; 
+
+
+   if (isZipCode(searchInput)) {
+     zip = searchInput; 
+   } else {
+  
+     const locationZipCode = await geocodeLocationToZipCode(searchInput);
+     if (locationZipCode) {
+       zip = locationZipCode;
+       displayLocation = searchInput; 
+       console.log("Invalid location.");
+       setLoading(false);
+       return;
+     }
+   }
+   setDisplaylocation(displayLocation);
+   setZipCode(zip);
+   navigate(`?zipcode=${zip}`); 
+  
+   await fetchMatchingUsers(zip);
+   setLoading(false);
+ };
 
 
   useEffect(() => {
@@ -403,15 +414,17 @@ const FindMowers = () => {
           </div>
         )}
 
-        {!loading && noMowersFound ? (
-          <p>No mowers found in this area.</p>
-        ) : (
-          <div
-            id="map"
-            className="mower-map"
-            style={{ display: loading ? "none" : "block" }}
-          />
+        {!loading && noMowersFound && (
+          <div className="no-mowers-message">
+            <p>No mowers found in this area.</p>
+          </div>
         )}
+
+        <div
+          id="map"
+          className="mower-map"
+          style={{ display: loading ? "none" : "block" }}
+        />
       </StyledMowers>
 
       <Footer />

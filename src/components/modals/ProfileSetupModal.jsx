@@ -53,32 +53,38 @@ export default function ProfileSetupModal({ backdropHandler, heading }) {
     }
   }, [userInfo]);
 
-  async function fetchZipCodeFromAddress(address) {
-    const apiKey = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
-    const apiUrl = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
-      address
-    )}&key=${apiKey}`;
+async function fetchZipCodeFromAddress(address) {
+  const apiKey = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
+  const apiUrl = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
+    address
+  )}&key=${apiKey}`;
 
-    try {
-      const response = await fetch(apiUrl);
-      const data = await response.json();
+  try {
+    const response = await fetch(apiUrl);
+    const data = await response.json();
 
-      if (data.status === "OK") {
-        const result = data.results[0];
-        const zipCode = result.address_components.find((component) =>
-          component.types.includes("postal_code")
-        )?.long_name;
+    if (data.status === "OK") {
+      const result = data.results[0];
+      console.log("Full result:", result);
 
-        return zipCode || "";
-      } else {
-        console.error("Geocoding API error:", data.status);
-        return "";
-      }
-    } catch (error) {
-      console.error("Error fetching zip code:", error);
+      const addressComponents = result.address_components;
+      console.log("Address components:", addressComponents);
+
+      const zipCode = addressComponents.find((component) =>
+        component.types.includes("postal_code")
+      )?.long_name;
+
+      console.log("Converted zip code:", zipCode);
+      return zipCode || "";
+    } else {
+      console.error("Geocoding API error:", data.status);
       return "";
     }
+  } catch (error) {
+    console.error("Error fetching zip code:", error);
+    return "";
   }
+}
 
   function onChangeHandler(e) {
     setForm((current) => ({ ...current, [e.target.name]: e.target.value }));
@@ -116,6 +122,7 @@ export default function ProfileSetupModal({ backdropHandler, heading }) {
     if (stepNum < 5) {
       if (stepNum === 4) {
         const zipCode = await fetchZipCodeFromAddress(form.address);
+        console.log("zipCode",zipCode);
         setForm((prev) => ({ ...prev, zipCode }));
       }
       setStepNum((current) => current + 1);
@@ -182,7 +189,7 @@ export default function ProfileSetupModal({ backdropHandler, heading }) {
           <Step1
             form={form}
             onChangeHandler={onChangeHandler}
-            userNameErrorMessage={userNameErrorMessage}
+            
           />
         );
       case 2:
@@ -198,7 +205,7 @@ export default function ProfileSetupModal({ backdropHandler, heading }) {
           <Step1
             form={form}
             onChangeHandler={onChangeHandler}
-            userNameErrorMessage={userNameErrorMessage}
+            
           />
         );
     }
@@ -219,27 +226,29 @@ export default function ProfileSetupModal({ backdropHandler, heading }) {
           <form onSubmit={submitHandler}>
             {renderSteps()}
             <div className="btns">
-              <button
-                disabled={stepNum === 1}
-                onClick={backBtnHandler}
-                className="back-btn"
-              >
-                <ArrowBackIcon fontSize="small" /> Back
-              </button>
-
-              <LoadingButton
-                // disabled={ !form.userName}
-                type="submit"
-                title={"Next"}
-              />
+              {stepNum !== 5 && (
+                <>
+                  <button
+                    disabled={stepNum === 1}
+                    onClick={backBtnHandler}
+                    className="back-btn"
+                  >
+                    <ArrowBackIcon fontSize="small" /> Back
+                  </button>
+                  <LoadingButton type="submit" title={"Next"} />
+                </>
+              )}
             </div>
           </form>
+
+          {error && <p style={{ color: "red" }}>{error}</p>}
 
           <div className="progress">
             <div className={`step ${stepNum > 0 ? "active" : ""}`} />
             <div className={`step ${stepNum > 1 ? "active" : ""}`} />
             <div className={`step ${stepNum > 2 ? "active" : ""}`} />
             <div className={`step ${stepNum > 3 ? "active" : ""}`} />
+            <div className={`step ${stepNum > 4 ? "active" : ""}`} />
           </div>
         </div>
       </StyledProfileSetup>
@@ -247,7 +256,7 @@ export default function ProfileSetupModal({ backdropHandler, heading }) {
   );
 }
 
-function Step1({ form, onChangeHandler, userNameErrorMessage }) {
+function Step1({ form, onChangeHandler }) {
   return (
     <StyledStep>
       <div className="field">
@@ -287,10 +296,6 @@ function Step1({ form, onChangeHandler, userNameErrorMessage }) {
           required
         />
       </div>
-
-      {userNameErrorMessage && (
-        <p style={{ color: "red" }}>{userNameErrorMessage}</p>
-      )}
     </StyledStep>
   );
 }
@@ -679,7 +684,7 @@ const StyledProfileSetup = styled.section`
 `;
 
 const StyledStep = styled.div`
-  min-height: 370px;
+  /* min-height: 370px; */
   display: flex;
   align-items: center;
   flex-direction: column;
