@@ -149,7 +149,7 @@ export default function Navbar() {
                     size={20}
                     sx={{
                       color: "var(--primary-color)",
-                      marginLeft:'2px'
+                      marginLeft:'6px'
                     }}
                   />
                 )}
