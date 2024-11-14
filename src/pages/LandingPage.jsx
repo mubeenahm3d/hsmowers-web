@@ -84,7 +84,7 @@ export default function LandingPage() {
                   Find your next <span>Mower</span>
                 </h3>
                 <p>
-                  No Ads. No SignUp. Support local students & get a gear looking
+                  No Ads. No SignUp. Support local students & get a great looking
                   lawn
                 </p>
 
@@ -108,7 +108,7 @@ export default function LandingPage() {
 
         <About>
           <p>
-            Local Students everywhere are looking for summer jobs. Help them
+            Local Students everywhere are looking for jobs. Help them
             achieve their dreams.
             <br />
             <br />
