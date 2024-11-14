@@ -9,9 +9,8 @@ import { useNavigate } from "react-router-dom";
 
 export default function LandingPage() {
   const [location, setLocation] = useState("");
-  const inputRef = useRef(null); 
+  const inputRef = useRef(null);
   const navigate = useNavigate();
-
 
   useEffect(() => {
     const loadGoogleMapsScript = () => {
@@ -19,7 +18,7 @@ export default function LandingPage() {
       script.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}&libraries=places`;
       script.async = true;
       script.defer = true;
-      script.onload = () => initAutocomplete(); 
+      script.onload = () => initAutocomplete();
       document.body.appendChild(script);
     };
 
@@ -41,17 +40,17 @@ export default function LandingPage() {
             );
 
             if (zipCode) {
-              setLocation(zipCode.long_name);
-              navigate(`/find-mowers?zip=${zipCode.long_name}`);
+              setLocation(zipCode.long_name); 
+              navigate(`/find-mowers?zip=${zipCode.long_name}`); 
             } else {
-              console.log("No ZIP Code found for this address.");
+              setLocation(place.formatted_address); 
+              navigate(`/find-mowers?zip=${place.formatted_address}`); 
             }
           }
         });
       }
     };
 
-   
     if (!window.google) {
       loadGoogleMapsScript();
     } else {
@@ -84,8 +83,8 @@ export default function LandingPage() {
                   Find your next <span>Mower</span>
                 </h3>
                 <p>
-                  No Ads. No SignUp. Support local students & get a great looking
-                  lawn
+                  No Ads. No SignUp. Support local students & get a great
+                  looking lawn
                 </p>
 
                 <form onSubmit={handleFindMower}>
@@ -93,8 +92,8 @@ export default function LandingPage() {
                     type="text"
                     ref={inputRef}
                     placeholder="Enter Zip Code or Address"
-                    value={location}
-                    onChange={(e) => setLocation(e.target.value)}
+                    value={location} // Controlled input
+                    onChange={(e) => setLocation(e.target.value)} // Update location state as user types
                   />
                   <button type="submit">Find a Mower</button>
                 </form>
@@ -108,8 +107,8 @@ export default function LandingPage() {
 
         <About>
           <p>
-            Local Students everywhere are looking for jobs. Help them
-            achieve their dreams.
+            Local Students everywhere are looking for jobs. Help them achieve
+            their dreams.
             <br />
             <br />
             HighSchoolMowers.com curates top student mowers, with no cost to you
