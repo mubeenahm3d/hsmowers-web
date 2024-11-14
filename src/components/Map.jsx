@@ -32,7 +32,7 @@ const Map = () => {
       dispatch(userActions.setUserInfo(updatedUserInfo));
 
       console.log("Service area saved successfully.");
-      navigate(`/profile-page/${userInfo.userName}`);
+      navigate(`/p/${userInfo.userName}`);
 
     } catch (error) {
       console.error("Error saving service area:", error);

@@ -120,12 +120,12 @@ export default function Login() {
         <div className="register-form">
           <div className="heading">
             <h3>Login</h3>
-            <p>
+            {/* <p>
               Don't have an account?{"  "}
               <Link className="link" to="/signup" state={{ from }}>
                 Signup
               </Link>
-            </p>
+            </p> */}
           </div>
           <form onSubmit={submitHandler}>
             <input

@@ -1,9 +1,10 @@
 import React from 'react'
 import styled from "styled-components";
 import logo from "../assets/MowerLogo.png";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function LandingMenu() {
+  const navigate = useNavigate()
 
   return (
     <>
@@ -13,12 +14,15 @@ export default function LandingMenu() {
             <img src={logo} alt="" />
             <h2>HighSchoolMowers</h2>
           </div>
-          <Link
-            to="/get-started"
-            style={{ textDecoration: "underline" }}
-          >
-            Student? Signup!
-          </Link>
+
+          <div className='links'>
+            <Link to="/get-started" style={{ textDecoration: "underline" }}>
+              Student? Signup!
+            </Link>
+            <button className="green-btn" onClick={()=> {
+              navigate('/login')
+            }}>Login</button>
+          </div>
         </div>
       </StyledNavbar>
     </>
@@ -38,6 +42,13 @@ const StyledNavbar = styled.div`
     flex-wrap: wrap;
     gap: 1rem;
 
+    .links{
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    } 
     .image-container {
       display: flex;
       justify-content: space-between;

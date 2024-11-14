@@ -139,7 +139,7 @@ export default function Navbar() {
               transformOrigin={{ vertical: "top", horizontal: "right" }}
               disableScrollLock
             >
-              <Link to={`/profile-page/${userInfo.userName}`}>
+              <Link to={`/p/${userInfo.userName}`}>
                 <MenuItem onClick={handleMenuClose}>Profile Page</MenuItem>
               </Link>{" "}
               <Link to="/profile-setup">
@@ -205,7 +205,7 @@ export default function Navbar() {
           {auth.currentUser ? (
             <>
               <MobileUser>
-                <Link to={`/profile-page/${userInfo.userName}`}>
+                <Link to={`/p/${userInfo.userName}`}>
                   <Avatar
                     alt={auth.currentUser.email}
                     src="/broken-image.jpg"

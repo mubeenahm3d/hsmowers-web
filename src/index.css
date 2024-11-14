@@ -196,7 +196,7 @@ a {
   cursor: pointer;
 }
 select {
-  border-radius: var(--m-radius);
+  border-radius: var(--s-radius);
   padding: 10px 14px;
 }
 li {
@@ -241,4 +241,10 @@ svg:hover {
   button {
     height: 42px;
   }
+}
+
+.green-btn{
+  background: transparent;
+    border: 2px solid var(--primary-color);
+    color: var(--primary-color);
 }

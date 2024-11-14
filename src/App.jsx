@@ -45,6 +45,9 @@ import FindMowers from "./components/FindMowers";
 import Page404 from "./components/Page404";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermOfService from "./pages/TermOfService";
+import firebaseApi from "./utils/firebaseApi";
+import WelcomeEmail from "./utils/WelcomeEmail";
+import { fetchSubscription } from "./utils/fetchSubscription";
 
 function App() {
   const [redirectLoading, setRedirectLoading] = useState(true);
@@ -61,60 +64,56 @@ function App() {
 
 
 
- async function sendWelcomeEmailOnLogin(user) {
-   console.log("Sending welcome email to:", user.email);
+//  async function sendWelcomeEmailOnLogin(user) {
+//    console.log("Sending welcome email to:", user.email);
 
-   try {
-     const response = await fetch(
-       "http://localhost:5001/hs-mowers-cb290/us-central1/sendWelcomeEmailOnLogin",
-       {
-         method: "POST",
-         headers: { "Content-Type": "application/json" },
-         body: JSON.stringify({ email: user.email }),
-       }
-     );
-     const data = await response.json();
-     console.log("Result:", data);
+//    try {
+//      const response = await firebaseApi.post("/sendWelcomeEmailOnLogin", {
+//        email: user.email,
+//      });
+//      const data = response.data; 
+//      console.log("Result:", data);
 
-     if (data.success) {
-       console.log("Welcome email sent successfully");
-     } else {
-       console.log("Failed to send email", data.error);
-     }
-   } catch (error) {
-     console.error("Error triggering welcome email:", error);
-   }
- }
+//      if (data.success) {
+//        console.log("Welcome email sent successfully");
+//      } else {
+//        console.log("Failed to send email", data.error);
+//      }
+//    } catch (error) {
+//      console.error("Error triggering welcome email:", error);
+//    }
+//  }
 
 
 
 
 
-  const fetchSubscription = async (uid) => {
-    const subsRef = collection(db, "customers", uid, "subscriptions");
-    const subsQuery = query(
-      subsRef,
-      where("status", "in", ["trialing", "active", "past_due", "unpaid"])
-    );
-    try {
-      const subscriptionDocs = await getDocs(subsQuery);
-      if (subscriptionDocs.docs.length > 0) {
-        let endDate;
-        let subscription;
-        subscriptionDocs.docs?.forEach((doc, index) => {
-          console.log("doc", index, doc.data());
-          if (!endDate || endDate < doc.data().current_period_end) {
-            endDate = doc.data().current_period_end;
-            subscription = doc.data();
-          }
-        });
-        console.log("subscriptions", subscription);
-        return subscription;
-      }
-    } catch (e) {
-      console.log("error fetching subscription", e);
-    }
-  };
+
+  // const fetchSubscription = async (uid) => {
+  //   const subsRef = collection(db, "customers", uid, "subscriptions");
+  //   const subsQuery = query(
+  //     subsRef,
+  //     where("status", "in", ["trialing", "active", "past_due", "unpaid"])
+  //   );
+  //   try {
+  //     const subscriptionDocs = await getDocs(subsQuery);
+  //     if (subscriptionDocs.docs.length > 0) {
+  //       let endDate;
+  //       let subscription;
+  //       subscriptionDocs.docs?.forEach((doc, index) => {
+  //         console.log("doc", index, doc.data());
+  //         if (!endDate || endDate < doc.data().current_period_end) {
+  //           endDate = doc.data().current_period_end;
+  //           subscription = doc.data();
+  //         }
+  //       });
+  //       console.log("subscriptions", subscription);
+  //       return subscription;
+  //     }
+  //   } catch (e) {
+  //     console.log("error fetching subscription", e);
+  //   }
+  // };
 
   const fetchUserInfo = async (uid) => {
     try {
@@ -180,6 +179,10 @@ function App() {
             console.log("User is logged in:", user.email); 
             setUserInfo(user);
             // sendWelcomeEmailOnLogin(user); 
+<<<<<<< Updated upstream
+=======
+            WelcomeEmail(user);
+>>>>>>> Stashed changes
           } else {
             console.log("No user logged in");
           }
@@ -205,7 +208,7 @@ function App() {
         <Route path="/page-not-found" element={<Page404 />} />
         <Route path="/find-mowers" element={<FindMowers />} />
         <Route path="/consent-response" element={<ConsentResponse />} />
-        <Route path="/profile-page/:username" element={<ProfilePageRoute />} />
+        <Route path="/p/:username" element={<ProfilePageRoute />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/get-started" element={<GetStarted />} />

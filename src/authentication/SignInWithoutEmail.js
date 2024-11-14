@@ -16,14 +16,14 @@ export default function SignInWithoutEmail() {
   // const location = useLocation();
   // let { from } = location.state || { from: { pathname: "/dashboard" } };
 
-  const signInHandler = async (provider) => {
-    try {
-      // localStorage.setItem("routePath", from.pathname);
-      await signInWithRedirect(auth, provider);
-    } catch (e) {
-      console.log("error while redirecting", e);
-    }
-  };
+  // const signInHandler = async (provider) => {
+  //   try {
+  //     // localStorage.setItem("routePath", from.pathname);
+  //     await signInWithRedirect(auth, provider);
+  //   } catch (e) {
+  //     console.log("error while redirecting", e);
+  //   }
+  // };
 
   return (
     <StyledSignIn>
@@ -33,7 +33,7 @@ export default function SignInWithoutEmail() {
         <div />
       </div>
       <button
-        onClick={() => signInHandler(googleProvider)}
+        // onClick={() => signInHandler(googleProvider)}
         className="google-button google-btn-gtag"
       >
         <FcGoogle /> Continue with Google

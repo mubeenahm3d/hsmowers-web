@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import styled from "styled-components";
 import { useSearchParams } from "react-router-dom";
 import { db } from "../authentication/firebase";
@@ -10,6 +10,28 @@ import Footer from "./Footer";
 import { useNavigate } from "react-router-dom";
 import { createRoot } from "react-dom/client";
 import CircularProgress from "@mui/material/CircularProgress";
+import { fetchSubscription } from "../utils/fetchSubscription";
+import ServiceRequestModal from "./modals/ServiceRequestModal";
+import BackdropWrapper from "./modals/BackdropWrapper";
+
+
+const calculatePolygonCentroid = (path) => {
+  if (!path || path.length === 0) return null;
+
+  let x = 0;
+  let y = 0;
+  const numPoints = path.length;
+
+  path.forEach((point) => {
+    x += point.lat;
+    y += point.lng;
+  });
+
+  return {
+    lat: x / numPoints,
+    lng: y / numPoints,
+  };
+};
 
 const UserInfoWindow = ({ user, onNavigate }) => (
   <div style={{ margin: "5px" }}>
@@ -53,7 +75,52 @@ const FindMowers = () => {
   const [noMowersFound, setNoMowersFound] = useState(false);
   const [loading, setLoading] = useState(true);
   const [searchInput, setSearchInput] = useState(""); 
-  const navigate = useNavigate();
+  const [requestModal, setRequestModal] = useState(false);
+  const navigate = useNavigate(); 
+  const inputRef = useRef(null); 
+
+
+   useEffect(() => {
+    const loadGoogleMapsScript = () => {
+      const script = document.createElement("script");
+      script.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}&libraries=places`;
+      script.async = true;
+      script.defer = true;
+      script.onload = () => setGoogleMapsLoaded(true);
+      document.body.appendChild(script);
+    };
+
+    if (!window.google) {
+      loadGoogleMapsScript();
+    } else {
+      setGoogleMapsLoaded(true);
+    }
+  }, []);
+
+
+  useEffect(() => {
+    if (googleMapsLoaded && inputRef.current) {
+      const autocomplete = new window.google.maps.places.Autocomplete(
+        inputRef.current
+      );
+      autocomplete.setFields(["address_components", "geometry"]);
+
+      autocomplete.addListener("place_changed", () => {
+        const place = autocomplete.getPlace();
+        if (place.geometry) {
+          const zipComponent = place.address_components.find((component) =>
+            component.types.includes("postal_code")
+          );
+          if (zipComponent) {
+            setZipCode(zipComponent.long_name);
+            fetchMatchingUsers(zipComponent.long_name);
+          }
+        }
+      });
+    }
+  }, [googleMapsLoaded]);
+
+
 
   useEffect(() => {
     const zip = searchParams.get("zip");
@@ -96,38 +163,44 @@ const FindMowers = () => {
       const querySnapshot = await getDocs(q);
       const users = [];
 
-      querySnapshot.forEach((doc) => {
-        users.push({ id: doc.id, ...doc.data() });
-      });
+      for (const doc of querySnapshot.docs) {
+        const userData = doc.data();
+        const userSubscription = await fetchSubscription(doc.id);
+
+        if (userSubscription) {
+          users.push({ id: doc.id, ...userData });
+        }
+      }
 
       setMatchingUsers(users);
       console.log(users);
 
       if (users.length > 0) {
-        fetchServiceAreas(zip);
+        fetchServiceAreas(users);
+        setNoMowersFound(false); 
       } else {
-        console.log("No users found with the provided zip code.");
+        console.log("No subscribed users found with the provided zip code.");
         setNoMowersFound(true);
         setMapLoaded(true);
       }
     } catch (error) {
+      setNoMowersFound(true);
       console.log(error.message);
     }
   };
 
-  const fetchServiceAreas = async (zip) => {
+
+
+  const fetchServiceAreas = async (users) => {
     try {
-      const serviceAreasRef = collection(db, "userInfo");
-      const q = query(serviceAreasRef, where("zipCode", "==", zip));
-      const querySnapshot = await getDocs(q);
       const areas = [];
 
-      querySnapshot.forEach((doc) => {
-        const data = doc.data();
-        if (data.serviceArea) {
-          areas.push({ id: doc.id, ...data.serviceArea });
+
+      for (const user of users) {
+        if (user.serviceArea) {
+          areas.push({ id: user.id, ...user.serviceArea });
         }
-      });
+      }
 
       if (areas.length > 0) {
         setLatLng({ lat: areas[0].path[0].lat, lng: areas[0].path[0].lng });
@@ -141,11 +214,17 @@ const FindMowers = () => {
       console.log(error.message);
     }
   };
+  
 
   const initMap = () => {
     setLoading(false);
-    const map = new window.google.maps.Map(document.getElementById("map"), {
-      zoom: 11,
+
+   
+    const mapElement = document.getElementById("map");
+    if (!mapElement) return;
+
+    const map = new window.google.maps.Map(mapElement, {
+      zoom: 13,
       center: latLng,
       zoomControlOptions: {
         position: window.google.maps.ControlPosition.BOTTOM_CENTER,
@@ -166,20 +245,20 @@ const FindMowers = () => {
       polygon.setMap(map);
     });
 
-    matchingUsers.forEach((user) => {
-      const userCoordinates = user.serviceArea?.path[0];
-      const position = userCoordinates
-        ? { lat: userCoordinates.lat, lng: userCoordinates.lng }
+    let firstInfoWindowOpened = false;
+
+    matchingUsers.forEach((user, index) => {
+      const centroid = user.serviceArea?.path
+        ? calculatePolygonCentroid(user.serviceArea.path)
         : latLng;
 
       const marker = new window.google.maps.Marker({
-        position: position,
+        position: centroid,
         map: map,
         title: user.userName,
       });
 
       const infoWindow = new window.google.maps.InfoWindow();
-
       const userInfoDiv = document.createElement("div");
       const root = createRoot(userInfoDiv);
       root.render(
@@ -190,15 +269,30 @@ const FindMowers = () => {
             photoURL: user.photoURL,
           }}
           onNavigate={() => {
-            navigate(`/profile-page/${user.userName}`);
+            navigate(`/p/${user.userName}`);
           }}
         />
       );
 
       infoWindow.setContent(userInfoDiv);
-      infoWindow.open(map, marker);
+
+      if (!firstInfoWindowOpened && index === 0) {
+        infoWindow.open(map, marker);
+        firstInfoWindowOpened = true;
+      }
+
+      marker.addListener("click", () => {
+        if (infoWindow.getMap()) {
+          infoWindow.close();
+        } else {
+          infoWindow.open(map, marker);
+        }
+      });
     });
   };
+
+
+
 
   useEffect(() => {
     if (mapLoaded && googleMapsLoaded) {
@@ -240,9 +334,30 @@ const FindMowers = () => {
   };
 
 
+  const requestModalfunc = () => {
+    backdropHandlerRequest();
+  };
+
+  const backdropHandlerRequest = () => {
+    setRequestModal((current) => !current);
+  };
+
+
   return (
     <>
       <Navbar />
+
+      <BackdropWrapper
+        open={requestModal}
+        smallSize={true}
+        backdropHandler={backdropHandlerRequest}
+        element={
+          <ServiceRequestModal
+            heading={"Request Service"}
+            backdropHandler={backdropHandlerRequest}
+          />
+        }
+      />
       <Heading>
         <h3>Mowers in Area</h3>
         <h4>{displayLocation}</h4>
@@ -252,11 +367,17 @@ const FindMowers = () => {
         <input
           type="text"
           placeholder="Enter Zip Code or Address"
+          ref={inputRef}
           value={searchInput}
           onChange={(e) => setSearchInput(e.target.value)}
         />
         <button onClick={handleSearch}>Search</button>
       </Search>
+
+      <CoverageModal>
+        <p>Don't see coverage in your neibhourhood?</p>
+        <button onClick={requestModalfunc}>Request</button>
+      </CoverageModal>
 
       <StyledMowers>
         {loading && (
@@ -285,6 +406,8 @@ const FindMowers = () => {
 };
 
 export default FindMowers;
+
+
 
 const StyledMowers = styled.div`
   min-height: var(--section-height);
@@ -336,3 +459,13 @@ const Search = styled.div`
     border-bottom-left-radius: 0rem;
   }
 `;
+
+const CoverageModal = styled.div`
+display: flex;
+justify-content: center;
+align-items: center;
+gap: 1rem;
+flex-wrap: wrap;
+margin-top: 32px;
+  
+`

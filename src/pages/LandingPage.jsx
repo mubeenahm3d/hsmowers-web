@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import LandingMenu from "../components/LandingMenu";
 import BG from "../assets/bg4.jpg";
@@ -6,48 +6,65 @@ import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Footer from "../components/Footer";
 import { useNavigate } from "react-router-dom";
-import axios from "axios"; 
 
 export default function LandingPage() {
   const [location, setLocation] = useState("");
+  const inputRef = useRef(null); 
   const navigate = useNavigate();
 
-  const handleFindMower = async (e) => {
-    e.preventDefault();
-    if (!location) return; 
-    localStorage.setItem("location", location);
-    if (/^\d{5}$/.test(location)) {
-      navigate(`/find-mowers?zip=${location}`);
-    } else {
-      try {
-        const response = await axios.get(
-          `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
-            location
-          )}&key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`
-        );
-        console.log("Geocoding Response:", response.data);
 
-        if (response.data.status === "OK") {
-          const addressComponents = response.data.results[0].address_components;
-          const zipCode = addressComponents.find((component) =>
-            component.types.includes("postal_code")
-          );
+  useEffect(() => {
+    const loadGoogleMapsScript = () => {
+      const script = document.createElement("script");
+      script.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}&libraries=places`;
+      script.async = true;
+      script.defer = true;
+      script.onload = () => initAutocomplete(); 
+      document.body.appendChild(script);
+    };
 
-          if (zipCode) {
-            console.log("ZIP Code:", zipCode.long_name);
-            navigate(`/find-mowers?zip=${zipCode.long_name}`); 
-          } else {
-            console.log("No ZIP Code found for this address.");
+    const initAutocomplete = () => {
+      if (window.google) {
+        const autocomplete = new window.google.maps.places.Autocomplete(
+          inputRef.current,
+          {
+            types: ["geocode"],
+            componentRestrictions: { country: "us" },
           }
-        } else {
-          console.log("Error fetching data:", response.data.status);
-        }
-      } catch (error) {
-        console.error("Error fetching geocoding data:", error);
-      }
-    }
-  };
+        );
 
+        autocomplete.addListener("place_changed", () => {
+          const place = autocomplete.getPlace();
+          if (place.address_components) {
+            const zipCode = place.address_components.find((component) =>
+              component.types.includes("postal_code")
+            );
+
+            if (zipCode) {
+              setLocation(zipCode.long_name);
+              navigate(`/find-mowers?zip=${zipCode.long_name}`);
+            } else {
+              console.log("No ZIP Code found for this address.");
+            }
+          }
+        });
+      }
+    };
+
+   
+    if (!window.google) {
+      loadGoogleMapsScript();
+    } else {
+      initAutocomplete();
+    }
+  }, [navigate]);
+
+  const handleFindMower = (e) => {
+    e.preventDefault();
+    if (!location) return;
+    localStorage.setItem("location", location);
+    navigate(`/find-mowers?zip=${location}`);
+  };
 
   return (
     <>
@@ -55,7 +72,6 @@ export default function LandingPage() {
 
       <HeroSection>
         <div className="hero-container">
-          {" "}
           <div className="card-container">
             <Card
               sx={{
@@ -72,9 +88,10 @@ export default function LandingPage() {
                   lawn
                 </p>
 
-                <form action="" onSubmit={handleFindMower}>
+                <form onSubmit={handleFindMower}>
                   <input
                     type="text"
+                    ref={inputRef}
                     placeholder="Enter Zip Code or Address"
                     value={location}
                     onChange={(e) => setLocation(e.target.value)}
@@ -108,7 +125,6 @@ export default function LandingPage() {
     </>
   );
 }
-
 
 const HeroSection = styled.div`
   min-height: var(--section-height);
@@ -190,6 +206,7 @@ const CardInfo = styled(CardContent)`
     }
 
     @media (min-width: 640px) {
+<<<<<<< Updated upstream
 
         display: block;
         input {
@@ -203,6 +220,18 @@ const CardInfo = styled(CardContent)`
           border-bottom-left-radius: 0rem;
         }
       
+=======
+      display: block;
+      input {
+        width: 220px;
+        border-top-right-radius: 0rem;
+        border-bottom-right-radius: 0rem;
+      }
+      button {
+        border-top-left-radius: 0rem;
+        border-bottom-left-radius: 0rem;
+      }
+>>>>>>> Stashed changes
     }
   }
 `;

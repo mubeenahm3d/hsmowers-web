@@ -17,7 +17,7 @@ export default function ProfileCard({ profileData }) {
    : firstName || "Guest";
 
    const handleCardClick = () => {
-     navigate(`/profile-page/${userName}`);
+     navigate(`/p/${userName}`);
    };
 
   return (

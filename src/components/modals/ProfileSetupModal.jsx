@@ -12,13 +12,24 @@ import { collection, query, where, getDocs } from "firebase/firestore";
 import uploadImg from "../../utils/uploadImg";
 import { updateProfile } from "firebase/auth";
 import { useNavigate } from "react-router";
+import {
+  createUserWithEmailAndPassword,
+  sendEmailVerification,
+  // signInWithRedirect,
+} from "firebase/auth";
+import { alertActions } from "../../store/alertSlice";
+import { Link } from "react-router-dom";
+import BackdropWrapper from "./BackdropWrapper";
+import { useLocation } from "react-router";
+import SignInWithoutEmail from "../../authentication/SignInWithoutEmail";
+import Info from "./Info";
 import Lottie from "lottie-react";
 import LoaderAnimation from "../../assets/animation.json";
 
 export default function ProfileSetupModal({ backdropHandler, heading }) {
   const userInfo = useSelector((state) => state.user.userInfo);
-  const [checkUser, setCheckUser] = useState(false);
-  // const currentUser = auth?.currentUser;
+  const [isUserNameAvailable, setIsUserNameAvailable] = useState(true);
+  const [userNameErrorMessage, setUserNameErrorMessage] = useState("");
 
   const [stepNum, setStepNum] = useState(1);
 
@@ -26,7 +37,7 @@ export default function ProfileSetupModal({ backdropHandler, heading }) {
     displayName: userInfo?.displayName || "",
     userName: userInfo?.userName || "",
     phoneNumber: userInfo?.phoneNumber || "",
-    zipCode: userInfo?.zipCode || "",
+    // zipCode: userInfo?.zipCode || "",
     address: userInfo?.address || "",
     grade: userInfo?.grade || 9,
     description: userInfo?.description || "",
@@ -49,6 +60,34 @@ export default function ProfileSetupModal({ backdropHandler, heading }) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  async function fetchZipCodeFromAddress(address) {
+    const apiKey = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
+    const apiUrl = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
+      address
+    )}&key=${apiKey}`;
+
+    try {
+      const response = await fetch(apiUrl);
+      const data = await response.json();
+
+      if (data.status === "OK") {
+        const result = data.results[0];
+        const zipCode = result.address_components.find((component) =>
+          component.types.includes("postal_code")
+        )?.long_name;
+
+        return zipCode || ""; 
+      } else {
+        console.error("Geocoding API error:", data.status);
+        return "";
+      }
+    } catch (error) {
+      console.error("Error fetching zip code:", error);
+      return "";
+    }
+  }
+
+
   function onChangeHandler(e) {
     setForm((current) => ({ ...current, [e.target.name]: e.target.value }));
   }
@@ -66,17 +105,44 @@ export default function ProfileSetupModal({ backdropHandler, heading }) {
     }
   }
 
-  const submitHandler = (e) => {
-    e.preventDefault();
-    if (!checkUser) {
-      alert("Please check username availability before proceeding.");
-      return;
-    }
 
-    if (stepNum < 5) {
-      setStepNum((current) => current + 1);
-    }
-  };
+ const submitHandler = async (e) => {
+   e.preventDefault();
+
+   if (form.userName) {
+     const isAvailable = await checkUserNameAvailability(form.userName);
+
+     if (isAvailable && stepNum < 5) {
+       const zipCode = await fetchZipCodeFromAddress(form.address);
+       setForm((prev) => ({ ...prev, zipCode })); 
+       setStepNum((current) => current + 1);
+     } else {
+       setUserNameErrorMessage(
+         "Username is already taken. Please choose another."
+       );
+     }
+   }
+ };
+
+ const checkUserNameAvailability = async (username) => {
+   try {
+     const customerRef = collection(db, "userInfo");
+     const q = query(customerRef, where("userName", "==", username));
+     const userSnapshot = await getDocs(q);
+
+     if (userSnapshot.empty) {
+       setUserNameErrorMessage(""); 
+       return true; 
+     } else {
+       setUserNameErrorMessage("Username is already taken");
+       return false; 
+     }
+   } catch (error) {
+     console.error("Error checking username:", error);
+     setUserNameErrorMessage("Error checking username availability.");
+     return false;
+   }
+ };
 
   useEffect(() => {
     if (stepNum === 5) {
@@ -118,8 +184,7 @@ export default function ProfileSetupModal({ backdropHandler, heading }) {
           <Step1
             form={form}
             onChangeHandler={onChangeHandler}
-            setCheckUser={setCheckUser}
-            checkUser={checkUser}
+            userNameErrorMessage={userNameErrorMessage}
           />
         );
       case 2:
@@ -135,8 +200,7 @@ export default function ProfileSetupModal({ backdropHandler, heading }) {
           <Step1
             form={form}
             onChangeHandler={onChangeHandler}
-            setCheckUser={setCheckUser}
-            checkUser={checkUser}
+            userNameErrorMessage={userNameErrorMessage}
           />
         );
     }
@@ -166,13 +230,13 @@ export default function ProfileSetupModal({ backdropHandler, heading }) {
               </button>
 
               <LoadingButton
-                // loading={submitLoading}
-                disabled={!checkUser}
+                disabled={!isUserNameAvailable || !form.userName}
                 type="submit"
                 title={"Next"}
               />
             </div>
           </form>
+          
           <div className="progress">
             <div className={`step ${stepNum > 0 ? "active" : ""}`} />
             <div className={`step ${stepNum > 1 ? "active" : ""}`} />
@@ -185,27 +249,7 @@ export default function ProfileSetupModal({ backdropHandler, heading }) {
   );
 }
 
-function Step1({ form, onChangeHandler, setCheckUser, checkUser }) {
-  const [isChecked, setIsChecked] = useState(false);
-
-  const checkAvailabilityHandler = async (e) => {
-    e.preventDefault();
-    setIsChecked(true); 
-    try {
-      const userRef = collection(db, "userInfo");
-      const q = query(userRef, where("userName", "==", form.userName));
-      const querySnapshot = await getDocs(q);
-
-      if (querySnapshot.empty) {
-        setCheckUser(true);
-      } else {
-        setCheckUser(false);
-      }
-    } catch (err) {
-      console.error("Error checking username availability:", err);
-    }
-  };
-
+function Step1({ form, onChangeHandler, userNameErrorMessage }) {
   return (
     <StyledStep>
       <div className="field">
@@ -231,7 +275,6 @@ function Step1({ form, onChangeHandler, setCheckUser, checkUser }) {
           onChange={onChangeHandler}
           required
         />
-        <button onClick={checkAvailabilityHandler}>Check Availability</button>
       </div>
       <div className="field">
         <label htmlFor="phoneNumber">Phone Number</label>
@@ -246,8 +289,9 @@ function Step1({ form, onChangeHandler, setCheckUser, checkUser }) {
           required
         />
       </div>
-      {isChecked && (
-        <p style={{color:'red'}}>{checkUser ? "Username Available" : "Username Not Available"}</p>
+
+      {userNameErrorMessage && (
+        <p style={{color:'red'}}>{userNameErrorMessage}</p>
       )}
     </StyledStep>
   );
@@ -308,9 +352,9 @@ function Step2({ form, onChangeHandler }) {
         <h5>{form.serviceDistance} Miles</h5>
         <input
           type={"range"}
-          min={0.5}
-          step={0.5}
-          max={20}
+          min={0.1}
+          step={0.1}
+          max={5}
           className="range-input"
           name={"serviceDistance"}
           value={form.serviceDistance}
@@ -393,7 +437,7 @@ function Step4({ form, onChangeHandler }) {
           value={form.description}
           onChange={onChangeHandler}
         />
-        <label htmlFor="fullName">Enter Your Zip Code</label>
+        {/* <label htmlFor="fullName">Enter Your Zip Code</label>
         <input
           type="number"
           placeholder="Enter Zip Code"
@@ -405,7 +449,7 @@ function Step4({ form, onChangeHandler }) {
               target: { name: "zipCode", value: e.target.value },
             })
           }
-        />
+        /> */}
 
         <label htmlFor="fullName">Enter Your Address</label>
         <input
@@ -424,36 +468,158 @@ function Step4({ form, onChangeHandler }) {
   );
 }
 
-function Step5() {
+
+function Step5 () {
+  const [inputs, setInputs] = useState({
+    email: "",
+    password: "",
+  });
+  const [backdrop, setBackdrop] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const dispatch = useDispatch();
+
   const navigate = useNavigate();
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      navigate("/login");
-    }, 5000);
+  const location = useLocation();
 
-    return () => clearTimeout(timer);
-  }, [navigate]);
+  let { from } = location.state || { from: "/" };
 
-  return (
+  // const provider = new GoogleAuthProvider();
+
+  function inputChangeHandler(event) {
+    setInputs((current) => ({
+      ...current,
+      [event.target.name]: event.target.value,
+    }));
+  }
+  const submitHandler = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      const response = await createUserWithEmailAndPassword(
+        auth,
+        inputs.email,
+        inputs.password
+      );
+      await sendEmailVerification(response.user);
+      dispatch(
+        alertActions.setAlert({
+          title: "Verify Email",
+          messageType: "info",
+        })
+      );
+      setBackdrop(true);
+      
+    } catch (e) {
+      dispatch(
+        alertActions.setAlert({
+          title: JSON.parse(JSON.stringify(e)).code,
+          messageType: "error",
+        })
+      );
+      console.log("Failed to create an account", e);
+    } finally {
+      setLoading(false);
+    }
+  };
+  return(
     <>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          flexDirection: "column",
-        }}
-      >
-        <Lottie
-          animationData={LoaderAnimation}
-          loop={true}
-          style={{ width: 200, height: 200 }}
+      <StyledSignup>
+        <BackdropWrapper
+          backdropHandler={() => {
+            setBackdrop(false);
+          }}
+          element={
+            <Info
+              heading="Email Verification"
+              msg="Email verification link has been sent to your email, please verify and login."
+              backdropHandler={() => {
+                setBackdrop(false);
+                 navigate("/login");
+              }}
+            />
+          }
+          smallSize={true}
+          open={backdrop}
         />
-        <p style={{ marginBottom: "34px" }}>Creating your account</p>
-      </div>
+        {/* <div className="left">
+       <img src={loginImg} alt="" />
+     </div> */}
+        <div className="right">
+          {/* <img className="logo" src={logo} alt="" /> */}
+          <div className="register-form">
+            {/* <div className="heading">
+           <h3>Let's get started!</h3>
+           <p>
+             Already have an account?{"  "}
+             <Link className="link" to="/login" state={{ from }}>
+               Login
+             </Link>
+           </p>
+         </div> */}
+            <form onSubmit={submitHandler}>
+              <div className="input">
+                <input
+                  type="email"
+                  name="email"
+                  placeholder="Email"
+                  value={inputs.email}
+                  onChange={inputChangeHandler}
+                  required
+                />
+              </div>
+              <div className="input">
+                <input
+                  type="password"
+                  name="password"
+                  placeholder="Password"
+                  value={inputs.password}
+                  onChange={inputChangeHandler}
+                  minLength={8}
+                  required
+                />
+              </div>
+              <LoadingButton loading={loading} type="submit" title="Signup" />
+            </form>
+            <SignInWithoutEmail />
+          </div>
+        </div>
+      </StyledSignup>
     </>
   );
+   
 }
+
+// function Step5() {
+//   const navigate = useNavigate();
+//   useEffect(() => {
+//     const timer = setTimeout(() => {
+//       navigate("/login");
+//     }, 5000);
+
+//     return () => clearTimeout(timer);
+//   }, [navigate]);
+
+//   return (
+//     <>
+//       <div
+//         style={{
+//           display: "flex",
+//           justifyContent: "center",
+//           alignItems: "center",
+//           flexDirection: "column",
+//         }}
+//       >
+//         <Lottie
+//           animationData={LoaderAnimation}
+//           loop={true}
+//           style={{ width: 200, height: 200 }}
+//         />
+//         <p style={{ marginBottom: "34px" }}>Creating your account</p>
+//       </div>
+//     </>
+//   );
+// }
 
 const StyledProfileSetup = styled.section`
   margin-top: var(--section-margin);
@@ -591,6 +757,85 @@ const StyledStep = styled.div`
       max-width: 320px;
       height: 200px;
       max-height: 200px;
+    }
+  }
+`;
+
+
+const StyledSignup = styled.section`
+  /* height: 100vh;
+  display: flex;
+  align-items: center;
+  text-align: center;
+  overflow: hidden;
+  position: relative;
+  width: 100%; */
+  .left {
+    flex-basis: 50%;
+    img {
+      width: 100%;
+      height: auto;
+    }
+  }
+  .right {
+    display: flex;
+    flex-direction: column;
+    flex-basis: 50%;
+    align-items: center;
+    justify-content: center;
+    .heading {
+      h3 {
+        margin-bottom: 1rem;
+      }
+    }
+
+    .link {
+      font-weight: 600;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+    .logo {
+      width: 100px;
+      /* margin-bottom: 10%; */
+    }
+    .register-form {
+      width: 70%;
+      background: linear-gradient(
+        rgb(255, 255, 255, 0.9),
+        rgb(255, 255, 255, 0.1) 95%
+      );
+      padding: 5% 0;
+      border-radius: var(--radius-20);
+      form {
+        display: grid;
+        grid-template-rows: repeat(4, 1fr);
+        width: 70%;
+        margin: auto;
+        .input,
+        button {
+          margin: 10px auto;
+          width: 100%;
+        }
+        .input input {
+          /* width: 100%; */
+        }
+        .username {
+          p {
+            text-align: left;
+            height: 1ex;
+            color: red;
+            margin: 2% 0 0 2%;
+          }
+        }
+      }
+    }
+  }
+  @media (max-width: 1000px) {
+    .left {
+      display: none;
+    }
+    .right {
+      flex-basis: 100%;
     }
   }
 `;

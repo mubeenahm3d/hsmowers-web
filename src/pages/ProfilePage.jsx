@@ -14,28 +14,27 @@ import { db } from "../authentication/firebase";
 import { auth } from "../authentication/firebase";
 import { useNavigate } from "react-router-dom";
 import ActionModal from '../components/modals/ActionModal'
+import RequestModal from "../components/modals/RequestModal";
 
 export default function ProfilePage() {
   const userInfo = useSelector((state) => state.user.userInfo);
+  const userSubscription = useSelector((state) => state.user.subscription);
+  
+  console.log("userSubscription", userSubscription);
   const uid = useSelector((state) => state.user.uid);
 
   const [userData, setUserData] = useState({});
-  const [showNumber, setShowNumber] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const [loading, setLoading] = useState(true);
-  // const [actionModal, setActionModal] = useState(false);
   const [uploadModal, setUploadModal] = useState(false);
   const [upgradeModal, setUpgradeModal] = useState(false);
-  const [isSubscribed, setIsSubscribed] = useState(false);
+  const [requestModal, setRequestModal] = useState(false);
+  const [requestModalEmail, setRequestModalEmail] = useState(false);
+
 
 
   const { username } = useParams();
   const navigate = useNavigate();
-
-  const shownumberHandle = () => {
-    setShowNumber((prev) => !prev);
-  };
-
   
 
   const backdropHandler = () => {
@@ -44,28 +43,6 @@ export default function ProfilePage() {
 
   const actionModalFunction = () => {
     backdropHandler();
-  };
-
-
-  const checkSubscription = async (email) => {
-    const customerRef = collection(db, "customers");
-    const q = query(customerRef, where("email", "==", email));
-
-    try {
-      const querySnapshot = await getDocs(q);
-      if (!querySnapshot.empty) {
-        
-        console.log("User is subscribed.");
-        return true;
-      } else {
-        
-        console.log("User is not subscribed.");
-        return false;
-      }
-    } catch (error) {
-      console.error("Error checking subscription status:", error);
-      return false;
-    }
   };
 
 
@@ -80,19 +57,13 @@ export default function ProfilePage() {
        querySnapshot.forEach((doc) => {
         //  console.log(`${doc.id} =>`, doc.data());
          fetchedData = doc.data();
-        //  console.log("fetched Data is:", fetchedData);
+         console.log(fetchedData.email);
+         setRequestModalEmail(fetchedData.email);
+         console.log("Email send:", fetchedData.email);
        });
 
        if (Object.keys(fetchedData).length > 0) {
-         setUserData(fetchedData);
-
-        const isSubscribed = await checkSubscription(fetchedData.email);
-        setIsSubscribed(isSubscribed); 
-        setUserData((prevData) => ({ ...prevData, isSubscribed }));
-
-        if (!isSubscribed) {
-          setTimeout(() => setUpgradeModal(true), 7000);
-        }
+         setUserData(fetchedData)
        }
      } catch (error) {
        console.error("Error fetching documents: ", error);
@@ -100,6 +71,7 @@ export default function ProfilePage() {
        setLoading(false);
      }
    };
+
 
 
   useEffect(() => {
@@ -142,26 +114,63 @@ export default function ProfilePage() {
     navigate("/upgrade");
    }
 
-   const backdropHandlerUpgrade = () => {
+   const backdropHandlerUpgrade= () => {
      setUpgradeModal((current) => !current);
    };
+
+
+  const requestModalfunc = () => {
+    backdropHandlerRequest();
+  };
+
+   const backdropHandlerRequest = () => {
+     setRequestModal((current) => !current);
+   };
+
+
+    useEffect(() => {
+      if (!userSubscription || Object.keys(userSubscription).length === 0) {
+        const timer = setTimeout(() => {
+          console.log("Timeout triggered");
+          setUpgradeModal(true);
+        }, 7000);
+
+        return () => clearTimeout(timer);
+      }
+    }, [userSubscription]);
 
 
   return (
     <>
       <Navbar />
 
+      {upgradeModal &&
+         uid && uid !== userData.uid &&  (
+            <BackdropWrapper
+              open={upgradeModal}
+              smallSize={true}
+              backdropHandler={backdropHandlerUpgrade}
+              element={
+                <ActionModal
+                  heading={"Publish Profile"}
+                  msg={"Make your profile public and start getting customers."}
+                  backdropHandler={backdropHandlerUpgrade}
+                  buttonName={"Publish"}
+                  action={actionModalfunc}
+                />
+              }
+            />
+          )}
+
       <BackdropWrapper
-        open={upgradeModal}
+        open={requestModal}
         smallSize={true}
-        backdropHandler={backdropHandlerUpgrade}
+        backdropHandler={backdropHandlerRequest}
         element={
-          <ActionModal
-            heading={"Publish Profile"}
-            msg={"Make your profile public and start getting customers."}
-            backdropHandler={backdropHandlerUpgrade}
-            buttonName={"Publish"}
-            action={actionModalfunc}
+          <RequestModal
+            heading={"Request Service"}
+            backdropHandler={backdropHandlerRequest}
+            uemail={requestModalEmail}
           />
         }
       />
@@ -222,16 +231,13 @@ export default function ProfilePage() {
               </div>
 
               <div className="buttons">
-                {!isSubscribed && (
+                {uid === userData.uid && !userSubscription.status && (
                   <button onClick={upgradeHandle} className="upgrade-btn">
                     Upgrade
                   </button>
                 )}
-                {userData.phoneNumber && (
-                  <button onClick={shownumberHandle}>
-                    <FaPhoneAlt style={{ marginRight: "5px" }} />
-                    {showNumber ? `+1 ${userData.phoneNumber}` : "Show Number"}
-                  </button>
+                {uid !== userData.uid && (
+                  <button onClick={requestModalfunc}>Request Service</button>
                 )}
               </div>
             </div>
@@ -257,7 +263,10 @@ export default function ProfilePage() {
                 <div className="service-area-header">
                   <h5>Service Area</h5>
                   {uid === userData.uid && (
-                    <button onClick={() => navigate("/select-area")}>
+                    <button
+                      onClick={() => navigate("/select-area")}
+                      className="green-btn"
+                    >
                       Edit Service Area
                     </button>
                   )}
@@ -353,9 +362,6 @@ const StyledProfile = styled.div`
       min-width: 180px;
       max-width: 180px;
       white-space: nowrap;
-      background: transparent;
-      border: 2px solid var(--primary-color);
-      color: var(--primary-color);
     }
 
     .upgrade-btn {
@@ -391,11 +397,11 @@ const StyledProfile = styled.div`
         align-items: center;
         gap: 1rem;
         flex-wrap: wrap;
-        button {
+        /* button {
           background: transparent;
           border: 2px solid var(--primary-color);
           color: var(--primary-color);
-        }
+        } */
       }
       .service-area-map {
         margin-top: 3rem;
