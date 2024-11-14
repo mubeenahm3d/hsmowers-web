@@ -211,6 +211,7 @@ const CardInfo = styled(CardContent)`
         width: 220px;
         border-top-right-radius: 0rem;
         border-bottom-right-radius: 0rem;
+        border-right: none;
       }
       button {
         border-top-left-radius: 0rem;

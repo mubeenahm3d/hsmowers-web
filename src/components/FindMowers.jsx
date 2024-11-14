@@ -227,7 +227,7 @@ const FindMowers = () => {
     if (!mapElement) return;
 
     const map = new window.google.maps.Map(mapElement, {
-      zoom: 13,
+      zoom: 14,
       center: latLng,
       zoomControlOptions: {
         position: window.google.maps.ControlPosition.BOTTOM_CENTER,
@@ -315,8 +315,8 @@ const FindMowers = () => {
     loadGoogleMaps();
   }, []);
 
-  const userName = localStorage.getItem("location");
-  const displayLocation = userName || zipCode;
+  // const userName = localStorage.getItem("location");
+  // const displayLocation = userName || zipCode;
 
 
   const handleSearch = async () => {

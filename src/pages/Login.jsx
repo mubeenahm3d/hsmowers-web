@@ -5,7 +5,7 @@ import {
   sendEmailVerification,
   signInWithEmailAndPassword,
 } from "firebase/auth";
-import { auth } from "../authentication/firebase";
+import { auth, db } from "../authentication/firebase";
 import Info from "../components/modals/Info";
 import LoadingButton from "../components/LoadingButton";
 import BackdropWrapper from "../components/modals/BackdropWrapper";
@@ -16,6 +16,7 @@ import ForgotPass from "../components/modals/ForgotPass";
 import { Link } from "react-router-dom";
 import loginImg from "../assets/login-logo.png";
 import SignInWithoutEmail from "../authentication/SignInWithoutEmail";
+import { doc, getDoc } from "firebase/firestore";
 
 export default function Login() {
   const [inputs, setInputs] = useState({
@@ -50,23 +51,18 @@ export default function Login() {
         inputs.email,
         inputs.password
       );
+
       if (user.emailVerified) {
-        console.log("from", from);
-        navigate(from);
-        // if (!response.user.displayName) {
-        //   const displayName = localStorage.getItem("displayName");
-        //   await updateProfile(response.user, {
-        //     displayName: displayName,
-        //   });
-        // }
-        // localStorage.removeItem("displayName");
-        // window.dataLayer.push({
-        //   event: "login-via-form",
-        // });
-        // navigate(from);
+        const userDocRef = doc(db, "userInfo", user.uid); 
+        const userDoc = await getDoc(userDocRef);
+
+        if (userDoc.exists() && userDoc.data().serviceArea) {
+          navigate(`/p/${userDoc.data().userName}`); 
+        } else {
+          navigate("/select-area"); 
+        }
       } else {
-        const verfiyEmail = await sendEmailVerification(user);
-        console.log("verfiy email", verfiyEmail);
+        await sendEmailVerification(user);
         dispatch(
           alertActions.setAlert({
             title: "Email not Verified",
