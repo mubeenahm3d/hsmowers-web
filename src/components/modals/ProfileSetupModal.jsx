@@ -228,13 +228,13 @@ export default function ProfileSetupModal({ backdropHandler, heading }) {
               </button>
 
               <LoadingButton
-                disabled={ !form.userName}
+                // disabled={ !form.userName}
                 type="submit"
                 title={"Next"}
               />
             </div>
           </form>
-          
+
           <div className="progress">
             <div className={`step ${stepNum > 0 ? "active" : ""}`} />
             <div className={`step ${stepNum > 1 ? "active" : ""}`} />
