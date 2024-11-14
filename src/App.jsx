@@ -179,10 +179,7 @@ function App() {
             console.log("User is logged in:", user.email); 
             setUserInfo(user);
             // sendWelcomeEmailOnLogin(user); 
-<<<<<<< Updated upstream
-=======
-            WelcomeEmail(user);
->>>>>>> Stashed changes
+            // WelcomeEmail(user);
           } else {
             console.log("No user logged in");
           }
@@ -210,7 +207,7 @@ function App() {
         <Route path="/consent-response" element={<ConsentResponse />} />
         <Route path="/p/:username" element={<ProfilePageRoute />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
+         {/* <Route path="/signup" element={<Signup />} /> */}
         <Route path="/get-started" element={<GetStarted />} />
         <Route path="/profile-setup" element={<ProfileSetup />} />
         <Route path="/upgrade" element={<Upgrade />} />

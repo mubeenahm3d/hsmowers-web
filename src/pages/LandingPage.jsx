@@ -202,25 +202,10 @@ const CardInfo = styled(CardContent)`
     gap: 1rem;
     input {
       width: 300px;
-      height: 40px;
+      height: 38px;
     }
 
     @media (min-width: 640px) {
-<<<<<<< Updated upstream
-
-        display: block;
-        input {
-          width: 220px;
-          border-top-right-radius: 0rem;
-          border-bottom-right-radius: 0rem;
-          border-right: none;
-        }
-        button {
-          border-top-left-radius: 0rem;
-          border-bottom-left-radius: 0rem;
-        }
-      
-=======
       display: block;
       input {
         width: 220px;
@@ -231,7 +216,6 @@ const CardInfo = styled(CardContent)`
         border-top-left-radius: 0rem;
         border-bottom-left-radius: 0rem;
       }
->>>>>>> Stashed changes
     }
   }
 `;

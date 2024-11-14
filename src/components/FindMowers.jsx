@@ -76,6 +76,9 @@ const FindMowers = () => {
   const [loading, setLoading] = useState(true);
   const [searchInput, setSearchInput] = useState(""); 
   const [requestModal, setRequestModal] = useState(false);
+   const [displaylocation, setDisplaylocation] = useState(
+     localStorage.getItem("location") || zipCode
+   );
   const navigate = useNavigate(); 
   const inputRef = useRef(null); 
 
@@ -176,7 +179,7 @@ const FindMowers = () => {
       console.log(users);
 
       if (users.length > 0) {
-        fetchServiceAreas(users);
+        await fetchServiceAreas(users);
         setNoMowersFound(false); 
       } else {
         console.log("No subscribed users found with the provided zip code.");
@@ -317,6 +320,7 @@ const FindMowers = () => {
 
 
   const handleSearch = async () => {
+    setLoading(true);
     let zip = "";
     if (isZipCode(searchInput)) {
       zip = searchInput;
@@ -326,12 +330,21 @@ const FindMowers = () => {
         zip = locationZipCode;
       } else {
         console.log("Invalid location.");
+        setLoading(false);
         return;
       }
     }
     setZipCode(zip);
-    fetchMatchingUsers(zip);
+    navigate(`?zipcode=${zip}`);
+    setDisplaylocation(zip);
+    await fetchMatchingUsers(zip);
+    setLoading(false);
   };
+
+
+  useEffect(() => {
+    setDisplaylocation(zipCode);
+  }, [zipCode]);
 
 
   const requestModalfunc = () => {
@@ -360,7 +373,7 @@ const FindMowers = () => {
       />
       <Heading>
         <h3>Mowers in Area</h3>
-        <h4>{displayLocation}</h4>
+        <h4>{displaylocation}</h4>
       </Heading>
 
       <Search>
@@ -420,7 +433,7 @@ const StyledMowers = styled.div`
 
   .loader-container {
     position: absolute;
-    top: 50%;
+    top: 70%;
     left: 50%;
     transform: translate(-50%, -50%);
   }

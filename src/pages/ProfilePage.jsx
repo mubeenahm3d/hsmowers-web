@@ -19,8 +19,7 @@ import RequestModal from "../components/modals/RequestModal";
 export default function ProfilePage() {
   const userInfo = useSelector((state) => state.user.userInfo);
   const userSubscription = useSelector((state) => state.user.subscription);
-  
-  console.log("userSubscription", userSubscription);
+
   const uid = useSelector((state) => state.user.uid);
 
   const [userData, setUserData] = useState({});
@@ -129,9 +128,9 @@ export default function ProfilePage() {
 
 
     useEffect(() => {
+      
       if (!userSubscription || Object.keys(userSubscription).length === 0) {
         const timer = setTimeout(() => {
-          console.log("Timeout triggered");
           setUpgradeModal(true);
         }, 7000);
 
@@ -140,27 +139,27 @@ export default function ProfilePage() {
     }, [userSubscription]);
 
 
+
   return (
     <>
       <Navbar />
 
-      {upgradeModal &&
-         uid && uid !== userData.uid &&  (
-            <BackdropWrapper
-              open={upgradeModal}
-              smallSize={true}
+      {upgradeModal && uid && uid === userData.uid && (
+        <BackdropWrapper
+          open={upgradeModal}
+          smallSize={true}
+          backdropHandler={backdropHandlerUpgrade}
+          element={
+            <ActionModal
+              heading={"Publish Profile"}
+              msg={"Make your profile public and start getting customers."}
               backdropHandler={backdropHandlerUpgrade}
-              element={
-                <ActionModal
-                  heading={"Publish Profile"}
-                  msg={"Make your profile public and start getting customers."}
-                  backdropHandler={backdropHandlerUpgrade}
-                  buttonName={"Publish"}
-                  action={actionModalfunc}
-                />
-              }
+              buttonName={"Publish"}
+              action={actionModalfunc}
             />
-          )}
+          }
+        />
+      )}
 
       <BackdropWrapper
         open={requestModal}
