@@ -23,8 +23,6 @@ import BackdropWrapper from "./BackdropWrapper";
 import { useLocation } from "react-router";
 import SignInWithoutEmail from "../../authentication/SignInWithoutEmail";
 import Info from "./Info";
-import Lottie from "lottie-react";
-import LoaderAnimation from "../../assets/animation.json";
 
 export default function ProfileSetupModal({ backdropHandler, heading }) {
   const userInfo = useSelector((state) => state.user.userInfo);
@@ -56,9 +54,6 @@ export default function ProfileSetupModal({ backdropHandler, heading }) {
     }
   }, [userInfo]);
 
-  const [submitLoading, setSubmitLoading] = useState(false);
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
 
   async function fetchZipCodeFromAddress(address) {
     const apiKey = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
@@ -113,8 +108,10 @@ export default function ProfileSetupModal({ backdropHandler, heading }) {
      const isAvailable = await checkUserNameAvailability(form.userName);
 
      if (isAvailable && stepNum < 5) {
-       const zipCode = await fetchZipCodeFromAddress(form.address);
-       setForm((prev) => ({ ...prev, zipCode })); 
+       if (stepNum === 4) {
+         const zipCode = await fetchZipCodeFromAddress(form.address);
+         setForm((prev) => ({ ...prev, zipCode }));
+       }
        setStepNum((current) => current + 1);
      } else {
        setUserNameErrorMessage(
@@ -123,6 +120,7 @@ export default function ProfileSetupModal({ backdropHandler, heading }) {
      }
    }
  };
+
 
  const checkUserNameAvailability = async (username) => {
    try {
