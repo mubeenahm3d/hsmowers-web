@@ -110,16 +110,9 @@ export default function Navbar() {
         <div className="item">
           <Link to="/upgrade">Pricing</Link>
         </div>
-        {/* <div className="item">
-          <Link to="/profile-page">User Profile</Link>
-        </div> */}
-        {/* <div onClick={backdropHandler} className="item">
-          <h5>Contact Us</h5>
-        </div> */}
-        {/* Avatar or Login button for larger screens */}
+
         {auth.currentUser ? (
           <div className="avatar-section" onClick={handleAvatarClick}>
-            {/* <Link to={`/profile-page/${userInfo.userName}`}> */}
             <Avatar
               alt={auth.currentUser.email?.toUpperCase()}
               src="/broken-image.jpg"
@@ -151,8 +144,17 @@ export default function Navbar() {
                 sx={{ display: "flex", alignItems: "center" }}
               >
                 Logout
+                {loading && (
+                  <CircularProgress
+                    size={20}
+                    sx={{
+                      color: "var(--primary-color)",
+                      marginLeft:'2px'
+                    }}
+                  />
+                )}
               </MenuItem>
-              <div
+              {/* <div
                 style={{
                   display: "flex",
                   alignItems: "center",
@@ -167,7 +169,7 @@ export default function Navbar() {
                     }}
                   />
                 )}
-              </div>
+              </div> */}
             </Menu>
             {/* </Link> */}
           </div>

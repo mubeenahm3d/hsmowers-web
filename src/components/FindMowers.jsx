@@ -76,7 +76,8 @@ const FindMowers = () => {
   const [loading, setLoading] = useState(true);
   const [searchInput, setSearchInput] = useState(""); 
   const [requestModal, setRequestModal] = useState(false);
-   const [displaylocation, setDisplaylocation] = useState(
+  
+  const [displaylocation, setDisplaylocation] = useState(
      localStorage.getItem("location") || zipCode
    );
   const navigate = useNavigate(); 

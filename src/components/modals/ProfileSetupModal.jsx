@@ -109,6 +109,7 @@ export default function ProfileSetupModal({ backdropHandler, heading }) {
 
      if (isAvailable && stepNum < 5) {
        if (stepNum === 4) {
+
          const zipCode = await fetchZipCodeFromAddress(form.address);
          setForm((prev) => ({ ...prev, zipCode }));
        }
