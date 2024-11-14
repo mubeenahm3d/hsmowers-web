@@ -27,8 +27,8 @@ import Info from "./Info";
 export default function ProfileSetupModal({ backdropHandler, heading }) {
   const userInfo = useSelector((state) => state.user.userInfo);
   const [userNameErrorMessage, setUserNameErrorMessage] = useState("");
-
   const [stepNum, setStepNum] = useState(1);
+  const [error, setError] = useState("");
 
   const [form, setForm] = useState({
     displayName: userInfo?.displayName || "",
@@ -53,7 +53,6 @@ export default function ProfileSetupModal({ backdropHandler, heading }) {
     }
   }, [userInfo]);
 
-
   async function fetchZipCodeFromAddress(address) {
     const apiKey = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
     const apiUrl = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
@@ -70,7 +69,7 @@ export default function ProfileSetupModal({ backdropHandler, heading }) {
           component.types.includes("postal_code")
         )?.long_name;
 
-        return zipCode || ""; 
+        return zipCode || "";
       } else {
         console.error("Geocoding API error:", data.status);
         return "";
@@ -80,7 +79,6 @@ export default function ProfileSetupModal({ backdropHandler, heading }) {
       return "";
     }
   }
-
 
   function onChangeHandler(e) {
     setForm((current) => ({ ...current, [e.target.name]: e.target.value }));
@@ -99,48 +97,50 @@ export default function ProfileSetupModal({ backdropHandler, heading }) {
     }
   }
 
+  const submitHandler = async (e) => {
+    e.preventDefault();
+    setError("");
+    if (stepNum === 1) {
+      const isAvailable = await checkUserNameAvailability(form.userName);
+      if (!isAvailable) {
+        setError(
+          "Username is already taken. Please choose another."
+        );
+        return
+      }
+    }
+    if(stepNum === 2 && form.services.length === 0) {
+      setError("Please select at least 1 service.")
+      return
+    } 
+    if (stepNum < 5) {
+      if (stepNum === 4) {
+        const zipCode = await fetchZipCodeFromAddress(form.address);
+        setForm((prev) => ({ ...prev, zipCode }));
+      }
+      setStepNum((current) => current + 1);
+    }
+  };
 
- const submitHandler = async (e) => {
-   e.preventDefault();
+  const checkUserNameAvailability = async (username) => {
+    try {
+      const customerRef = collection(db, "userInfo");
+      const q = query(customerRef, where("userName", "==", username));
+      const userSnapshot = await getDocs(q);
 
-   if (form.userName) {
-     const isAvailable = await checkUserNameAvailability(form.userName);
-
-     if (isAvailable && stepNum < 5) {
-       if (stepNum === 4) {
-
-         const zipCode = await fetchZipCodeFromAddress(form.address);
-         setForm((prev) => ({ ...prev, zipCode }));
-       }
-       setStepNum((current) => current + 1);
-     } else {
-       setUserNameErrorMessage(
-         "Username is already taken. Please choose another."
-       );
-     }
-   }
- };
-
-
- const checkUserNameAvailability = async (username) => {
-   try {
-     const customerRef = collection(db, "userInfo");
-     const q = query(customerRef, where("userName", "==", username));
-     const userSnapshot = await getDocs(q);
-
-     if (userSnapshot.empty) {
-       setUserNameErrorMessage(""); 
-       return true; 
-     } else {
-       setUserNameErrorMessage("Username is already taken");
-       return false; 
-     }
-   } catch (error) {
-     console.error("Error checking username:", error);
-     setUserNameErrorMessage("Error checking username availability.");
-     return false;
-   }
- };
+      if (userSnapshot.empty) {
+        setUserNameErrorMessage("");
+        return true;
+      } else {
+        setUserNameErrorMessage("Username is already taken");
+        return false;
+      }
+    } catch (error) {
+      console.error("Error checking username:", error);
+      setUserNameErrorMessage("Error checking username availability.");
+      return false;
+    }
+  };
 
   useEffect(() => {
     if (stepNum === 5) {
@@ -289,12 +289,11 @@ function Step1({ form, onChangeHandler, userNameErrorMessage }) {
       </div>
 
       {userNameErrorMessage && (
-        <p style={{color:'red'}}>{userNameErrorMessage}</p>
+        <p style={{ color: "red" }}>{userNameErrorMessage}</p>
       )}
     </StyledStep>
   );
 }
-
 
 function Step2({ form, onChangeHandler }) {
   const isActive = (service) =>
@@ -466,8 +465,7 @@ function Step4({ form, onChangeHandler }) {
   );
 }
 
-
-function Step5 () {
+function Step5() {
   const [inputs, setInputs] = useState({
     email: "",
     password: "",
@@ -507,7 +505,6 @@ function Step5 () {
         })
       );
       setBackdrop(true);
-      
     } catch (e) {
       dispatch(
         alertActions.setAlert({
@@ -520,7 +517,7 @@ function Step5 () {
       setLoading(false);
     }
   };
-  return(
+  return (
     <>
       <StyledSignup>
         <BackdropWrapper
@@ -533,7 +530,7 @@ function Step5 () {
               msg="Email verification link has been sent to your email, please verify and login."
               backdropHandler={() => {
                 setBackdrop(false);
-                 navigate("/login");
+                navigate("/login");
               }}
             />
           }
@@ -585,7 +582,6 @@ function Step5 () {
       </StyledSignup>
     </>
   );
-   
 }
 
 // function Step5() {
@@ -758,7 +754,6 @@ const StyledStep = styled.div`
     }
   }
 `;
-
 
 const StyledSignup = styled.section`
   /* height: 100vh;
