@@ -26,7 +26,6 @@ import Info from "./Info";
 
 export default function ProfileSetupModal({ backdropHandler, heading }) {
   const userInfo = useSelector((state) => state.user.userInfo);
-  const [isUserNameAvailable, setIsUserNameAvailable] = useState(true);
   const [userNameErrorMessage, setUserNameErrorMessage] = useState("");
 
   const [stepNum, setStepNum] = useState(1);
@@ -229,7 +228,7 @@ export default function ProfileSetupModal({ backdropHandler, heading }) {
               </button>
 
               <LoadingButton
-                disabled={!isUserNameAvailable || !form.userName}
+                disabled={ !form.userName}
                 type="submit"
                 title={"Next"}
               />
