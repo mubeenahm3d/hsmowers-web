@@ -26,7 +26,6 @@ import Info from "./Info";
 
 export default function ProfileSetupModal({ backdropHandler, heading }) {
   const userInfo = useSelector((state) => state.user.userInfo);
-  const [userNameErrorMessage, setUserNameErrorMessage] = useState("");
   const [stepNum, setStepNum] = useState(1);
   const [error, setError] = useState("");
 
@@ -109,16 +108,14 @@ async function fetchZipCodeFromAddress(address) {
     if (stepNum === 1) {
       const isAvailable = await checkUserNameAvailability(form.userName);
       if (!isAvailable) {
-        setError(
-          "Username is already taken. Please choose another."
-        );
-        return
+        setError("Username is already taken. Please choose another.");
+        return;
       }
     }
-    if(stepNum === 2 && form.services.length === 0) {
-      setError("Please select at least 1 service.")
-      return
-    } 
+    if (stepNum === 2 && form.services.length === 0) {
+      setError("Please select at least 1 service.");
+      return;
+    }
     if (stepNum < 5) {
       if (stepNum === 4) {
         const zipCode = await fetchZipCodeFromAddress(form.address);
@@ -136,15 +133,12 @@ async function fetchZipCodeFromAddress(address) {
       const userSnapshot = await getDocs(q);
 
       if (userSnapshot.empty) {
-        setUserNameErrorMessage("");
         return true;
       } else {
-        setUserNameErrorMessage("Username is already taken");
         return false;
       }
     } catch (error) {
       console.error("Error checking username:", error);
-      setUserNameErrorMessage("Error checking username availability.");
       return false;
     }
   };
@@ -179,19 +173,14 @@ async function fetchZipCodeFromAddress(address) {
 
   function backBtnHandler(e) {
     e.preventDefault();
+    setError("")
     setStepNum((current) => current - 1);
   }
 
   function renderSteps() {
     switch (stepNum) {
       case 1:
-        return (
-          <Step1
-            form={form}
-            onChangeHandler={onChangeHandler}
-            
-          />
-        );
+        return <Step1 form={form} onChangeHandler={onChangeHandler} />;
       case 2:
         return <Step2 form={form} onChangeHandler={onChangeHandler} />;
       case 3:
@@ -201,13 +190,7 @@ async function fetchZipCodeFromAddress(address) {
       case 5:
         return <Step5 />;
       default:
-        return (
-          <Step1
-            form={form}
-            onChangeHandler={onChangeHandler}
-            
-          />
-        );
+        return <Step1 form={form} onChangeHandler={onChangeHandler} />;
     }
   }
 
@@ -225,6 +208,7 @@ async function fetchZipCodeFromAddress(address) {
           <h4>Create your business page</h4>
           <form onSubmit={submitHandler}>
             {renderSteps()}
+            <p className="error-msg">{error}</p>
             <div className="btns">
               {stepNum !== 5 && (
                 <>
@@ -331,6 +315,7 @@ function Step2({ form, onChangeHandler }) {
     "Edging",
     "Weeding",
     "Leaf Removal",
+    "Dog Walking"
   ];
   return (
     <StyledStep className="step2">
@@ -481,11 +466,6 @@ function Step5() {
   const dispatch = useDispatch();
 
   const navigate = useNavigate();
-  const location = useLocation();
-
-  let { from } = location.state || { from: "/" };
-
-  // const provider = new GoogleAuthProvider();
 
   function inputChangeHandler(event) {
     setInputs((current) => ({
@@ -494,6 +474,7 @@ function Step5() {
     }));
   }
   const submitHandler = async (e) => {
+    console.log('submit called')
     e.preventDefault();
     setLoading(true);
     try {
@@ -557,7 +538,6 @@ function Step5() {
              </Link>
            </p>
          </div> */}
-            <form onSubmit={submitHandler}>
               <div className="input">
                 <input
                   type="email"
@@ -579,8 +559,7 @@ function Step5() {
                   required
                 />
               </div>
-              <LoadingButton loading={loading} type="submit" title="Signup" />
-            </form>
+              <LoadingButton loading={loading} onClick={submitHandler} title="Signup" />
             <SignInWithoutEmail />
           </div>
         </div>
@@ -628,6 +607,10 @@ const StyledProfileSetup = styled.section`
   }
   h4 {
     color: var(--text-color);
+  }
+  .error-msg{
+    color: red;
+    height: 40px;
   }
   .content {
     display: flex;
