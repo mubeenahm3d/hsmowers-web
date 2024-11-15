@@ -57,8 +57,8 @@ export default function ProfilePage() {
         //  console.log(`${doc.id} =>`, doc.data());
          fetchedData = doc.data();
          console.log(fetchedData.email);
-         setRequestModalEmail(fetchedData.email);
-         console.log("Email send:", fetchedData.email);
+        //  setRequestModalEmail(fetchedData.email);
+        //  console.log("Email send:", fetchedData.email);
        });
 
        if (Object.keys(fetchedData).length > 0) {

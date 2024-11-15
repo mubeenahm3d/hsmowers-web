@@ -6,6 +6,9 @@ import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Footer from "../components/Footer";
 import { useNavigate } from "react-router-dom";
+import { loadGoogleMapsScript } from "../utils/googleMap";
+import { initAutocomplete } from "../utils/autoComplete";
+import { geocodeAddress } from "../utils/geocodeAddress";
 
 export default function LandingPage() {
   const [location, setLocation] = useState("");
@@ -13,62 +16,53 @@ export default function LandingPage() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const loadGoogleMapsScript = () => {
-      const script = document.createElement("script");
-      script.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}&libraries=places`;
-      script.async = true;
-      script.defer = true;
-      script.onload = () => initAutocomplete();
-      document.body.appendChild(script);
-    };
+    const handlePlaceChanged = () => {
+      const place = inputRef.current.value;
 
-    const initAutocomplete = () => {
-      if (window.google) {
-        const autocomplete = new window.google.maps.places.Autocomplete(
-          inputRef.current,
-          {
-            types: ["geocode"],
-            componentRestrictions: { country: "us" },
-          }
-        );
-
-        autocomplete.addListener("place_changed", () => {
-          const place = autocomplete.getPlace();
-          if (place.address_components) {
-            const zipCode = place.address_components.find((component) =>
-              component.types.includes("postal_code")
-            );
-
-            if (zipCode) {
-              setLocation(zipCode.long_name); 
-              navigate(`/find-mowers?zip=${zipCode.long_name}`); 
-            } else {
-              setLocation(place.formatted_address); 
-              navigate(`/find-mowers?zip=${place.formatted_address}`); 
-            }
+      if (place) {
+       
+        geocodeAddress(place, (zipCode) => {
+          if (zipCode) {
+            console.log("zipCode", zipCode);
+            setLocation(zipCode);
+            localStorage.setItem("location", place);
+            navigate(`/find-mowers?zip=${zipCode}`);
+          } else {
+            console.log("No ZIP code found.");
           }
         });
       }
     };
 
-    if (!window.google) {
-      loadGoogleMapsScript();
-    } else {
-      initAutocomplete();
-    }
+    const initializeGoogleMaps = () => {
+      loadGoogleMapsScript(process.env.REACT_APP_GOOGLE_MAPS_API_KEY, () => {
+        initAutocomplete(inputRef.current, handlePlaceChanged); 
+      });
+    };
+
+    initializeGoogleMaps();
   }, [navigate]);
 
   const handleFindMower = (e) => {
     e.preventDefault();
-    if (!location) return;
-    localStorage.setItem("location", location);
-    navigate(`/find-mowers?zip=${location}`);
+
+    const address = inputRef.current.value;
+    if (!address) return;
+
+    geocodeAddress(address, (zipCode) => {
+      if (zipCode) {
+        setLocation(zipCode);
+        localStorage.setItem("location", address); 
+        navigate(`/find-mowers?zip=${zipCode}`);
+      } else {
+        console.log("No ZIP code found.");
+      }
+    });
   };
 
   return (
     <>
       <LandingMenu />
-
       <HeroSection>
         <div className="hero-container">
           <div className="card-container">
@@ -92,8 +86,8 @@ export default function LandingPage() {
                     type="text"
                     ref={inputRef}
                     placeholder="Enter Zip Code or Address"
-                    value={location} // Controlled input
-                    onChange={(e) => setLocation(e.target.value)} // Update location state as user types
+                    value={location}
+                    onChange={(e) => setLocation(e.target.value)}
                   />
                   <button type="submit">Find a Mower</button>
                 </form>

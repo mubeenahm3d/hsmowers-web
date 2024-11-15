@@ -225,7 +225,7 @@ async function fetchZipCodeFromAddress(address) {
             </div>
           </form>
 
-          {error && <p style={{ color: "red" }}>{error}</p>}
+          {/* {error && <p style={{ color: "red" }}>{error}</p>} */}
 
           <div className="progress">
             <div className={`step ${stepNum > 0 ? "active" : ""}`} />
@@ -538,28 +538,34 @@ function Step5() {
              </Link>
            </p>
          </div> */}
-              <div className="input">
-                <input
-                  type="email"
-                  name="email"
-                  placeholder="Email"
-                  value={inputs.email}
-                  onChange={inputChangeHandler}
-                  required
-                />
-              </div>
-              <div className="input">
-                <input
-                  type="password"
-                  name="password"
-                  placeholder="Password"
-                  value={inputs.password}
-                  onChange={inputChangeHandler}
-                  minLength={8}
-                  required
-                />
-              </div>
-              <LoadingButton loading={loading} onClick={submitHandler} title="Signup" />
+            <div className="input">
+              <input
+                type="email"
+                name="email"
+                placeholder="Email"
+                value={inputs.email}
+                onChange={inputChangeHandler}
+                required
+                style={{ marginBottom: "1rem" }}
+              />
+            </div>
+            <div className="input">
+              <input
+                type="password"
+                name="password"
+                placeholder="Password"
+                value={inputs.password}
+                onChange={inputChangeHandler}
+                minLength={8}
+                required
+                style={{ marginBottom: "1rem" }}
+              />
+            </div>
+            <LoadingButton
+              loading={loading}
+              onClick={submitHandler}
+              title="Signup"
+            />
             <SignInWithoutEmail />
           </div>
         </div>
@@ -780,7 +786,7 @@ const StyledSignup = styled.section`
       /* margin-bottom: 10%; */
     }
     .register-form {
-      width: 70%;
+      /* width: 70%; */
       background: linear-gradient(
         rgb(255, 255, 255, 0.9),
         rgb(255, 255, 255, 0.1) 95%
@@ -797,8 +803,11 @@ const StyledSignup = styled.section`
           margin: 10px auto;
           width: 100%;
         }
-        .input input {
-          /* width: 100%; */
+        .input {
+          input {
+            width: 100%;
+            
+          }
         }
         .username {
           p {

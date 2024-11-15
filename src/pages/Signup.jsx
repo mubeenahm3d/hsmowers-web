@@ -192,6 +192,7 @@ const StyledSignup = styled.section`
         }
         .input input {
           width: 100%;
+          
         }
         .username {
           p {
