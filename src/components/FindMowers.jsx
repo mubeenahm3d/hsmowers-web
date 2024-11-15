@@ -279,7 +279,6 @@ const FindMowers = () => {
       }
     }
 
-    // Initialize the map
     const map = new window.google.maps.Map(mapElement, {
       zoom: 14,
       center: centerLatLng,
@@ -394,8 +393,6 @@ const FindMowers = () => {
       return null;
     }
   };
-
-
 
 
   useEffect(() => {

@@ -127,16 +127,16 @@ export default function ProfilePage() {
    };
 
 
-    useEffect(() => {
+    // useEffect(() => {
       
-      if (!userSubscription || Object.keys(userSubscription).length === 0) {
-        const timer = setTimeout(() => {
-          setUpgradeModal(true);
-        }, 7000);
+    //   if (!userSubscription || Object.keys(userSubscription).length === 0) {
+    //     const timer = setTimeout(() => {
+    //       setUpgradeModal(true);
+    //     }, 7000);
 
-        return () => clearTimeout(timer);
-      }
-    }, [userSubscription]);
+    //     return () => clearTimeout(timer);
+    //   }
+    // }, [userSubscription]);
 
 
 
@@ -144,7 +144,7 @@ export default function ProfilePage() {
     <>
       <Navbar />
 
-      {upgradeModal && uid && uid === userData.uid && (
+      {/* {upgradeModal && uid && uid === userData.uid && (
         <BackdropWrapper
           open={upgradeModal}
           smallSize={true}
@@ -159,7 +159,7 @@ export default function ProfilePage() {
             />
           }
         />
-      )}
+      )} */}
 
       <BackdropWrapper
         open={requestModal}
@@ -175,6 +175,13 @@ export default function ProfilePage() {
       />
 
       <StyledProfile>
+        {uid && uid === userData.uid && (
+          <div className="upgrade_banner">
+            <p>Make your profile public and start getting customers.</p>
+            <button onClick={upgradeHandle}>Publish</button>
+          </div>
+        )}
+
         {loading ? (
           <div className="loader-container">
             <CircularProgress
@@ -230,11 +237,11 @@ export default function ProfilePage() {
               </div>
 
               <div className="buttons">
-                {uid === userData.uid && !userSubscription.status && (
+                {/* {uid === userData.uid && !userSubscription.status && (
                   <button onClick={upgradeHandle} className="upgrade-btn">
                     Upgrade
                   </button>
-                )}
+                )} */}
                 {uid !== userData.uid && (
                   <button onClick={requestModalfunc}>Request Service</button>
                 )}
@@ -289,8 +296,23 @@ export default function ProfilePage() {
 
 const StyledProfile = styled.div`
   width: 80%;
-  margin: var(--section-margin) auto;
+  margin: 2rem auto var(--section-margin) auto;
   min-height: calc(100vh - 80px);
+
+  .upgrade_banner {
+    position: sticky;
+    top: 0; 
+    z-index: 1000; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 20px; 
+    p {
+      color: red;
+    }
+  }
 
   .loader-container {
     display: flex;
