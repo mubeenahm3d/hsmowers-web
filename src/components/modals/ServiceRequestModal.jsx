@@ -8,21 +8,81 @@ import { useDispatch } from "react-redux";
 import LoadingButton from "../LoadingButton";
 
 export default function ServiceRequestModal({ backdropHandler, heading }) {
-    const [name, setName] = useState("");
     const [email, setEmail] = useState("");
-    const [message, setMessage] = useState("");
+    const [number, setNumber] = useState("");
+    const [address, setAddress] = useState("");
+    const [showEmail, setShowEmail] = useState(true);
+    const [showPhoneNumber, setShowPhoneNumber] = useState(false);
+    const [showSMS, setShowSMS] = useState(false);
+    const [services, setServices] = useState([]);
     const [loading, setLoading] = useState(false);
-     const dispatch = useDispatch();
+    const [error, setError] = useState("");
+    const dispatch = useDispatch();
 
     const requestRef = collection(db, "serviceRequests");
 
+    const isActive = (service) =>
+      services.some((s) => s === service.toLowerCase().split(" ").join("-"));
+
+
+    const servicesBtnClicked = (e) => {
+      e.preventDefault();
+      const { value } = e.target;
+
+      setServices(
+        (prevServices) =>
+          prevServices.includes(value)
+            ? prevServices.filter((service) => service !== value) 
+            : [...prevServices, value]
+      );
+    };
+
+    console.log(services)
+
+
+    const servicesOptions = [
+      "Mowing",
+      "Snow Removal",
+      "Baby Sitting",
+      "Window Cleaning",
+      "Edging",
+      "Weeding",
+      "Leaf Removal",
+      "Dog Walking",
+    ];
+
     const handleRequest = async() => {
         setLoading(true)
+        if (services.length === 0) {
+          setError("Please select at least one service.");
+          setLoading(false);
+          return;
+        }
+
+        if (!address) {
+          setError("Address is required.");
+          setLoading(false);
+          return;
+        }
+
+        if (showEmail && !email) {
+          setError("Email is required.");
+          setLoading(false);
+          return;
+        }
+
+        if ((showPhoneNumber || showSMS) && !number) {
+          setError("Phone number is required.");
+          setLoading(false);
+          return;
+        }
+
         try {
              await addDoc(requestRef, {
-               name: name,
+               services:services,
                email: email,
-               message: message
+               number: number,
+               address:address
              });
              dispatch(
                alertActions.setAlert({
@@ -30,9 +90,10 @@ export default function ServiceRequestModal({ backdropHandler, heading }) {
                  title: "Request sent successfully!",
                })
              );
-             setName("");
+             setServices([]);
              setEmail("");
-             setMessage("");
+             setNumber("");
+             setAddress("");
              backdropHandler(false);
         } catch (error) {
               console.log(error);
@@ -49,6 +110,7 @@ export default function ServiceRequestModal({ backdropHandler, heading }) {
     }
 
 
+
   return (
     <>
       <StyledRequest>
@@ -60,33 +122,101 @@ export default function ServiceRequestModal({ backdropHandler, heading }) {
         </div>
 
         <div className="content">
-          <label htmlFor="name">Enter your Name</label>
+          <div className="field">
+            <label htmlFor="services">Required Services</label>
+            <div className="services-btns">
+              {servicesOptions.map((service, index) => (
+                <button
+                  key={index}
+                  className={`gray-btn ${isActive(service) ? "active" : ""}`}
+                  value={service.toLowerCase().split(" ").join("-")}
+                  onClick={servicesBtnClicked}
+                >
+                  {service}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <label htmlFor="address">Where do you need the work done?</label>
           <input
-            type="name"
-            id="name"
-            placeholder="Enter your name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
+            type="text"
+            id="address"
+            placeholder="Enter your address"
+            value={address}
+            onChange={(e) => setAddress(e.target.value)}
           />
-          <label htmlFor="email">Enter your email</label>
-          <input
-            type="email"
-            id="email"
-            placeholder="Enter your email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-          <label htmlFor="message">Message</label>
-          <textarea
-            placeholder="Write your message"
-            rows={5}
-            required
-            maxLength={200}
-            name="message"
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-          />
-          <p style={{color:'var(--primary-color)'}}>We'll notify you when mower available in your area.</p>
+
+          <label htmlFor="message">How you'd like to get notified?</label>
+
+          <div className="checkbox-group">
+            <input
+              type="checkbox"
+              id="email"
+              checked={showEmail}
+              onChange={() => setShowEmail((prev) => !prev)}
+            />
+            <label htmlFor="email">Email</label>
+          </div>
+          <div className="checkbox-group">
+            <input
+              type="checkbox"
+              id="number"
+              checked={showPhoneNumber}
+              onChange={() => setShowPhoneNumber((prev) => !prev)}
+            />
+            <label htmlFor="number">Phone Number</label>
+          </div>
+          <div className="checkbox-group">
+            <input
+              type="checkbox"
+              id="sms"
+              checked={showSMS}
+              onChange={() => setShowSMS((prev) => !prev)}
+            />
+            <label htmlFor="sms">SMS</label>
+          </div>
+
+          <div className="custom-inputs">
+            {showEmail && (
+              <>
+                <label htmlFor="emailInput">Enter your email</label>
+                {/* <br /> */}
+                <input
+                  type="email"
+                  id="emailInput"
+                  placeholder="Enter your email"
+                  value={email}
+                  required
+                  onChange={(e) => setEmail(e.target.value)}
+                  style={{ marginTop: "0.6rem" }}
+                />
+              </>
+            )}
+            <br />
+            {(showPhoneNumber || showSMS) && (
+              <>
+                <label htmlFor="numberInput">Enter your Phone Number</label>
+                {/* <br /> */}
+                <input
+                  type="number"
+                  id="numberInput"
+                  placeholder="Enter your Phone Number"
+                  value={number}
+                  required
+                  onChange={(e) => setNumber(e.target.value)}
+                  style={{ marginTop: "0.6rem" }}
+                />
+              </>
+            )}
+          </div>
+
+          {error && <p style={{ color: "red" }}>{error}</p>}
+
+          <p style={{ color: "var(--primary-color)" }}>
+            We'll notify you when mower available in your area.
+          </p>
+
           <LoadingButton
             loading={loading}
             title={"Request"}
@@ -113,6 +243,53 @@ const StyledRequest = styled.div`
     flex-direction: column;
     gap: 1rem;
     margin-top: 2rem;
+    .custom-inputs {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    }
+    .checkbox-group {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      width: 320px;
+      margin-top: -15px;
+      input {
+        width: 15px;
+        max-width: 15px;
+      }
+    }
+    .field {
+      display: flex;
+      align-items: center;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 1rem;
+      .gray-btn {
+        border-radius: 50px;
+        border: 1px solid var(--gray-color);
+        color: var(--gray-color);
+        background-color: transparent;
+        &:hover {
+          border-color: var(--primary-color);
+          color: var(--primary-color);
+        }
+      }
+      .services-btns {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 10px;
+        .gray-btn.active {
+          background-color: var(--primary-color);
+          color: white;
+          border-color: var(--primary-color);
+        }
+      }
+    }
 
     label {
       font-weight: 500;

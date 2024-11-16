@@ -245,6 +245,6 @@ svg:hover {
 
 .green-btn{
   background: transparent;
-    border: 2px solid var(--primary-color);
-    color: var(--primary-color);
+  border: 2px solid var(--primary-color);
+  color: var(--primary-color);
 }
