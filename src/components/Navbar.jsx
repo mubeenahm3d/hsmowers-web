@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import logo from "../assets/MowerLogo.png";
+import logo from "../assets/logo.png";
 import styled from "styled-components";
 import { Link, useNavigate } from "react-router-dom";
 import { GiHamburgerMenu } from "react-icons/gi";
@@ -309,7 +309,7 @@ export default function Navbar() {
 }
 
 const StyledNavbar = styled.section`
-  height: 10vh;
+  height: 65px;
   display: flex;
   align-items: center;
   justify-content: space-between;

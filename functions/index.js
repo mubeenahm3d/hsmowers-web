@@ -23,7 +23,8 @@ exports.sendWelcomeEmailOnLogin = functions.https.onRequest(
 
 
 exports.sendEmailOnRequest = functions.https.onRequest(async (req, res) => {
-  const { senderEmail, recipientEmail, message } = req.body;
+  const { senderEmail, recipientEmail, message, number } =
+    req.body;
 
   console.log(
     "Function triggered for sender:",
@@ -32,7 +33,16 @@ exports.sendEmailOnRequest = functions.https.onRequest(async (req, res) => {
     recipientEmail
   );
 
-  const result = await serviceEmail(senderEmail, recipientEmail, message);
+  console.log("Request body received:", req.body);
+  console.log("PhoneNumber received:", number);
+
+
+  const result = await serviceEmail(
+    senderEmail,
+    recipientEmail,
+    message,
+    number
+  );
 
   if (result.success) {
     res.status(200).send({ success: true, response: result.response });

@@ -9,39 +9,46 @@ import { useNavigate } from "react-router-dom";
 import { loadGoogleMapsScript } from "../utils/googleMap";
 import { initAutocomplete } from "../utils/autoComplete";
 import { geocodeAddress } from "../utils/geocodeAddress";
+import { alertActions } from "../store/alertSlice";
+import { useDispatch } from "react-redux";
 
 export default function LandingPage() {
   const [location, setLocation] = useState("");
   const inputRef = useRef(null);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const handlePlaceChanged = () => {
       const place = inputRef.current.value;
 
       if (place) {
-       
-        geocodeAddress(place, (zipCode) => {
-          if (zipCode) {
-            console.log("zipCode", zipCode);
-            setLocation(zipCode);
-            localStorage.setItem("location", place);
-            navigate(`/find-mowers?zip=${zipCode}`);
-          } else {
-            console.log("No ZIP code found.");
-          }
-        });
+        geocodeAddress(
+          place,
+          (zipCode) => {
+            if (zipCode) {
+              console.log("zipCode", zipCode);
+              setLocation(zipCode);
+              localStorage.setItem("location", place);
+              navigate(`/find-mowers?zip=${zipCode}`);
+            } else {
+              console.log("No ZIP code found.");
+            }
+          },
+          dispatch,
+          alertActions
+        );
       }
     };
 
     const initializeGoogleMaps = () => {
       loadGoogleMapsScript(process.env.REACT_APP_GOOGLE_MAPS_API_KEY, () => {
-        initAutocomplete(inputRef.current, handlePlaceChanged); 
+        initAutocomplete(inputRef.current, handlePlaceChanged);
       });
     };
 
     initializeGoogleMaps();
-  }, [navigate]);
+  }, [navigate, dispatch, alertActions]);
 
   const handleFindMower = (e) => {
     e.preventDefault();
@@ -49,15 +56,20 @@ export default function LandingPage() {
     const address = inputRef.current.value;
     if (!address) return;
 
-    geocodeAddress(address, (zipCode) => {
-      if (zipCode) {
-        setLocation(zipCode);
-        localStorage.setItem("location", address); 
-        navigate(`/find-mowers?zip=${zipCode}`);
-      } else {
-        console.log("No ZIP code found.");
-      }
-    });
+    geocodeAddress(
+      address,
+      (zipCode) => {
+        if (zipCode) {
+          setLocation(zipCode);
+          localStorage.setItem("location", address);
+          navigate(`/find-mowers?zip=${zipCode}`);
+        } else {
+          console.log("No ZIP code found.");
+        }
+      },
+      dispatch,
+      alertActions
+    );
   };
 
   return (

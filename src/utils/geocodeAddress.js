@@ -1,4 +1,4 @@
-export const geocodeAddress = (address, callback) => {
+export const geocodeAddress = (address, callback, dispatch, alertActions) => {
   const geocoder = new window.google.maps.Geocoder();
   geocoder.geocode({ address: address }, (results, status) => {
     if (status === "OK" && results[0]) {
@@ -8,7 +8,12 @@ export const geocodeAddress = (address, callback) => {
       if (zipCode) {
         callback(zipCode.long_name);
       } else {
-        console.log("No ZIP code found.");
+        dispatch(
+          alertActions.setAlert({
+            messageType: "error",
+            title: "Please enter full address",
+          })
+        );
       }
     } else {
       console.log("Geocode failed due to: " + status);

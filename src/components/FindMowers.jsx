@@ -138,8 +138,6 @@ const FindMowers = () => {
    }
  }, [googleMapsLoaded]);
 
-
-
   useEffect(() => {
     const zip = searchParams.get("zip");
     if (zip) {
@@ -151,10 +149,7 @@ const FindMowers = () => {
     }
   }, [searchParams]);
 
-
-
   const isZipCode = (input) => /^[0-9]{5}$/.test(input);
-
 
   const geocodeLocationToZipCode = async (location) => {
     try {
@@ -189,7 +184,6 @@ const FindMowers = () => {
     }
   };
 
-
   const fetchMatchingUsers = async (zip) => {
     try {
       const usersRef = collection(db, "userInfo");
@@ -206,29 +200,22 @@ const FindMowers = () => {
         }
       }
 
- 
       setMatchingUsers(users);
 
-      
-      setNoMowersFound(users.length === 0);
-
-    
       if (users.length > 0) {
         await fetchServiceAreas(users);
+        setNoMowersFound(false);
       } else {
         setServiceAreas([]);
+        setNoMowersFound(true);
       }
-
-      setMapLoaded(true);
     } catch (error) {
       console.log(error.message);
-      setNoMowersFound(true);
-      setMapLoaded(true);
     } finally {
+      setMapLoaded(true);
       setLoading(false);
     }
   };
-
 
   const fetchServiceAreas = async (users) => {
     try {
@@ -246,13 +233,13 @@ const FindMowers = () => {
         setMapLoaded(true);
       } else {
         console.log("No matching service areas found.");
+        setNoMowersFound(true);
       }
     } catch (error) {
       console.log(error.message);
     }
   };
   
-
   const initMap = async () => {
     setLoading(false);
 
@@ -261,7 +248,6 @@ const FindMowers = () => {
 
     const defaultLatLng = { lat: 40.7128, lng: -74.006 };
 
-   
     const savedLocation = localStorage.getItem("location");
     let centerLatLng = defaultLatLng;
 
@@ -349,22 +335,21 @@ const FindMowers = () => {
         centerLatLng.lng
       );
 
-      const userMarker = new window.google.maps.Marker({
-        position: geocodeLocation,
-        map: map,
-        title: `Entered Location: ${savedLocation}`,
-      });
+      // const userMarker = new window.google.maps.Marker({
+      //   position: geocodeLocation,
+      //   map: map,
+      //   title: `Entered Location: ${savedLocation}`,
+      // });
 
-      const infoWindow = new window.google.maps.InfoWindow({
-        content: `<div><strong>${savedLocation}</strong></div>`,
-      });
+      // const infoWindow = new window.google.maps.InfoWindow({
+      //   content: `<div><strong>${savedLocation}</strong></div>`,
+      // });
 
-      infoWindow.open(map, userMarker);
+      // infoWindow.open(map, userMarker);
       map.setCenter(geocodeLocation);
     }
   };
 
-  
   const geocodeLocation = async (location) => {
     try {
       let geocodeUrl = `https://maps.googleapis.com/maps/api/geocode/json?key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`;
@@ -394,14 +379,12 @@ const FindMowers = () => {
     }
   };
 
-
   useEffect(() => {
     if (mapLoaded && googleMapsLoaded) {
       initMap();
     }
   }, [mapLoaded, googleMapsLoaded, latLng, serviceAreas, matchingUsers]);
   
-
   const loadGoogleMaps = () => {
     const script = document.createElement("script");
     script.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`;
@@ -417,6 +400,17 @@ const FindMowers = () => {
 
  const handleSearch = async () => {
    setLoading(true);
+   setNoMowersFound(false);
+   setMatchingUsers([]);
+   setServiceAreas([]);
+   setMapLoaded(false);
+
+   const mapDiv = document.getElementById("map");
+   if (mapDiv) {
+     mapDiv.innerHTML = "";
+   }
+
+   
    let zip = "";
 
    if (isZipCode(searchInput)) {
@@ -439,9 +433,9 @@ const FindMowers = () => {
    navigate(`?zipcode=${zip}`);
    await fetchMatchingUsers(zip);
 
-   if (matchingUsers.length === 0) {
-     setNoMowersFound(true);
-   }
+  //  if (matchingUsers.length === 0) {
+  //    setNoMowersFound(true);
+  //  }
 
    setLoading(false);
  };

@@ -1,11 +1,11 @@
 import firebaseApi from "./firebaseApi";
 import { alertActions } from "../store/alertSlice";
-import { useDispatch } from "react-redux";
 
 export const ServiceEmail = async (
   senderEmail,
   recipientEmail,
   message,
+  number,
   setLoading,
   dispatch,
   backdropHandler
@@ -16,6 +16,7 @@ export const ServiceEmail = async (
       senderEmail: senderEmail,
       recipientEmail: recipientEmail,
       message: message,
+      number: number,
     });
 
     if (response.data.success) {
@@ -49,3 +50,4 @@ export const ServiceEmail = async (
     setLoading(false);
   }
 };
+

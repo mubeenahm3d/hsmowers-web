@@ -57,7 +57,7 @@ export default function ProfilePage() {
         //  console.log(`${doc.id} =>`, doc.data());
          fetchedData = doc.data();
          console.log(fetchedData.email);
-        //  setRequestModalEmail(fetchedData.email);
+         setRequestModalEmail(fetchedData.email);
         //  console.log("Email send:", fetchedData.email);
        });
 
@@ -173,15 +173,14 @@ export default function ProfilePage() {
           />
         }
       />
+      {uid === userData.uid && !userSubscription.status &&(
+        <Banner>
+          <p>Make your profile public and start getting customers.</p>
+          <button onClick={upgradeHandle}>Publish</button>
+        </Banner>
+      )}
 
       <StyledProfile>
-        {uid && uid === userData.uid && (
-          <div className="upgrade_banner">
-            <p>Make your profile public and start getting customers.</p>
-            <button onClick={upgradeHandle}>Publish</button>
-          </div>
-        )}
-
         {loading ? (
           <div className="loader-container">
             <CircularProgress
@@ -294,25 +293,30 @@ export default function ProfilePage() {
   );
 }
 
-const StyledProfile = styled.div`
-  width: 80%;
-  margin: 2rem auto var(--section-margin) auto;
-  min-height: calc(100vh - 80px);
+const Banner = styled.div`
 
-  .upgrade_banner {
     position: sticky;
-    top: 0; 
-    z-index: 1000; 
+    top: 0;
+    z-index: 1000;
     display: flex;
     justify-content: center;
     align-items: center;
     gap: 1rem;
     flex-wrap: wrap;
-    margin-bottom: 20px; 
+    background-color: coral;
+    padding: 5px;
+    width: 100%;
     p {
-      color: red;
+      color: white;
     }
-  }
+
+`;
+
+const StyledProfile = styled.div`
+  width: 80%;
+  margin: 2rem auto var(--section-margin) auto;
+  min-height: calc(100vh - 80px);
+
 
   .loader-container {
     display: flex;
