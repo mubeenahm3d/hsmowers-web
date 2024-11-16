@@ -265,6 +265,7 @@ const StyledRequest = styled.div`
       align-items: center;
       flex-direction: column;
       gap: 6px;
+
       margin-bottom: 1rem;
       .gray-btn {
         border-radius: 50px;
@@ -281,6 +282,7 @@ const StyledRequest = styled.div`
         justify-content: center;
         align-items: center;
         flex-wrap: wrap;
+        padding: 0 6%;
         gap: 10px;
         margin-top: 10px;
         .gray-btn.active {
