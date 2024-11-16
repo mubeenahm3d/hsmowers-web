@@ -175,7 +175,7 @@ export default function ProfilePage() {
       />
       {uid === userData.uid && !userSubscription.status &&(
         <Banner>
-          <p>Make your profile public and start getting customers.</p>
+          <p>Your Business Page is still in Preview Mode - Make it Public to start recieving customers?</p>
           <button onClick={upgradeHandle}>Publish</button>
         </Banner>
       )}
