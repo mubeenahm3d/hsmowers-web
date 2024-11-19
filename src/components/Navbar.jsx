@@ -30,6 +30,7 @@ export default function Navbar() {
   const [loading, setLoading] = useState(false); 
   const navigate = useNavigate();
   const userInfo = useSelector((state) => state.user.userInfo);
+  const userSubscription = useSelector((state) => state.user.subscription);
   const fullName = userInfo?.displayName || "";
 
   const [firstName, lastName] = fullName ? fullName.split(" ") : ["", ""];
@@ -48,7 +49,7 @@ export default function Navbar() {
 
   const handleNavigation = (path) => {
     navigate(path);
-    setDrawerOpen(false); // Close drawer on navigation
+    setDrawerOpen(false); 
   };
 
   const handleSignOut = async (event) => {
@@ -139,6 +140,14 @@ export default function Navbar() {
                 {" "}
                 <MenuItem onClick={handleMenuClose}>Edit Profile</MenuItem>
               </Link>
+              {userSubscription.status && (
+                <Link to="/subscription-detail">
+                  {" "}
+                  <MenuItem onClick={handleMenuClose}>
+                    Subscription Details
+                  </MenuItem>
+                </Link>
+              )}
               <MenuItem
                 onClick={handleSignOut}
                 sx={{ display: "flex", alignItems: "center" }}
@@ -149,7 +158,7 @@ export default function Navbar() {
                     size={20}
                     sx={{
                       color: "var(--primary-color)",
-                      marginLeft:'6px'
+                      marginLeft: "6px",
                     }}
                   />
                 )}
@@ -230,6 +239,14 @@ export default function Navbar() {
               <ListItem button onClick={() => handleNavigation("/upgrade")}>
                 <ListItemText primary="Pricing" />
               </ListItem>
+              {userSubscription.status && (
+                <ListItem
+                  button
+                  onClick={() => handleNavigation("/subscription-detail")}
+                >
+                  <ListItemText primary="Subscription Details" />
+                </ListItem>
+              )}
               {/* <ListItem button onClick={backdropHandler}>
                 <ListItemText primary="Contact Us" />
               </ListItem> */}

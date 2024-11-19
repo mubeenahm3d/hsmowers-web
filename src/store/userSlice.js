@@ -7,9 +7,10 @@ const user = createSlice({
     email: "",
     uid: null,
     photoURL: "",
+    primaryColor: "",
     emailVerified: false,
     subscription: {},
-    userInfo: {}
+    userInfo: {},
   },
   reducers: {
     setCurrentUser(state, action) {
@@ -19,14 +20,17 @@ const user = createSlice({
       state.photoURL = action.payload.photoURL;
       state.emailVerified = action.payload.emailVerified;
       state.subscription = action.payload.subscription || {};
-      state.userInfo = action.payload.userInfo || {}
+      state.userInfo = action.payload.userInfo || {};
     },
     setUserInfo(state, action) {
-      state.userInfo = action.payload
+      state.userInfo = action.payload;
     },
     setUserImage(state, action) {
       state.photoURL = action.payload;
     },
+    setTheme(state, action){
+      state.primaryColor = action.payload;
+    }
   },
 });
 

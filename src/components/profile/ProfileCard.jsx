@@ -30,7 +30,7 @@ export default function ProfileCard({ profileData }) {
           <h4>{carduserName}</h4>
           <h5>
             {Number(grade) === 9
-              ? "Fresher"
+              ? "Fresherman"
               : Number(grade) === 10
               ? "Sophomore"
               : Number(grade) === 11

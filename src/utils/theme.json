@@ -1,0 +1,15 @@
+{
+  "theme1": {
+    "id": "1",
+    "primaryColor": "red",
+    "secondaryColor": "orange"
+   
+  },
+  "theme2": {
+    "id": "2",
+    "primaryColor": "blue",
+    "secondaryColor": "green"
+   
+  }
+}
+

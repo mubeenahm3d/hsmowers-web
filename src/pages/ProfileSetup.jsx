@@ -335,7 +335,7 @@ function Step3({ form, onChangeHandler }) {
           onChange={onChangeHandler}
           required
         >
-          <option value={9}>Fresher</option>
+          <option value={9}>Fresherman</option>
           <option value={10}>Sophomore</option>
           <option value={11}>Junior</option>
           <option value={12}>Senior</option>

@@ -23,6 +23,8 @@ import BackdropWrapper from "./BackdropWrapper";
 import { useLocation } from "react-router";
 import SignInWithoutEmail from "../../authentication/SignInWithoutEmail";
 import Info from "./Info";
+import Lottie from "lottie-react";
+import LoaderAnimation from '../../assets/animation.json'
 
 export default function ProfileSetupModal({ backdropHandler, heading }) {
   const userInfo = useSelector((state) => state.user.userInfo);
@@ -119,10 +121,19 @@ async function fetchZipCodeFromAddress(address) {
     if (stepNum < 5) {
       if (stepNum === 4) {
         const zipCode = await fetchZipCodeFromAddress(form.address);
-        console.log("zipCode",zipCode);
+        console.log("zipCode", zipCode);
         setForm((prev) => ({ ...prev, zipCode }));
+
+        setStepNum(6);
+
+        setTimeout(() => {
+          setStepNum(5);
+        }, 5000); // 5-second delay
+      } else {
+        setStepNum((current) => current + 1);
       }
-      setStepNum((current) => current + 1);
+
+      // setStepNum((current) => current + 1);
     }
   };
 
@@ -189,6 +200,9 @@ async function fetchZipCodeFromAddress(address) {
         return <Step4 form={form} onChangeHandler={onChangeHandler} />;
       case 5:
         return <Step5 />;
+      case 6: 
+        return <Step6/>;
+
       default:
         return <Step1 form={form} onChangeHandler={onChangeHandler} />;
     }
@@ -210,7 +224,7 @@ async function fetchZipCodeFromAddress(address) {
             {renderSteps()}
             <p className="error-msg">{error}</p>
             <div className="btns">
-              {stepNum !== 5 && (
+              {stepNum !== 5 && stepNum !== 6 && (
                 <>
                   <button
                     disabled={stepNum === 1}
@@ -233,6 +247,7 @@ async function fetchZipCodeFromAddress(address) {
             <div className={`step ${stepNum > 2 ? "active" : ""}`} />
             <div className={`step ${stepNum > 3 ? "active" : ""}`} />
             <div className={`step ${stepNum > 4 ? "active" : ""}`} />
+            <div className={`step ${stepNum > 5 ? "active" : ""}`} />
           </div>
         </div>
       </StyledProfileSetup>
@@ -400,7 +415,7 @@ function Step3({ form, onChangeHandler }) {
           onChange={onChangeHandler}
           required
         >
-          <option value={9}>Fresher</option>
+          <option value={9}>Fresherman</option>
           <option value={10}>Sophomore</option>
           <option value={11}>Junior</option>
           <option value={12}>Senior</option>
@@ -574,36 +589,28 @@ function Step5() {
   );
 }
 
-// function Step5() {
-//   const navigate = useNavigate();
-//   useEffect(() => {
-//     const timer = setTimeout(() => {
-//       navigate("/login");
-//     }, 5000);
+function Step6() {
 
-//     return () => clearTimeout(timer);
-//   }, [navigate]);
-
-//   return (
-//     <>
-//       <div
-//         style={{
-//           display: "flex",
-//           justifyContent: "center",
-//           alignItems: "center",
-//           flexDirection: "column",
-//         }}
-//       >
-//         <Lottie
-//           animationData={LoaderAnimation}
-//           loop={true}
-//           style={{ width: 200, height: 200 }}
-//         />
-//         <p style={{ marginBottom: "34px" }}>Creating your account</p>
-//       </div>
-//     </>
-//   );
-// }
+  return (
+    <>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          flexDirection: "column",
+        }}
+      >
+        <Lottie
+          animationData={LoaderAnimation}
+          loop={true}
+          style={{ width: 200, height: 200 }}
+        />
+        <p style={{ marginBottom: "34px" }}>Creating your account</p>
+      </div>
+    </>
+  );
+}
 
 const StyledProfileSetup = styled.section`
   margin-top: var(--section-margin);

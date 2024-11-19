@@ -118,6 +118,7 @@ function App() {
   const fetchUserInfo = async (uid) => {
     try {
       const userInfo = await getDoc(doc(db, "userInfo", uid));
+      console.log("Color from db",userInfo.data());
       return userInfo.data();
     } catch (e) {
       console.log("error while fetching user info", e);
@@ -131,6 +132,7 @@ function App() {
     console.log("firebase userInfo", userInfo, "local userInfo", localUserInfo);
     if (!userInfo && localUserInfo && Object.keys(localUserInfo)?.length > 0) {
       console.log("saving in firebase");
+      const primaryColor = userInfo?.primaryColor || "";
       const newUserInfo = {
         uid: currentUser.uid,
         email: currentUser.email,
@@ -145,6 +147,13 @@ function App() {
           userInfo: newUserInfo,
         })
       );
+       dispatch(
+         userActions.setTheme({
+           ...primaryColor,
+           subscription,
+           userInfo: newUserInfo,
+         })
+       );
 
       try {
         await setDoc(doc(db, "userInfo", currentUser.uid), newUserInfo);

@@ -5,36 +5,58 @@ import BackdropWrapper from "../components/modals/BackdropWrapper";
 import Footer from "../components/Footer";
 import ProfileImg from "../assets/profilesvg.svg";
 import UploadModal from "../components/modals/UploadModal";
-import { FaCamera, FaPhoneAlt } from "react-icons/fa";
+import { FaCamera } from "react-icons/fa";
 import { useParams } from "react-router";
 import { useSelector } from "react-redux";
 import CircularProgress from "@mui/material/CircularProgress";
 import { collection, query, where, getDocs } from "firebase/firestore";
 import { db } from "../authentication/firebase";
-import { auth } from "../authentication/firebase";
 import { useNavigate } from "react-router-dom";
-import ActionModal from '../components/modals/ActionModal'
 import RequestModal from "../components/modals/RequestModal";
+import BannerImg from "../assets/profile-banner.jpg";
+import Mower from "../assets/mower.svg";
+import SnowRemoval from "../assets/snow removal.svg";
+import Edging from "../assets/edging.png";
+import LeafRemoval from "../assets/leaf-removal.png";
+import Weeding from "../assets/weeding.png";
+import BabySitting from "../assets/baby-sitting.png";
+import DogWalking from "../assets/dog-walking.svg";
+import WindowCleaning from "../assets/window-cleaning.svg";
+import CloseIcon from "@mui/icons-material/Close";
+import ThemeModal from "../components/modals/ThemeModal";
 
 export default function ProfilePage() {
   const userInfo = useSelector((state) => state.user.userInfo);
   const userSubscription = useSelector((state) => state.user.subscription);
 
   const uid = useSelector((state) => state.user.uid);
+  const userId = useSelector((state) => state.user.uid);
 
   const [userData, setUserData] = useState({});
   const [isHovered, setIsHovered] = useState(false);
   const [loading, setLoading] = useState(true);
   const [uploadModal, setUploadModal] = useState(false);
-  const [upgradeModal, setUpgradeModal] = useState(false);
   const [requestModal, setRequestModal] = useState(false);
   const [requestModalEmail, setRequestModalEmail] = useState(false);
+  const [mapModal, setMapModal] = useState(false);
+  const [themeModal, setThemeModal] = useState(false);
 
 
 
   const { username } = useParams();
   const navigate = useNavigate();
   
+
+  const serviceImages = {
+    mowing: Mower,
+    "snow removal": SnowRemoval,
+    edging: Edging,
+    "dog-walking": DogWalking,
+    "leaf-removal": LeafRemoval,
+    weeding: Weeding,
+    "baby-sitting": BabySitting,
+    "window-cleaning": WindowCleaning,
+  };
 
   const backdropHandler = () => {
     setUploadModal((current) => !current);
@@ -44,41 +66,41 @@ export default function ProfilePage() {
     backdropHandler();
   };
 
+  const getData = async () => {
+    const collectionRef = collection(db, "userInfo");
+    const q = query(collectionRef, where("userName", "==", username));
 
-   const getData = async () => {
-     const collectionRef = collection(db, "userInfo");
-     const q = query(collectionRef, where("userName", "==", username));
+    try {
+      const querySnapshot = await getDocs(q);
+      let fetchedData = {};
 
-     try {
-       const querySnapshot = await getDocs(q);
-       let fetchedData = {};
-
-       querySnapshot.forEach((doc) => {
+      querySnapshot.forEach((doc) => {
         //  console.log(`${doc.id} =>`, doc.data());
-         fetchedData = doc.data();
-         console.log(fetchedData.email);
-         setRequestModalEmail(fetchedData.email);
+        fetchedData = doc.data();
+        console.log(fetchedData.email);
+      
+        setRequestModalEmail(fetchedData.email);
         //  console.log("Email send:", fetchedData.email);
-       });
+      });
 
-       if (Object.keys(fetchedData).length > 0) {
-         setUserData(fetchedData)
-       }
-     } catch (error) {
-       console.error("Error fetching documents: ", error);
-     } finally {
-       setLoading(false);
-     }
-   };
+      if (Object.keys(fetchedData).length > 0) {
+        setUserData(fetchedData);
+      }
+    } catch (error) {
+      console.error("Error fetching documents: ", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-
+  const theme = userData.primaryColor;
 
   useEffect(() => {
     if (userInfo && username === userInfo.userName) {
       setTimeout(() => {
-        setUserData(userInfo); 
-        setLoading(false); 
-      }, 2000); 
+        setUserData(userInfo);
+        setLoading(false);
+      }, 2000);
     } else {
       getData();
       // setLoading(false);
@@ -95,7 +117,7 @@ export default function ProfilePage() {
       .join("|")}`;
     const center =
       path.length > 0 ? `center=${path[0].lat},${path[0].lng}` : "";
-    const size = "size=900x300";
+    const size = "size=300x200";
     const key = `${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`;
     return `${baseUrl}${size}&${center}&${pathParam}&${fillParam}&key=${key}`;
   };
@@ -103,63 +125,54 @@ export default function ProfilePage() {
   const serviceAreaPath = userData.serviceArea?.path || [];
   const mapUrl = generateMapUrl(serviceAreaPath);
 
-
-   const actionModalfunc = () => {
-     backdropHandlerUpgrade();
-     navigate("/upgrade");
-   };
-
-   const upgradeHandle = () => {
+  const upgradeHandle = () => {
     navigate("/upgrade");
-   }
-
-   const backdropHandlerUpgrade= () => {
-     setUpgradeModal((current) => !current);
-   };
-
+  };
 
   const requestModalfunc = () => {
     backdropHandlerRequest();
   };
 
-   const backdropHandlerRequest = () => {
-     setRequestModal((current) => !current);
-   };
+  const backdropHandlerRequest = () => {
+    setRequestModal((current) => !current);
+  };
+
+  const backdropHandlerMap = () => {
+     setMapModal((current) => !current);
+  }
+
+  const mapModalFunction = () => {
+    backdropHandlerMap();
+  };
+
+  const backdropHandlerTheme = () => {
+    setThemeModal((current) => !current);
+  };
+
+  const themeModalfunc = () => {
+    backdropHandlerTheme();
+  };
 
 
-    // useEffect(() => {
-      
-    //   if (!userSubscription || Object.keys(userSubscription).length === 0) {
-    //     const timer = setTimeout(() => {
-    //       setUpgradeModal(true);
-    //     }, 7000);
-
-    //     return () => clearTimeout(timer);
-    //   }
-    // }, [userSubscription]);
-
-
+  const generateMapUrlModal = (path) => {
+    const baseUrl = "https://maps.googleapis.com/maps/api/staticmap?";
+    const pathParam = `path=color:0xFF0000|weight:2|${path
+      .map((coord) => `${coord.lat},${coord.lng}`)
+      .join("|")}`;
+    const fillParam = `fillcolor:0x0000FF|weight:2|${path
+      .map((coord) => `${coord.lat},${coord.lng}`)
+      .join("|")}`;
+    const center =
+      path.length > 0 ? `center=${path[0].lat},${path[0].lng}` : "";
+    const size = "size=900x600";
+    const key = `${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`;
+    return `${baseUrl}${size}&${center}&${pathParam}&${fillParam}&key=${key}`;
+  };
+  const mapUrlModal = generateMapUrlModal(serviceAreaPath);
 
   return (
     <>
       <Navbar />
-
-      {/* {upgradeModal && uid && uid === userData.uid && (
-        <BackdropWrapper
-          open={upgradeModal}
-          smallSize={true}
-          backdropHandler={backdropHandlerUpgrade}
-          element={
-            <ActionModal
-              heading={"Publish Profile"}
-              msg={"Make your profile public and start getting customers."}
-              backdropHandler={backdropHandlerUpgrade}
-              buttonName={"Publish"}
-              action={actionModalfunc}
-            />
-          }
-        />
-      )} */}
 
       <BackdropWrapper
         open={requestModal}
@@ -173,14 +186,70 @@ export default function ProfilePage() {
           />
         }
       />
-      {uid === userData.uid && !userSubscription.status &&(
+
+      <BackdropWrapper
+        open={themeModal}
+        smallSize={true}
+        backdropHandler={backdropHandlerTheme}
+        element={
+          <ThemeModal
+            heading={"Select Theme"}
+            backdropHandler={backdropHandlerTheme}
+            userId={userId}
+          />
+        }
+      />
+
+      <BackdropWrapper
+        open={mapModal}
+        smallSize={true}
+        backdropHandler={backdropHandlerMap}
+        element={
+          <>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                marginBottom: "6px",
+              }}
+            >
+              <h4>Service Area</h4>
+              <button
+                className="icon"
+                onClick={() => backdropHandlerMap(false)}
+              >
+                <CloseIcon htmlColor="var(--primary-color)" fontSize="large" />
+              </button>
+            </div>
+
+            <div>
+              {serviceAreaPath.length > 0 ? (
+                <img
+                  src={mapUrlModal}
+                  alt="Service Area Map"
+                  style={{ borderRadius: "var(--l-radius)" }}
+                />
+              ) : (
+                <p>No service area Available</p>
+              )}
+            </div>
+          </>
+        }
+      />
+
+      {uid === userData.uid && !userSubscription.status && (
         <Banner>
-          <p>Your Business Page is still in Preview Mode - Make it Public to start recieving customers?</p>
+          <p>
+            Your Business Page is still in Preview Mode - Make it Public to
+            start recieving customers?
+          </p>
           <button onClick={upgradeHandle}>Publish</button>
         </Banner>
       )}
 
-      <StyledProfile>
+      <StyledProfile theme={theme}>
+        
         {loading ? (
           <div className="loader-container">
             <CircularProgress
@@ -201,48 +270,75 @@ export default function ProfilePage() {
                 />
               }
             />
-
-            <div className="profile-container">
-              <div
-                className="image-container"
-                onMouseEnter={() => userData.uid === uid && setIsHovered(true)}
-                onMouseLeave={() => userData.uid === uid && setIsHovered(false)}
-                onClick={() => {
-                  if (userData.uid === uid) {
-                    actionModalFunction();
-                  }
-                }}
-              >
-                <img src={userData.photoURL || ProfileImg} alt="Profile" />
-                {userData.uid === uid && isHovered && (
-                  <FaCamera className="change-btn" />
-                )}
+            <div className="profile-banner-container">
+              <div className="banner-image">
+                <img src={BannerImg} alt="Banner" />
               </div>
 
-              <div className="profile-details">
+              <div className="profile-container">
+                <div className="profile">
+                  <div
+                    className="image-container"
+                    onMouseEnter={() =>
+                      userData.uid === uid && setIsHovered(true)
+                    }
+                    onMouseLeave={() =>
+                      userData.uid === uid && setIsHovered(false)
+                    }
+                    onClick={() => {
+                      if (userData.uid === uid) {
+                        actionModalFunction();
+                      }
+                    }}
+                  >
+                    <img src={userData.photoURL || ProfileImg} alt="Profile" />
+                    {userData.uid === uid && isHovered && (
+                      <FaCamera className="change-btn" />
+                    )}
+                  </div>
+
+                  <div className="profile-buttons">
+                    {uid !== userData.uid && (
+                      <button onClick={requestModalfunc}>Contact</button>
+                    )}
+                    {uid === userData.uid && (
+                      <button onClick={themeModalfunc}>Theme</button>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="profile-details">
+              <div className="details">
                 <h4>{userData.displayName}</h4>
-                <p>{userData.userName}</p>
+
+                {/* <p>{}</p> */}
                 <p>
                   {Number(userData.grade) === 9
-                    ? "Fresher"
+                    ? "Fresherman"
                     : Number(userData.grade) === 10
                     ? "Sophomore"
                     : Number(userData.grade) === 11
                     ? "Junior"
                     : Number(userData.grade) === 12
                     ? "Senior"
-                    : null}
+                    : null}{" "}
+                  <span style={{ fontWeight: "bold" }}>. </span>
+                  {userData.schoolName}
                 </p>
+                <p style={{ marginTop: "20px" }}>{userData.description}</p>
               </div>
 
-              <div className="buttons">
-                {/* {uid === userData.uid && !userSubscription.status && (
-                  <button onClick={upgradeHandle} className="upgrade-btn">
-                    Upgrade
-                  </button>
-                )} */}
-                {uid !== userData.uid && (
-                  <button onClick={requestModalfunc}>Request Service</button>
+              <div className="service-area-map">
+                {serviceAreaPath.length > 0 ? (
+                  <img
+                    src={mapUrl}
+                    alt="Service Area Map"
+                    onClick={mapModalFunction}
+                  />
+                ) : (
+                  <p>No service area Available</p>
                 )}
               </div>
             </div>
@@ -250,39 +346,33 @@ export default function ProfilePage() {
             <hr />
 
             <div className="info-container">
-              <p>{userData.description}</p>
+              <h4>Services</h4>
+              <div className="profile-services">
+                {userData.services && userData.services.length > 0 ? (
+                  userData.services.map((service, index) => (
+                    <>
+                      <div key={index} className="service-item">
+                        <div className="image-border">
+                          <img
+                            src={serviceImages[service]}
+                            alt={service}
+                            style={{ width: "50px", height: "50px" }}
+                          />
+                        </div>
 
-              {userData.services && userData.services.length > 0 ? (
-                <div className="profile-services">
-                  {userData.services.map((service, index) => (
-                    <div key={index} className="service-btn">
-                      {service}
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <p>No services available</p>
-              )}
-
-              <div className="service-area">
-                <div className="service-area-header">
-                  <h5>Service Area</h5>
-                  {uid === userData.uid && (
-                    <button
-                      onClick={() => navigate("/select-area")}
-                      className="green-btn"
-                    >
-                      Edit Service Area
-                    </button>
-                  )}
-                </div>
-                <div className="service-area-map">
-                  {serviceAreaPath.length > 0 ? (
-                    <img src={mapUrl} alt="Service Area Map" />
-                  ) : (
-                    <p>No service area Available</p>
-                  )}
-                </div>
+                        <div>
+                          <h5>
+                            {service
+                              .replace(/-/g, " ")
+                              .replace(/^\w/, (c) => c.toUpperCase())}{" "}
+                          </h5>
+                        </div>
+                      </div>
+                    </>
+                  ))
+                ) : (
+                  <p>No services available</p>
+                )}
               </div>
             </div>
           </>
@@ -293,30 +383,88 @@ export default function ProfilePage() {
   );
 }
 
-const Banner = styled.div`
-
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 1rem;
-    flex-wrap: wrap;
-    background-color: coral;
-    padding: 5px;
-    width: 100%;
-    p {
-      color: white;
-    }
-
-`;
 
 const StyledProfile = styled.div`
-  width: 80%;
-  margin: 2rem auto var(--section-margin) auto;
   min-height: calc(100vh - 80px);
 
+  .profile-banner-container {
+    position: relative;
+    .banner-image {
+      position: relative;
+      img {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+      }
+    }
+
+    .profile-container {
+      position: absolute;
+      top: 40%;
+      left: 0;
+      width: 100%;
+      z-index: 1;
+      padding: 2rem;
+      .profile {
+        width: 90%;
+        margin: auto;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 1rem;
+        .image-container {
+          position: relative;
+          transition: filter 0.3s ease;
+
+          &:hover {
+            filter: brightness(0.7);
+          }
+
+          img {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            cursor: pointer;
+          }
+
+          .change-btn {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            width: 34px;
+            height: 34px;
+            z-index: 2;
+            cursor: pointer;
+            pointer-events: none;
+            opacity: 1;
+            transition: opacity 0.3s ease;
+          }
+        }
+
+        .profile-buttons {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          gap: 1rem;
+          flex-wrap: wrap;
+        }
+      }
+    }
+
+    @media (min-width: 600px) {
+      .profile-container {
+        top: 60%;
+        .profile {
+          justify-content: space-between;
+          width: 80%;
+        }
+      }
+    }
+  }
 
   .loader-container {
     display: flex;
@@ -328,81 +476,80 @@ const StyledProfile = styled.div`
   hr {
     margin-top: 2rem;
     margin-bottom: 2rem;
+    width: 80%;
+    margin: auto auto var(--section-margin) auto;
   }
 
-  .profile-container {
+  .profile-details {
     display: flex;
-    justify-content: flex-start;
+    justify-content: center;
     align-items: center;
-    flex-wrap: wrap;
     gap: 1rem;
-
-    .image-container {
-      position: relative;
-      transition: filter 0.3s ease;
-
-      &:hover {
-        filter: brightness(0.7);
-      }
+    flex-wrap: wrap;
+    width: 90%;
+    margin: 150px auto var(--section-margin) auto;
+    .service-area-map {
+      margin-top: 3rem;
 
       img {
-        width: 150px;
-        height: 150px;
-        border-radius: 50%;
-        object-fit: cover;
-        cursor: pointer;
-      }
-
-      .change-btn {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        color: white;
-        width: 34px;
-        height: 34px;
-        z-index: 2;
-        cursor: pointer;
-        pointer-events: none;
-        opacity: 1;
-        transition: opacity 0.3s ease;
+        width: 100%;
+        height: auto;
+        border-radius: var(--l-radius);
       }
     }
   }
 
   .buttons {
     display: flex;
-    flex-wrap: wrap;
     flex-direction: column;
     gap: 1rem;
-    /* .logout-btn {
-      min-width: 180px;
-      max-width: 180px;
-      color: var(--gray-color);
-      border: 1px solid var(--gray-color);
-      background-color: transparent;
-      padding: 4px 6px;
-    } */
-    button {
-      min-width: 180px;
-      max-width: 180px;
-      white-space: nowrap;
+    .profile-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      button {
+        /* min-width: 180px;
+        max-width: 180px;
+        white-space: nowrap; */
+        background-color: ${(props) => props.theme || "var(--primary-color)"};
+      }
     }
-
-    .upgrade-btn {
-      background-color: var(--primary-color);
-      color: white;
+    .service-area-map {
+      img {
+        width: 50%;
+        border-radius: var(--l-radius);
+      }
     }
   }
 
   .info-container {
+    width: 90%;
+    margin: auto auto var(--section-margin) auto;
     .profile-services {
       display: flex;
-      justify-content: flex-start;
+      justify-content: center;
       align-items: center;
       flex-wrap: wrap;
       gap: 2rem;
       margin-top: 3rem;
+      .service-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 1rem;
+
+        .image-border {
+          /* background-color: var(--primary-color); */
+          background-color: ${(props) => props.theme || "var(--primary-color)"};
+          width: 70px;
+          height: 70px;
+          border-radius: 50%;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+      }
 
       .service-btn {
         border-radius: 50px;
@@ -414,7 +561,7 @@ const StyledProfile = styled.div`
       }
     }
 
-    .service-area {
+    /* .service-area {
       margin-top: 3rem;
       .service-area-header {
         display: flex;
@@ -422,45 +569,61 @@ const StyledProfile = styled.div`
         align-items: center;
         gap: 1rem;
         flex-wrap: wrap;
-        /* button {
-          background: transparent;
-          border: 2px solid var(--primary-color);
-          color: var(--primary-color);
-        } */
       }
-      .service-area-map {
-        margin-top: 3rem;
-        img {
-          width: 100%;
-          height: auto;
-          border-radius: var(--l-radius);
-        }
-      }
-    }
+  
+    } */
   }
 
-  @media (min-width: 600px) {
+  @media (min-width: 630px) {
+    /* width: 80%;
+    margin: 90px auto var(--section-margin) auto; */
+
+    .info-container {
+      width: 80%;
+      margin: auto auto var(--section-margin) auto;
+      .profile-services {
+        justify-content: flex-start;
+      }
+    }
+
+    .profile-details {
+      width: 80%;
+      margin: 90px auto var(--section-margin) auto;
+      justify-content: space-between;
+    }
+
     .profile-container {
-      align-items: flex-start;
+      justify-content: space-between;
+      align-items: center;
       .buttons {
         align-self: flex-start;
-        .logout-btn {
-          padding: 8px 8px;
+        .profile-buttons {
+          flex-direction: row;
         }
       }
     }
   }
 
   @media (min-width: 1024px) {
-    .profile-container {
-      align-items: flex-start;
-      .buttons {
-        align-self: flex-start;
-        margin-left: auto;
-        .logout-btn {
-          padding: 8px 8px;
-        }
-      }
-    }
+  }
+`;
+
+
+
+const Banner = styled.div`
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  background-color: coral;
+  padding: 5px;
+  width: 100%;
+  p {
+    color: white;
+    text-align: center;
   }
 `;
