@@ -49,7 +49,7 @@ export default function ProfilePage() {
 
   const serviceImages = {
     mowing: Mower,
-    "snow removal": SnowRemoval,
+    "snow-removal": SnowRemoval,
     edging: Edging,
     "dog-walking": DogWalking,
     "leaf-removal": LeafRemoval,
@@ -93,7 +93,8 @@ export default function ProfilePage() {
     }
   };
 
-  const theme = userData.primaryColor;
+  const primarytheme = userData.primaryColor || "var(--primary-color)";
+  const secondarytheme = userData.secondaryColor || "var(--primary-color)";
 
   useEffect(() => {
     if (userInfo && username === userInfo.userName) {
@@ -202,7 +203,6 @@ export default function ProfilePage() {
 
       <BackdropWrapper
         open={mapModal}
-        smallSize={true}
         backdropHandler={backdropHandlerMap}
         element={
           <>
@@ -228,7 +228,7 @@ export default function ProfilePage() {
                 <img
                   src={mapUrlModal}
                   alt="Service Area Map"
-                  style={{ borderRadius: "var(--l-radius)" }}
+                  style={{ borderRadius: "var(--l-radius)", width:'100%', height:'auto' }}
                 />
               ) : (
                 <p>No service area Available</p>
@@ -248,8 +248,10 @@ export default function ProfilePage() {
         </Banner>
       )}
 
-      <StyledProfile theme={theme}>
-        
+      <StyledProfile
+        primarytheme={primarytheme}
+        secondarytheme={secondarytheme}
+      >
         {loading ? (
           <div className="loader-container">
             <CircularProgress
@@ -299,10 +301,17 @@ export default function ProfilePage() {
 
                   <div className="profile-buttons">
                     {uid !== userData.uid && (
-                      <button onClick={requestModalfunc}>Contact</button>
+                      <button
+                        onClick={requestModalfunc}
+                        className="contact-btn"
+                      >
+                        Contact
+                      </button>
                     )}
                     {uid === userData.uid && (
-                      <button onClick={themeModalfunc}>Theme</button>
+                      <button onClick={themeModalfunc} className="green-btn">
+                        Theme
+                      </button>
                     )}
                   </div>
                 </div>
@@ -400,7 +409,7 @@ const StyledProfile = styled.div`
 
     .profile-container {
       position: absolute;
-      top: 40%;
+      top: 58%;
       left: 0;
       width: 100%;
       z-index: 1;
@@ -451,6 +460,15 @@ const StyledProfile = styled.div`
           align-items: center;
           gap: 1rem;
           flex-wrap: wrap;
+          
+
+          .green-btn {
+            border: 2px solid ${(props) => props.secondarytheme};
+            color: ${(props) => props.secondarytheme};
+          }
+          .contact-btn {
+            background-color: ${(props) => props.secondarytheme};
+          }
         }
       }
     }
@@ -461,6 +479,9 @@ const StyledProfile = styled.div`
         .profile {
           justify-content: space-between;
           width: 80%;
+          .profile-buttons{
+            
+          }
         }
       }
     }
@@ -482,41 +503,18 @@ const StyledProfile = styled.div`
 
   .profile-details {
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
     gap: 1rem;
     flex-wrap: wrap;
     width: 90%;
-    margin: 150px auto var(--section-margin) auto;
+    margin: 120px auto var(--section-margin) auto;
     .service-area-map {
       margin-top: 3rem;
 
       img {
         width: 100%;
         height: auto;
-        border-radius: var(--l-radius);
-      }
-    }
-  }
-
-  .buttons {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    .profile-buttons {
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-      button {
-        /* min-width: 180px;
-        max-width: 180px;
-        white-space: nowrap; */
-        background-color: ${(props) => props.theme || "var(--primary-color)"};
-      }
-    }
-    .service-area-map {
-      img {
-        width: 50%;
         border-radius: var(--l-radius);
       }
     }
@@ -540,8 +538,7 @@ const StyledProfile = styled.div`
         gap: 1rem;
 
         .image-border {
-          /* background-color: var(--primary-color); */
-          background-color: ${(props) => props.theme || "var(--primary-color)"};
+          background-color: ${(props) => props.primarytheme};
           width: 70px;
           height: 70px;
           border-radius: 50%;

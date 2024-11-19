@@ -3,8 +3,8 @@ import styled from "styled-components";
 import CloseIcon from "@mui/icons-material/Close";
 import { db } from "../../authentication/firebase";
 import { doc, setDoc } from "firebase/firestore";
-import themes from "../../utils/theme.json";
-import LoadingButton from "../LoadingButton";
+import themes from "../../utils/themes.json";
+
 
 export default function ThemeModal({ backdropHandler, heading, userId }) {
   const [selectedTheme, setSelectedTheme] = useState(null);
@@ -19,8 +19,6 @@ export default function ThemeModal({ backdropHandler, heading, userId }) {
     
     try {
       const userRef = doc(db, "userInfo", userId);
-
-     
       await setDoc(
         userRef,
         {
