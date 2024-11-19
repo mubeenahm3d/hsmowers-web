@@ -7,7 +7,7 @@ const user = createSlice({
     email: "",
     uid: null,
     photoURL: "",
-    primaryColor: "",
+    theme: "",
     emailVerified: false,
     subscription: {},
     userInfo: {},
@@ -29,7 +29,7 @@ const user = createSlice({
       state.photoURL = action.payload;
     },
     setTheme(state, action){
-      state.primaryColor = action.payload;
+      state.theme = action.payload;
     }
   },
 });

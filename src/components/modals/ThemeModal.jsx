@@ -19,6 +19,7 @@ export default function ThemeModal({ backdropHandler, heading, userId }) {
     
     try {
       const userRef = doc(db, "userInfo", userId);
+
       await setDoc(
         userRef,
         {

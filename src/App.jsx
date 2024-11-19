@@ -132,7 +132,7 @@ function App() {
     console.log("firebase userInfo", userInfo, "local userInfo", localUserInfo);
     if (!userInfo && localUserInfo && Object.keys(localUserInfo)?.length > 0) {
       console.log("saving in firebase");
-      const primaryColor = userInfo?.primaryColor || "";
+      const theme = userInfo?.primaryColor || "";
       const newUserInfo = {
         uid: currentUser.uid,
         email: currentUser.email,
@@ -149,7 +149,7 @@ function App() {
       );
        dispatch(
          userActions.setTheme({
-           ...primaryColor,
+           ...theme,
            subscription,
            userInfo: newUserInfo,
          })

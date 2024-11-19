@@ -228,7 +228,11 @@ export default function ProfilePage() {
                 <img
                   src={mapUrlModal}
                   alt="Service Area Map"
-                  style={{ borderRadius: "var(--l-radius)", width:'100%', height:'auto' }}
+                  style={{
+                    borderRadius: "var(--l-radius)",
+                    width: "100%",
+                    height: "auto",
+                  }}
                 />
               ) : (
                 <p>No service area Available</p>
@@ -239,7 +243,7 @@ export default function ProfilePage() {
       />
 
       {uid === userData.uid && !userSubscription.status && (
-        <Banner>
+        <Banner secondarytheme={secondarytheme}>
           <p>
             Your Business Page is still in Preview Mode - Make it Public to
             start recieving customers?
@@ -460,7 +464,6 @@ const StyledProfile = styled.div`
           align-items: center;
           gap: 1rem;
           flex-wrap: wrap;
-          
 
           .green-btn {
             border: 2px solid ${(props) => props.secondarytheme};
@@ -479,8 +482,7 @@ const StyledProfile = styled.div`
         .profile {
           justify-content: space-between;
           width: 80%;
-          .profile-buttons{
-            
+          .profile-buttons {
           }
         }
       }
@@ -516,6 +518,7 @@ const StyledProfile = styled.div`
         width: 100%;
         height: auto;
         border-radius: var(--l-radius);
+        cursor: pointer;
       }
     }
   }
@@ -622,5 +625,9 @@ const Banner = styled.div`
   p {
     color: white;
     text-align: center;
+  }
+
+  button {
+    background-color: ${(props) => props.secondarytheme};
   }
 `;
