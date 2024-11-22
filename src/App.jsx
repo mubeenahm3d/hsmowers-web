@@ -152,6 +152,7 @@ function App() {
            selectedTheme: newUserInfo.selectedTheme,
            primaryColor: newUserInfo.primaryColor,
            secondaryColor: newUserInfo.secondaryColor,
+           secondaryColor: newUserInfo.tertiaryColor,
            themeId: newUserInfo.themeId,
          })
        );
