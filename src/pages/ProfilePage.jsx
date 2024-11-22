@@ -34,6 +34,9 @@ export default function ProfilePage() {
   const secondarytheme =
     useSelector((state) => state.user.userInfo.secondaryColor) ||
     "var(--primary-color)";
+     const tertiarytheme =
+       useSelector((state) => state.user.userInfo.tertiaryColor) ||
+       "var(--primary-color)";
 
   const uid = useSelector((state) => state.user.uid);
   const userId = useSelector((state) => state.user.uid);
@@ -243,7 +246,7 @@ export default function ProfilePage() {
       />
 
       {uid === userData.uid && !userSubscription.status && (
-        <Banner secondarytheme={secondarytheme}>
+        <Banner tertiarytheme={tertiarytheme}>
           <p>
             Your Business Page is still in Preview Mode - Make it Public to
             start recieving customers?
@@ -626,6 +629,6 @@ const Banner = styled.div`
   }
 
   button {
-    background-color: ${(props) => props.secondarytheme};
+    background-color: ${(props) => props.tertiarytheme};
   }
 `;

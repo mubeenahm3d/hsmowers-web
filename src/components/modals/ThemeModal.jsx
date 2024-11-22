@@ -8,25 +8,22 @@ import LoadingButton from "../LoadingButton";
 import { userActions } from "../../store/userSlice";
 import { useDispatch } from "react-redux";
 
-
 export default function ThemeModal({ backdropHandler, heading, userId }) {
   const [selectedTheme, setSelectedTheme] = useState(null);
-  const [loading, setLoading] = useState(false)
-  const dispatch = useDispatch()
-
+  const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
 
   const handleThemeClick = (theme) => {
     setSelectedTheme(theme);
   };
 
-
-   const handleApplyClick = () => {
-     if (selectedTheme) {
-       saveThemeToDatabase(selectedTheme); 
-     } else {
-       console.log("No theme selected");
-     }
-   };
+  const handleApplyClick = () => {
+    if (selectedTheme) {
+      saveThemeToDatabase(selectedTheme);
+    } else {
+      console.log("No theme selected");
+    }
+  };
 
   const saveThemeToDatabase = async (theme) => {
     setLoading(true);
@@ -37,18 +34,15 @@ export default function ThemeModal({ backdropHandler, heading, userId }) {
         themeId: themes[theme]?.id,
         primaryColor: themes[theme]?.primaryColor,
         secondaryColor: themes[theme]?.secondaryColor,
+        tertiaryColor: themes[theme]?.tertiaryColor,
       };
 
-      
       dispatch(userActions.setTheme(themeData));
-
       await setDoc(userRef, themeData, { merge: true });
       console.log("Theme and colors saved to database");
       backdropHandler(false);
     } catch (error) {
       console.error("Error saving theme:", error);
-      // Optionally revert Redux state if save fails
-      // dispatch(userActions.revertTheme());
     } finally {
       setLoading(false);
     }
@@ -69,20 +63,48 @@ export default function ThemeModal({ backdropHandler, heading, userId }) {
             className={`theme ${selectedTheme === "theme1" ? "selected" : ""}`}
             onClick={() => handleThemeClick("theme1")}
           >
-            <div className="color1"></div>
-            <div className="color2"></div>
+            <div
+              className="color-top"
+              style={{ backgroundColor: themes.theme1.primaryColor }}
+            ></div>
+            <div className="color-bottom">
+              <div
+                className="color-left"
+                style={{ backgroundColor: themes.theme1.secondaryColor }}
+              ></div>
+              <div
+                className="color-right"
+                style={{ backgroundColor: themes.theme1.tertiaryColor }}
+              ></div>
+            </div>
           </div>
 
           <div
-            className={`theme2 ${selectedTheme === "theme2" ? "selected" : ""}`}
+            className={`theme ${selectedTheme === "theme2" ? "selected" : ""}`}
             onClick={() => handleThemeClick("theme2")}
           >
-            <div className="color3"></div>
-            <div className="color4"></div>
+            <div
+              className="color-top"
+              style={{ backgroundColor: themes.theme2.primaryColor }}
+            ></div>
+            <div className="color-bottom">
+              <div
+                className="color-left"
+                style={{ backgroundColor: themes.theme2.secondaryColor }}
+              ></div>
+              <div
+                className="color-right"
+                style={{ backgroundColor: themes.theme2.tertiaryColor }}
+              ></div>
+            </div>
           </div>
         </div>
 
-        <LoadingButton loading={loading} title="Apply" onClick={handleApplyClick} />
+        <LoadingButton
+          loading={loading}
+          title="Apply"
+          onClick={handleApplyClick}
+        />
       </div>
     </StyledInfo>
   );
@@ -108,8 +130,7 @@ const StyledInfo = styled.section`
       flex-direction: row;
       gap: 1rem;
 
-      .theme,
-      .theme2 {
+      .theme {
         width: 80px;
         height: 80px;
         border-radius: 50%;
@@ -117,52 +138,30 @@ const StyledInfo = styled.section`
         position: relative;
         cursor: pointer;
         transition: border 0.3s ease;
+        display: flex;
+        flex-direction: column;
       }
 
-      .color1 {
-        background-color: red;
+      .color-top {
         width: 100%;
         height: 50%;
-        position: absolute;
-        top: 0;
-        left: 0;
       }
 
-      .color2 {
-        background-color: orange;
+      .color-bottom {
+        display: flex;
         width: 100%;
         height: 50%;
-        position: absolute;
-        bottom: 0;
-        left: 0;
-      }
 
-      .color3 {
-        background-color: blue;
-        width: 100%;
-        height: 50%;
-        position: absolute;
-        top: 0;
-        left: 0;
-      }
-
-      .color4 {
-        background-color: green;
-        width: 100%;
-        height: 50%;
-        position: absolute;
-        bottom: 0;
-        left: 0;
+        .color-left,
+        .color-right {
+          width: 50%;
+          height: 100%;
+        }
       }
 
       .selected {
         border: 3px solid #000;
       }
-    }
-
-    span {
-      max-width: 35ch;
-      text-align: center;
     }
   }
 `;

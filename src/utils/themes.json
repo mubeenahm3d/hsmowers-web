@@ -2,13 +2,15 @@
   "theme1": {
     "id": "1",
     "primaryColor": "red",
-    "secondaryColor": "orange"
+    "secondaryColor": "orange",
+    "tertiaryColor": "yellow"
    
   },
   "theme2": {
     "id": "2",
     "primaryColor": "blue",
-    "secondaryColor": "green"
+    "secondaryColor": "green",
+    "tertiaryColor": "purple"
    
   }
 }

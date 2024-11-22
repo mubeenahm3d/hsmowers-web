@@ -36,6 +36,7 @@ const user = createSlice({
         themeId: action.payload.themeId,
         primaryColor: action.payload.primaryColor,
         secondaryColor: action.payload.secondaryColor,
+        tertiaryColor: action.payload.tertiaryColor,
       };
     },
   },
