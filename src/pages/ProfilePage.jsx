@@ -20,14 +20,20 @@ import Edging from "../assets/edging.png";
 import LeafRemoval from "../assets/leaf-removal.png";
 import Weeding from "../assets/weeding.png";
 import BabySitting from "../assets/baby-sitting.png";
-import DogWalking from "../assets/dog-walking.svg";
-import WindowCleaning from "../assets/window-cleaning.svg";
+import DogWalking from "../assets/dog walking.svg";
+import WindowCleaning from "../assets/window cleaning.svg";
 import CloseIcon from "@mui/icons-material/Close";
 import ThemeModal from "../components/modals/ThemeModal";
 
 export default function ProfilePage() {
   const userInfo = useSelector((state) => state.user.userInfo);
   const userSubscription = useSelector((state) => state.user.subscription);
+  const primarytheme =
+    useSelector((state) => state.user.userInfo.primaryColor) ||
+    "var(--primary-color)";
+  const secondarytheme =
+    useSelector((state) => state.user.userInfo.secondaryColor) ||
+    "var(--primary-color)";
 
   const uid = useSelector((state) => state.user.uid);
   const userId = useSelector((state) => state.user.uid);
@@ -41,11 +47,8 @@ export default function ProfilePage() {
   const [mapModal, setMapModal] = useState(false);
   const [themeModal, setThemeModal] = useState(false);
 
-
-
   const { username } = useParams();
   const navigate = useNavigate();
-  
 
   const serviceImages = {
     mowing: Mower,
@@ -78,7 +81,7 @@ export default function ProfilePage() {
         //  console.log(`${doc.id} =>`, doc.data());
         fetchedData = doc.data();
         console.log(fetchedData.email);
-      
+
         setRequestModalEmail(fetchedData.email);
         //  console.log("Email send:", fetchedData.email);
       });
@@ -93,9 +96,7 @@ export default function ProfilePage() {
     }
   };
 
-  const primarytheme = userData.primaryColor || "var(--primary-color)";
-  const secondarytheme = userData.secondaryColor || "var(--primary-color)";
-
+ 
   useEffect(() => {
     if (userInfo && username === userInfo.userName) {
       setTimeout(() => {
@@ -139,8 +140,8 @@ export default function ProfilePage() {
   };
 
   const backdropHandlerMap = () => {
-     setMapModal((current) => !current);
-  }
+    setMapModal((current) => !current);
+  };
 
   const mapModalFunction = () => {
     backdropHandlerMap();
@@ -153,7 +154,6 @@ export default function ProfilePage() {
   const themeModalfunc = () => {
     backdropHandlerTheme();
   };
-
 
   const generateMapUrlModal = (path) => {
     const baseUrl = "https://maps.googleapis.com/maps/api/staticmap?";
@@ -325,8 +325,6 @@ export default function ProfilePage() {
             <div className="profile-details">
               <div className="details">
                 <h4>{userData.displayName}</h4>
-
-                {/* <p>{}</p> */}
                 <p>
                   {Number(userData.grade) === 9
                     ? "Fresherman"

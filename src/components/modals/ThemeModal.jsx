@@ -4,37 +4,53 @@ import CloseIcon from "@mui/icons-material/Close";
 import { db } from "../../authentication/firebase";
 import { doc, setDoc } from "firebase/firestore";
 import themes from "../../utils/themes.json";
+import LoadingButton from "../LoadingButton";
+import { userActions } from "../../store/userSlice";
+import { useDispatch } from "react-redux";
 
 
 export default function ThemeModal({ backdropHandler, heading, userId }) {
   const [selectedTheme, setSelectedTheme] = useState(null);
+  const [loading, setLoading] = useState(false)
+  const dispatch = useDispatch()
 
 
   const handleThemeClick = (theme) => {
     setSelectedTheme(theme);
-    saveThemeToDatabase(theme);
   };
 
+
+   const handleApplyClick = () => {
+     if (selectedTheme) {
+       saveThemeToDatabase(selectedTheme); 
+     } else {
+       console.log("No theme selected");
+     }
+   };
+
   const saveThemeToDatabase = async (theme) => {
-    
+    setLoading(true);
     try {
       const userRef = doc(db, "userInfo", userId);
+      const themeData = {
+        selectedTheme: theme,
+        themeId: themes[theme]?.id,
+        primaryColor: themes[theme]?.primaryColor,
+        secondaryColor: themes[theme]?.secondaryColor,
+      };
 
-      await setDoc(
-        userRef,
-        {
-          selectedTheme: theme,
-          themeId: themes[theme]?.id,
-          primaryColor: themes[theme]?.primaryColor,
-          secondaryColor: themes[theme]?.secondaryColor,
-        },
-        { merge: true }
-       
-      );
+      
+      dispatch(userActions.updateThemeAndColors(themeData));
+
+      await setDoc(userRef, themeData, { merge: true });
       console.log("Theme and colors saved to database");
-       backdropHandler(false);
+      backdropHandler(false);
     } catch (error) {
       console.error("Error saving theme:", error);
+      // Optionally revert Redux state if save fails
+      // dispatch(userActions.revertTheme());
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -66,8 +82,7 @@ export default function ThemeModal({ backdropHandler, heading, userId }) {
           </div>
         </div>
 
-
-        {/* <button>Apply</button> */}
+        <LoadingButton loading={loading} title="Apply" onClick={handleApplyClick} />
       </div>
     </StyledInfo>
   );
