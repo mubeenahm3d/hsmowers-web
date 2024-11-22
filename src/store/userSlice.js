@@ -28,10 +28,8 @@ const user = createSlice({
     setUserImage(state, action) {
       state.photoURL = action.payload;
     },
-    // setTheme(state, action){
-    //   state.theme = action.payload;
-    // }
-    updateThemeAndColors(state, action) {
+   
+    setTheme(state, action) {
       state.userInfo = {
         ...state.userInfo,
         selectedTheme: action.payload.selectedTheme,

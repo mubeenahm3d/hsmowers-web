@@ -40,7 +40,7 @@ export default function ThemeModal({ backdropHandler, heading, userId }) {
       };
 
       
-      dispatch(userActions.updateThemeAndColors(themeData));
+      dispatch(userActions.setTheme(themeData));
 
       await setDoc(userRef, themeData, { merge: true });
       console.log("Theme and colors saved to database");

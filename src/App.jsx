@@ -148,7 +148,7 @@ function App() {
         })
       );
        dispatch(
-         userActions.updateThemeAndColors({
+         userActions.setTheme({
            selectedTheme: newUserInfo.selectedTheme,
            primaryColor: newUserInfo.primaryColor,
            secondaryColor: newUserInfo.secondaryColor,
