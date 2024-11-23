@@ -589,7 +589,7 @@ const StyledProfile = styled.div`
 
     .profile-details {
       width: 80%;
-      margin: 90px auto var(--section-margin) auto;
+      margin: 100px auto var(--section-margin) auto;
       justify-content: space-between;
     }
 
@@ -605,8 +605,7 @@ const StyledProfile = styled.div`
     }
   }
 
-  @media (min-width: 1024px) {
-  }
+  
 `;
 
 
