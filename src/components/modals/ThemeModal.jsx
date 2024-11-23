@@ -98,6 +98,47 @@ export default function ThemeModal({ backdropHandler, heading, userId }) {
               ></div>
             </div>
           </div>
+
+          <div
+            className={`theme ${selectedTheme === "theme3" ? "selected" : ""}`}
+            onClick={() => handleThemeClick("theme3")}
+          >
+            <div
+              className="color-top"
+              style={{ backgroundColor: themes.theme3.primaryColor }}
+            ></div>
+            <div className="color-bottom">
+              <div
+                className="color-left"
+                style={{ backgroundColor: themes.theme3.secondaryColor }}
+              ></div>
+              <div
+                className="color-right"
+                style={{ backgroundColor: themes.theme3.tertiaryColor }}
+              ></div>
+            </div>
+          </div>
+          <div
+            className={`theme ${selectedTheme === "theme4" ? "selected" : ""}`}
+            onClick={() => handleThemeClick("theme4")}
+          >
+            <div
+              className="color-top"
+              style={{ backgroundColor: themes.theme4.primaryColor }}
+            ></div>
+            <div className="color-bottom">
+              <div
+                className="color-left"
+                style={{ backgroundColor: themes.theme4.secondaryColor }}
+              ></div>
+              <div
+                className="color-right"
+                style={{ backgroundColor: themes.theme4.tertiaryColor }}
+              ></div>
+            </div>
+          </div>
+
+         
         </div>
 
         <LoadingButton
@@ -122,12 +163,16 @@ const StyledInfo = styled.section`
     align-items: center;
     justify-content: space-between;
     flex-direction: column;
+    flex-wrap : wrap;
     gap: 1rem;
     margin-top: 2rem;
 
     .themes {
       display: flex;
-      flex-direction: row;
+      /* flex-direction: row; */
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
       gap: 1rem;
 
       .theme {

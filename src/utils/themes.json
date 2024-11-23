@@ -1,16 +1,30 @@
 {
   "theme1": {
     "id": "1",
-    "primaryColor": "red",
-    "secondaryColor": "orange",
-    "tertiaryColor": "yellow"
+    "primaryColor": "#134E5E",
+    "secondaryColor": "#3A506B",
+    "tertiaryColor": "#4CB8B4"
    
   },
   "theme2": {
     "id": "2",
-    "primaryColor": "blue",
-    "secondaryColor": "green",
-    "tertiaryColor": "purple"
+    "primaryColor": "#4C1D95",
+    "secondaryColor": "#3730A3",
+    "tertiaryColor": "#0EA5E9"
+   
+  },
+  "theme3": {
+    "id": "3",
+    "primaryColor": "#3E4A59",
+    "secondaryColor": "#6A3E2F",
+    "tertiaryColor": "#C7A500"
+   
+  },
+  "theme4": {
+    "id": "4",
+    "primaryColor": "#D5006D",
+    "secondaryColor": "#5A2A83",
+    "tertiaryColor": "#F2C14E"
    
   }
 }
