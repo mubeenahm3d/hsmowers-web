@@ -28,15 +28,16 @@ import ThemeModal from "../components/modals/ThemeModal";
 export default function ProfilePage() {
   const userInfo = useSelector((state) => state.user.userInfo);
   const userSubscription = useSelector((state) => state.user.subscription);
-  const primarytheme =
-    useSelector((state) => state.user.userInfo.primaryColor) ||
-    "var(--primary-color)";
-  const secondarytheme =
-    useSelector((state) => state.user.userInfo.secondaryColor) ||
-    "var(--primary-color)";
-     const tertiarytheme =
-       useSelector((state) => state.user.userInfo.tertiaryColor) ||
-       "var(--primary-color)";
+  
+  // const primarytheme =
+  //   useSelector((state) => state.user.userInfo.primaryColor) ||
+  //   "var(--primary-color)";
+  // const secondarytheme =
+  //   useSelector((state) => state.user.userInfo.secondaryColor) ||
+  //   "var(--primary-color)";
+  //    const tertiarytheme =
+  //      useSelector((state) => state.user.userInfo.tertiaryColor) ||
+  //      "var(--primary-color)";
 
   const uid = useSelector((state) => state.user.uid);
   const userId = useSelector((state) => state.user.uid);
@@ -52,6 +53,10 @@ export default function ProfilePage() {
 
   const { username } = useParams();
   const navigate = useNavigate();
+
+  const primarytheme = userData.primaryColor || "var(--primary-color)";
+  const secondarytheme = userData.secondaryColor || "var(--primary-color)";
+  const tertiarytheme = userData.tertiaryColor || "var(--primary-color)";
 
   const serviceImages = {
     mowing: Mower,

@@ -1,7 +1,7 @@
 const functions = require("firebase-functions");
 const admin = require("firebase-admin");
-const {sendWelcomeEmail} = require("./controllers/emails.js"); 
-const {serviceEmail} = require("./controllers/emails.js"); 
+const { sendWelcomeEmail } = require("./controllers/emails.js");
+const { serviceEmail } = require("./controllers/emails.js");
 
 admin.initializeApp();
 
@@ -13,18 +13,15 @@ exports.sendWelcomeEmailOnLogin = functions.https.onRequest(
     const result = await sendWelcomeEmail(email);
 
     if (result.success) {
-      res.status(200).send({success: true, response: result.response});
+      res.status(200).send({ success: true, response: result.response });
     } else {
-      res.status(500).send({success: false, error: result.error});
+      res.status(500).send({ success: false, error: result.error });
     }
   }
 );
 
-
-
 exports.sendEmailOnRequest = functions.https.onRequest(async (req, res) => {
-  const {senderEmail, recipientEmail, message, number} =
-    req.body;
+  const { senderEmail, recipientEmail, message, number } = req.body;
 
   console.log(
     "Function triggered for sender:",
@@ -36,7 +33,6 @@ exports.sendEmailOnRequest = functions.https.onRequest(async (req, res) => {
   console.log("Request body received:", req.body);
   console.log("PhoneNumber received:", number);
 
-
   const result = await serviceEmail(
     senderEmail,
     recipientEmail,
@@ -45,8 +41,10 @@ exports.sendEmailOnRequest = functions.https.onRequest(async (req, res) => {
   );
 
   if (result.success) {
-    res.status(200).send({success: true, response: result.response});
+    res.status(200).send({ success: true, response: result.response });
   } else {
-    res.status(500).send({success: false, error: result.error});
+    res.status(500).send({ success: false, error: result.error });
   }
 });
+
+

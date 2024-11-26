@@ -35,13 +35,7 @@ const sendWelcomeEmail = async (email) => {
   }
 };
 
-
-const serviceEmail = async (
-  senderEmail,
-  recipientEmail,
-  message,
-  number
-) => {
+const serviceEmail = async (senderEmail, recipientEmail, message, number) => {
   console.log("Sending email from", "to", recipientEmail);
 
   try {
@@ -84,7 +78,4 @@ const serviceEmail = async (
   }
 };
 
-
 module.exports = { sendWelcomeEmail, serviceEmail };
-
-
