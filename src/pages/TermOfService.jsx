@@ -9,12 +9,12 @@ export default function TermOfService() {
       <Navbar />
       <Main>
         <div className="content">
-          <h4>BREAK BREAD INC. TERMS OF SERVICE</h4>
+          <h4>HighSchoolMowers Terms of Service</h4>
           <p>Effective Date: September 5, 2024</p>
 
           <h5>1. Introduction</h5>
           <p>
-            1.1 Welcome to Break Bread Inc. ("Company", "we", "us", or "our").
+            1.1 Welcome to High School Mowers ("Company", "we", "us", or "our").
             Our website and services are provided subject to the following Terms
             of Service ("Terms").
           </p>
@@ -27,10 +27,11 @@ export default function TermOfService() {
 
           <h5>3. Services</h5>
           <p>
-            3.1 We provide a platform for recipe suggestion and meal planning
-            where users can search recipes and add to their meal plan with a
-            built-in calendar and shop the ingredients. It also has ai recipe
-            generation, nutrition stats and more.
+            3.1 We provide a platform that connects users with mowing service
+            providers, enabling customers to find and book lawn care services in
+            their area. The platform includes tools for location-based searches,
+            service availability checks, and communication with service
+            providers.
           </p>
 
           <h5>4. User Conduct</h5>
@@ -43,56 +44,54 @@ export default function TermOfService() {
 
           <h5>5. Intellectual Property</h5>
           <p>
-            5.1 All content and materials on our website are owned by us or our
-            licensors.
+            5.1 All content and materials on our website and services, including
+            text, graphics, logos, and software, are owned by us or our
+            licensors. Unauthorized use is prohibited.
           </p>
 
           <h5>6. Termination</h5>
           <p>
-            6.1 We may terminate or suspend your access to our services at any
-            time, without notice, for any reason.
+            6.1 We reserve the right to terminate or suspend your access to our
+            services at any time, without notice, for any reason, including but
+            not limited to violation of these Terms.
           </p>
 
           <h5>7. Limitation of Liability</h5>
           <p>
-            7.1 In no event shall we be liable for any damages, including
-            consequential, incidental, or punitive damages.
+            7.1 In no event shall we be liable for any damages, including but
+            not limited to consequential, incidental, or punitive damages,
+            arising from your use of our services.
           </p>
 
           <h5>8. Governing Law</h5>
           <p>
             8.1 These Terms shall be governed by and construed in accordance
-            with the laws of United States of America.
+            with the laws of the United States of America.
           </p>
 
           <h5>9. Changes to Terms</h5>
           <p>
-            9.1 We reserve the right to modify these Terms at any time, without
-            notice.
+            9.1 We reserve the right to modify these Terms at any time. If
+            changes are made, we will update the "Effective Date" and post the
+            revised Terms on our website. Continued use of our services
+            constitutes acceptance of the updated Terms.
           </p>
 
-          <h5>10. Nutrition Information Disclaimer</h5>
+          <h5>10. Service Disclaimer</h5>
           <p>
-            10.1 The recipes, meal planning, and nutritional tracking features
-            provided by our application are intended for informational and
-            educational purposes only. While we strive to offer accurate and
-            up-to-date information, we are not licensed nutritionists,
-            dietitians, or healthcare professionals. The nutritional content of
-            recipes is based on available data and may not be completely
-            accurate or applicable to individual dietary needs. This app should
-            not be considered a substitute for professional medical or
-            nutritional advice. Users are encouraged to consult with a doctor,
-            dietitian, or other qualified health professional before making any
-            changes to their diet or relying on the information provided by this
-            application. By using this app, you agree that we are not
-            responsible or liable for any inaccuracies, omissions, or
-            health-related consequences that may arise.
+            10.1 High School Mowers acts as a platform connecting users with
+            mowing service providers. We do not guarantee the quality,
+            availability, or timeliness of services provided by third-party
+            providers. By using our services, you acknowledge that any
+            agreements or disputes with service providers are independent of us,
+            and we are not responsible for any issues arising from these
+            interactions.
           </p>
 
           <h5>11. Contact Us</h5>
           <p>
-            11.1 If you have any questions or concerns, please contact us at
-            steven@familyfoodandhealth.com By using our services, you
+            11.1 If you have any questions or concerns about these Terms, please
+            contact us at admin@highschoolmowers.com. By using our services, you
             acknowledge that you have read, understood, and agree to be bound by
             these Terms.
           </p>
