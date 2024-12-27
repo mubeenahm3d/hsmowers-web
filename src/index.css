@@ -18,7 +18,8 @@
   --heading-margin: 50px;
 
   --background-color: #fefefe;
-  --primary-color: #1dbf73;
+  --primary-color: #2DC65B;
+  --big-btn-color: #E94C4F;
   --primary-light-color: #84dfb5;
   --primary-dark-color: #1ca251;
   --secondary-color: #f9ad3e;
@@ -28,8 +29,8 @@
   --accent-light-color: #f19092;
   --accent-dark-color: #e31f22;
 
-  --text-color: black;
-  --text-light-color: #1d2530;
+  --text-color: #002140;
+  --text-light-color: #72767E;
   --text-white-color: white;
   --text-gray-color: #9e9e9e;
 
