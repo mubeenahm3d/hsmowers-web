@@ -7,6 +7,7 @@ import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "../authentication/firebase";
 import { CircularProgress } from "@mui/material";
 import { useSelector } from "react-redux";
+import Heading from "../components/Heading";
 
 export default function Upgrade() {
   const [isYearly, setIsYearly] = useState(false);
@@ -46,7 +47,7 @@ export default function Upgrade() {
       });
       console.log("prices", fetchedPrices);
 
-      console.log("fetched prices", fetchedPrices)
+      console.log("fetched prices", fetchedPrices);
       setPrices(fetchedPrices);
     } catch (e) {
       console.log("error while fetching prices", e);
@@ -62,28 +63,19 @@ export default function Upgrade() {
   return (
     <>
       <Navbar />
+      <Heading title="Pricing" />
       <StyledUpgrade>
         {/* {Object.keys(subscription).length > 0 && (
           <div className="current-plan">
             <h5>{`You're subscribed to `}</h5>
           </div>
         )} */}
-        <h2 className="heading">Choose Your Plan</h2>
-        <div className="toggle-container">
-          <div className="toggle-button">
-            <button
-              className={`toggle-option ${!isYearly ? "active" : ""}`}
-              onClick={() => setIsYearly(false)}
-            >
-              Monthly
-            </button>
-            <button
-              className={`toggle-option ${isYearly ? "active" : ""}`}
-              onClick={() => setIsYearly(true)}
-            >
-              Annually
-            </button>
-          </div>
+        <div className="text">
+          <h3>Join Us and Showcase Your Talent Today!</h3>
+          <p>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sit lorem
+            sagittis, proin ut lectus sed ut. Enim egestas enim id duis.
+          </p>
         </div>
         <div className="pricing">
           {loading ? (
@@ -96,67 +88,27 @@ export default function Upgrade() {
             />
           )}
         </div>
-        <p className="description">
-          ClearSlate.io is a service built with passion, but maintaining it
-          isn't without costs. I’m committed to keeping the site ad-free, and
-          your support helps make that possible. For just $4, you can enjoy
-          unlimited use of our web interface. <br />
-          <br /> For businesses and those requiring more advanced integration,
-          we offer direct API access. Please reach out through our contact form
-          for details. ClearSlate.io can also be deployed in your cloud or
-          on-premises environment to meet your specific needs.
-        </p>
       </StyledUpgrade>
-      <Footer />
+      {/* <Footer /> */}
     </>
   );
 }
 
 const StyledUpgrade = styled.div`
-  min-height: 75vh;
+  width: var(--section-width);
+  margin: auto;
+  margin-top: var(--section-margin);
   display: flex;
   align-items: center;
-  flex-direction: column;
-  margin-top: var(--section-margin);
-  .heading {
-    font-weight: 600;
-    margin-bottom: var(--section-margin);
-    text-align: center;
-  }
-  .description {
-    margin: 2rem 1rem;
-    max-width: 70ch;
-  }
-  .toggle-button {
-    display: flex;
-    width: fit-content;
-    border: 1px solid #ccc;
-    border-radius: 30px;
-    overflow: hidden;
-    padding: 4px;
-    background-color: #f1f1f1;
-    margin-bottom: 1.4rem;
-
-    .toggle-option {
-      background: transparent;
-      cursor: pointer;
-      color: var(--primary-color);
-      transition: background-color 0.3s;
-      transition: color 0.3s;
-      outline: none;
-      font-weight: 600;
-      border-radius: 30px;
-    }
-
-    .active {
-      background-color: var(--primary-color);
-      color: white;
+  justify-content: center;
+  gap: 24px;
+  .text{
+    h3{
+      max-width: 19ch;
+      margin-bottom: var(--heading-gap);
     }
   }
   .pricing {
     width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
   }
 `;

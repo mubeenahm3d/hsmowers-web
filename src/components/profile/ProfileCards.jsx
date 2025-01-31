@@ -56,6 +56,7 @@ const StyledProfileCards = styled.section`
   justify-content: space-between;
   gap: 1.4rem;
   flex-wrap: wrap;
+  min-height: 30vh;
   .loader-container {
     display: flex;
     justify-content: center;

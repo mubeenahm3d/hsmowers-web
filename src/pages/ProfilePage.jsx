@@ -13,7 +13,7 @@ import { collection, query, where, getDocs } from "firebase/firestore";
 import { db } from "../authentication/firebase";
 import { useNavigate } from "react-router-dom";
 import RequestModal from "../components/modals/RequestModal";
-import BannerImg from "../assets/profile-banner.jpg";
+import BannerImg from "../assets/profile-page-grass.png";
 import Mower from "../assets/lawn-mower.svg";
 import SnowRemoval from "../assets/snow removal.svg";
 import Edging from "../assets/edging.svg";
@@ -24,11 +24,15 @@ import DogWalking from "../assets/dog walking.svg";
 import WindowCleaning from "../assets/window cleaning.svg";
 import CloseIcon from "@mui/icons-material/Close";
 import ThemeModal from "../components/modals/ThemeModal";
+import MenuBookOutlinedIcon from "@mui/icons-material/MenuBookOutlined";
+import LoadingButton from "../components/LoadingButton";
+import { MailOutlineRounded } from "@mui/icons-material";
+import ServiceCard from "../components/profile/ServiceCard";
 
 export default function ProfilePage() {
   const userInfo = useSelector((state) => state.user.userInfo);
   const userSubscription = useSelector((state) => state.user.subscription);
-  
+
   // const primarytheme =
   //   useSelector((state) => state.user.userInfo.primaryColor) ||
   //   "var(--primary-color)";
@@ -104,7 +108,6 @@ export default function ProfilePage() {
     }
   };
 
- 
   useEffect(() => {
     if (userInfo && username === userInfo.userName) {
       setTimeout(() => {
@@ -250,7 +253,7 @@ export default function ProfilePage() {
         }
       />
 
-      {uid === userData.uid && !userSubscription.status && (
+      {/* {uid === userData.uid && !userSubscription.status && (
         <Banner tertiarytheme={tertiarytheme}>
           <p>
             Your Business Page is still in Preview Mode - Make it Public to
@@ -258,7 +261,7 @@ export default function ProfilePage() {
           </p>
           <button onClick={upgradeHandle}>Publish</button>
         </Banner>
-      )}
+      )} */}
 
       <StyledProfile
         primarytheme={primarytheme}
@@ -290,104 +293,80 @@ export default function ProfilePage() {
               </div>
 
               <div className="profile-container">
-                <div className="profile">
-                  <div
-                    className="image-container"
-                    onMouseEnter={() =>
-                      userData.uid === uid && setIsHovered(true)
+                <div
+                  className="image-container"
+                  onMouseEnter={() =>
+                    userData.uid === uid && setIsHovered(true)
+                  }
+                  onMouseLeave={() =>
+                    userData.uid === uid && setIsHovered(false)
+                  }
+                  onClick={() => {
+                    if (userData.uid === uid) {
+                      actionModalFunction();
                     }
-                    onMouseLeave={() =>
-                      userData.uid === uid && setIsHovered(false)
-                    }
-                    onClick={() => {
-                      if (userData.uid === uid) {
-                        actionModalFunction();
-                      }
-                    }}
-                  >
-                    <img src={userData.photoURL || ProfileImg} alt="Profile" />
-                    {userData.uid === uid && isHovered && (
-                      <FaCamera className="change-btn" />
-                    )}
-                  </div>
-
-                  <div className="profile-buttons">
-                    {uid !== userData.uid && (
-                      <button
-                        onClick={requestModalfunc}
-                        className="contact-btn"
-                      >
-                        Contact
-                      </button>
-                    )}
-                    {uid === userData.uid && (
-                      <button onClick={themeModalfunc} className="green-btn">
-                        Theme
-                      </button>
-                    )}
-                  </div>
+                  }}
+                >
+                  <img src={userData.photoURL || ProfileImg} alt="Profile" />
+                  {userData.uid === uid && isHovered && (
+                    <FaCamera className="change-btn" />
+                  )}
                 </div>
+                <div className="profile-details">
+                  <div className="details">
+                    <div className="brief">
+                      <h4>
+                      {/* {userData.displayName} */}
+                      May Jane</h4>
+                      <div className="edu">
+                        <span>
+                          <MenuBookOutlinedIcon />
+                          {Number(userData.grade) === 9
+                            ? "Fresherman"
+                            : Number(userData.grade) === 10
+                            ? "Sophomore"
+                            : Number(userData.grade) === 11
+                            ? "Junior"
+                            : Number(userData.grade) === 12
+                            ? "Senior"
+                            : null}
+                        </span>
+                        <div className="dot" />
+                        <span>{userData.schoolName}</span>
+                      </div>
+                    </div>
+                    <p className="description">
+                      {/* {userData.description} */}I am excited to start my own
+                      business and am looking forward to helping you take care
+                      of your yard.
+                    </p>
+                  </div>
+
+                  {/* <div className="service-area-map">
+                    {serviceAreaPath.length > 0 ? (
+                      <img
+                        src={mapUrl}
+                        alt="Service Area Map"
+                        onClick={mapModalFunction}
+                      />
+                    ) : (
+                      <p>No service area Available</p>
+                    )}
+                  </div> */}
+                </div>
+                <LoadingButton>
+                  <MailOutlineRounded /> Contact
+                </LoadingButton>
               </div>
             </div>
 
-            <div className="profile-details">
-              <div className="details">
-                <h4>{userData.displayName}</h4>
-                <p>
-                  {Number(userData.grade) === 9
-                    ? "Fresherman"
-                    : Number(userData.grade) === 10
-                    ? "Sophomore"
-                    : Number(userData.grade) === 11
-                    ? "Junior"
-                    : Number(userData.grade) === 12
-                    ? "Senior"
-                    : null}{" "}
-                  <span style={{ fontWeight: "bold" }}>. </span>
-                  {userData.schoolName}
-                </p>
-                <p style={{ marginTop: "20px" }}>{userData.description}</p>
-              </div>
-
-              <div className="service-area-map">
-                {serviceAreaPath.length > 0 ? (
-                  <img
-                    src={mapUrl}
-                    alt="Service Area Map"
-                    onClick={mapModalFunction}
-                  />
-                ) : (
-                  <p>No service area Available</p>
-                )}
-              </div>
-            </div>
-
-            <hr />
 
             <div className="info-container">
               <h4>Services</h4>
               <div className="profile-services">
                 {userData.services && userData.services.length > 0 ? (
                   userData.services.map((service, index) => (
-                    <>
-                      <div key={index} className="service-item">
-                        <div className="image-border">
-                          <img
-                            src={serviceImages[service]}
-                            alt={service}
-                            style={{ width: "50px", height: "50px" }}
-                          />
-                        </div>
-
-                        <div>
-                          <h5>
-                            {service
-                              .replace(/-/g, " ")
-                              .replace(/^\w/, (c) => c.toUpperCase())}{" "}
-                          </h5>
-                        </div>
-                      </div>
-                    </>
+                    <ServiceCard serviceName={service} />
                   ))
                 ) : (
                   <p>No services available</p>
@@ -402,82 +381,91 @@ export default function ProfilePage() {
   );
 }
 
-
 const StyledProfile = styled.div`
   min-height: calc(100vh - 80px);
-
+  width: var(--section-width);
+  margin: var(--section-margin) auto;
   .profile-banner-container {
     position: relative;
     .banner-image {
-      position: relative;
+      position: absolute;
       img {
         width: 100%;
-        height: 200px;
+        /* height: 200px; */
         object-fit: cover;
+        opacity: 30%;
       }
     }
 
     .profile-container {
-      position: absolute;
-      top: 58%;
-      left: 0;
       width: 100%;
       z-index: 1;
-      padding: 2rem;
-      .profile {
-        width: 90%;
-        margin: auto;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        flex-wrap: wrap;
-        gap: 1rem;
-        .image-container {
-          position: relative;
-          transition: filter 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      text-align: center;
+      gap: 14px;
+      .image-container {
+        position: relative;
+        transition: filter 0.3s ease;
 
-          &:hover {
-            filter: brightness(0.7);
-          }
-
-          img {
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            object-fit: cover;
-            cursor: pointer;
-          }
-
-          .change-btn {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            color: white;
-            width: 34px;
-            height: 34px;
-            z-index: 2;
-            cursor: pointer;
-            pointer-events: none;
-            opacity: 1;
-            transition: opacity 0.3s ease;
-          }
+        &:hover {
+          filter: brightness(0.7);
         }
 
-        .profile-buttons {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          gap: 1rem;
-          flex-wrap: wrap;
+        img {
+          width: 120px;
+          height: 120px;
+          border-radius: 50%;
+          object-fit: cover;
+          cursor: pointer;
+          border: var(--border-color);
+        }
 
-          .green-btn {
-            border: 2px solid ${(props) => props.secondarytheme};
-            color: ${(props) => props.secondarytheme};
+        .change-btn {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          color: white;
+          width: 34px;
+          height: 34px;
+          z-index: 2;
+          cursor: pointer;
+          pointer-events: none;
+          opacity: 1;
+          transition: opacity 0.3s ease;
+        }
+      }
+      .profile-details {
+        .brief {
+          margin: 12px 0;
+          .edu {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin: 8px 0;
+            span {
+              line-height: 1;
+              color: var(--text-gray-color);
+              display: flex;
+              align-items: center;
+              gap: 6px;
+              font-weight: 300;
+              font-size: 14px;
+            }
+            .dot {
+              width: 7px;
+              height: 7px;
+              background: var(--text-gray-color);
+              border-radius: 50px;
+            }
           }
-          .contact-btn {
-            background-color: ${(props) => props.secondarytheme};
-          }
+        }
+        .description{
+          max-width: 50ch;
         }
       }
     }
@@ -509,29 +497,9 @@ const StyledProfile = styled.div`
     margin: auto auto var(--section-margin) auto;
   }
 
-  .profile-details {
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    gap: 1rem;
-    flex-wrap: wrap;
-    width: 90%;
-    margin: 120px auto var(--section-margin) auto;
-    .service-area-map {
-      margin-top: 3rem;
-
-      img {
-        width: 100%;
-        height: auto;
-        border-radius: var(--l-radius);
-        cursor: pointer;
-      }
-    }
-  }
-
   .info-container {
     width: 90%;
-    margin: auto auto var(--section-margin) auto;
+    margin: var(--section-margin) auto;
     .profile-services {
       display: flex;
       justify-content: center;
@@ -584,19 +552,13 @@ const StyledProfile = styled.div`
     /* width: 80%;
     margin: 90px auto var(--section-margin) auto; */
 
-    .info-container {
+    /* .info-container {
       width: 80%;
       margin: auto auto var(--section-margin) auto;
       .profile-services {
         justify-content: flex-start;
       }
-    }
-
-    .profile-details {
-      width: 80%;
-      margin: 100px auto var(--section-margin) auto;
-      justify-content: space-between;
-    }
+    } */
 
     .profile-container {
       justify-content: space-between;
@@ -609,11 +571,7 @@ const StyledProfile = styled.div`
       }
     }
   }
-
-  
 `;
-
-
 
 const Banner = styled.div`
   position: sticky;

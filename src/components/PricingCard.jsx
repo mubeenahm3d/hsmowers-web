@@ -7,7 +7,7 @@ import { auth, db } from "../authentication/firebase";
 import { addDoc, collection, onSnapshot } from "firebase/firestore";
 import LoadingButton from "./LoadingButton";
 import Info from "./modals/Info";
-import { useSelector } from "react-redux";
+import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 
 const PricingCard = ({ priceInfo, subscription }) => {
   const [actionModal, setActionModal] = useState(false);
@@ -16,9 +16,11 @@ const PricingCard = ({ priceInfo, subscription }) => {
     active: false,
     error: "",
   });
+  const [isYearly, setIsYearly] = useState(true);
+  const toggleSwitch = () => setIsYearly((current) => !current);
 
   const navigate = useNavigate();
-  
+
   const upgradeHandler = async () => {
     const uid = auth.currentUser?.uid;
     if (!uid) {
@@ -118,11 +120,37 @@ const PricingCard = ({ priceInfo, subscription }) => {
         }
       />
       <StyledPricingCard>
-        <div className="discount-banner">
+        {/* <div className="discount-banner">
           Discount applied: <strong>NEWUSER</strong>
+        </div> */}
+        <h2>
+          ${priceInfo?.unit_amount / 100} <span>Per {priceInfo?.interval}</span>
+        </h2>
+        <div className="toggle">
+          <ToggleSwitch onClick={toggleSwitch} isActive={isYearly} />
+          <p>Yearly</p>
+          <span>You save 30%</span>
         </div>
-
-        <div className="pricing-info">
+        <ul>
+          <li>
+            <CheckCircleOutlineIcon htmlColor="var(--primary-light-color)" />
+            <span>Transactions with no fees (available for annual plans)</span>
+          </li>
+          <li>
+            <CheckCircleOutlineIcon htmlColor="var(--primary-light-color)" />
+            <span>Affordable Unlimited Access Plan</span>
+          </li>
+          <li>
+            <CheckCircleOutlineIcon htmlColor="var(--primary-light-color)" />
+            <span>Personalized Web Page</span>
+          </li>
+          <li>
+            <CheckCircleOutlineIcon htmlColor="var(--primary-light-color)" />
+            <span>Unlimited Services</span>
+          </li>
+        </ul>
+        <LoadingButton>Subscribe</LoadingButton>
+        {/* <div className="pricing-info">
           <h2 className="duration">1 {priceInfo?.interval}</h2>
 
           <div className="new-price-container">
@@ -162,80 +190,66 @@ const PricingCard = ({ priceInfo, subscription }) => {
               loading={subscriptionLoading}
             />
           )}
-        </div>
+        </div> */}
       </StyledPricingCard>
     </>
   );
 };
 
+const ToggleSwitch = styled.div`
+  width: 40px;
+  height: 20px;
+  background-color: ${(props) =>
+    props.isActive ? "var(--primary-color)" : "#ccc"};
+  border-radius: 10px;
+  position: relative;
+  cursor: pointer;
+  transition: background-color 0.3s;
+
+  &:before {
+    content: "";
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    background-color: white;
+    border-radius: 50%;
+    top: 1px;
+    left: ${(props) => (props.isActive ? "20px" : "1px")};
+    transition: left 0.3s;
+  }
+`;
+
 const StyledPricingCard = styled.div`
-  width: 340px;
+  width: 100%;
   border-radius: 12px;
-  box-shadow: 0px 0px 8px 4px lightgray;
-  padding: 24px;
-  text-align: center;
-  font-family: Arial, sans-serif;
-
-  .discount-banner {
-    background-color: #d0ebd5;
-    color: #2d6a4f;
-    padding: 5px 0;
-    font-size: 0.85rem;
-    border-radius: 8px;
-    margin-bottom: 2rem;
-  }
-
-  .pricing-info {
-    margin-top: 10px;
+  padding: 30px 24px;
+  border: 2px solid var(--primary-light-color);
+  background-color: var(--section-bg-color);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: start;
+  gap: 20px;
+  .toggle {
     display: flex;
     align-items: center;
-    justify-content: center;
-    flex-direction: column;
-  }
-
-  .duration {
-    font-size: 1.2rem;
-    color: #000;
-  }
-
-  .new-price-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    margin: 24px 0;
-  }
-
-  .new-price {
-    font-weight: bold;
-    color: #2d6a4f;
-    line-height: 1;
+    gap: 10px;
+    p {
+      color: var(--text-color);
+      font-weight: 600;
+    }
     span {
-      font-size: 2rem;
-      color: inherit;
+      margin-left: 20px;
+      color: #bf1d69;
     }
   }
-
-  .per-month {
-    font-size: 1rem;
-    color: #757575;
-    margin-left: 5px;
+  ul li {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 10px;
   }
 `;
 
-const StyledGradientText = styled.span`
-  font-style: italic;
-  font-weight: 700;
-  font-size: 1.1rem; /* Adjust font size as needed */
-  background: linear-gradient(
-    45deg,
-    #0072ff,
-    #00c6ff,
-    #ff6f61,
-    #6a82fb
-  ); /* Gradient colors */
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-`;
 
 export default PricingCard;

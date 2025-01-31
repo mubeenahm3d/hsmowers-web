@@ -22,7 +22,7 @@ export default function ContactForm({ backdropHandler }) {
       //   content: messageRef.current.vaue,
       // });
       // console.log("response", response.data);
-      backdropHandler();
+      // backdropHandler();
       dispatch(
         alertActions.setAlert({
           title: "Contact request successful",
@@ -45,21 +45,42 @@ export default function ContactForm({ backdropHandler }) {
     <StyledForm>
       {
         <form onSubmit={submitHandler}>
-          <h4>Contact Us</h4>
-          <input
-            required={true}
-            type="email"
-            placeholder="Email"
-            ref={emailRef}
-          />
-          <textarea
-            required={true}
-            name="message"
-            id=""
-            placeholder="Message"
-            ref={messageRef}
-          ></textarea>
-          <LoadingButton loading={submitLoading} title="Submit" type="submit" />
+          <div className="input">
+            <label htmlFor="name">Name</label>
+            <input
+              id="name"
+              required={true}
+              type="text"
+              placeholder="Type name here"
+              ref={emailRef}
+            />
+          </div>
+          <div className="input">
+            <label htmlFor="email">Email</label>
+            <input
+              id="email"
+              required={true}
+              type="email"
+              placeholder="Type email here"
+              ref={emailRef}
+            />
+          </div>
+          <div className="input">
+            <label htmlFor="message">Message</label>
+            <textarea
+              required={true}
+              name="message"
+              id="message"
+              placeholder="Type message here"
+              ref={messageRef}
+            ></textarea>
+          </div>
+          <LoadingButton
+            loading={submitLoading}
+            type="submit"
+          >
+            Send your message
+          </LoadingButton>
         </form>
       }
     </StyledForm>
@@ -69,49 +90,45 @@ export default function ContactForm({ backdropHandler }) {
 const StyledForm = styled.section`
   display: flex;
   flex-direction: column;
+  width: 100%;
   form {
-    padding: 1rem 3rem;
+    /* padding: 1rem 3rem; */
+    width: 100%;
     margin: 1rem 0;
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 20px;
     align-items: center;
     justify-content: center;
     background-color: white;
     border-radius: 1rem;
-    textarea {
-      min-width: 300px;
-      max-width: 3000px;
-      min-height: 120px;
-      max-height: 120px;
-      padding: 6px 14px;
-    }
-    input,
-    textarea {
-      width: 300px;
-      border-radius: 8px;
-      border-width: 2px;
+    .input {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 8px;
+      width: 80%;
+      textarea {
+        min-width: 300px;
+        max-width: 3000px;
+        min-height: 120px;
+        max-height: 120px;
+        padding: 6px 14px;
+      }
+      input,
+      textarea {
+        width: 100%;
+        border-width: 2px;
+      }
+      textarea {
+        border-radius: 20px;
+      }
     }
   }
-  .contact-btn {
-    align-self: flex-end;
-    background-color: var(--green-color);
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    min-width: auto;
-    max-width: 38px;
-    overflow: hidden;
-    padding: 8px 9.5px;
-    box-shadow: 0px 1px 4px 1px var(--shadow);
-    span {
-      color: inherit;
-      white-space: nowrap;
-    }
-    &:hover {
-      background-color: #76a246;
-      max-width: 200px;
-    }
+  button {
+    align-self: flex-start;
+    margin-left: 10%;
+    margin-top: 16px; 
   }
   @media (max-width: 500px) {
     form {

@@ -5,33 +5,40 @@ import ProfileCards from "../components/profile/ProfileCards";
 import Footer from "../components/Footer";
 import BackdropWrapper from "../components/modals/BackdropWrapper";
 import UserConsent from "../components/modals/UserConsent";
+import Heading from "../components/Heading";
+import LoadingButton from "../components/LoadingButton";
+import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 
 export default function GetStarted() {
-    const [consentOpen, setConsentOpen] = useState(false)
-    function backdropHandler() {
-        setConsentOpen(current => !current)
-    }
+  const [consentOpen, setConsentOpen] = useState(false);
+  function backdropHandler() {
+    setConsentOpen((current) => !current);
+  }
+
   return (
     <>
-      <Navbar />
-      <StyledGetStarted>
       <BackdropWrapper
         open={consentOpen}
         backdropHandler={backdropHandler}
         element={<UserConsent backdropHandler={backdropHandler} />}
       />
+      <Navbar />
+      <Heading title={"Get Started"} />
+      <StyledGetStarted>
         <div className="first">
-          <h1>Student Signup</h1>
+          <h3>Are you a student?</h3>
           <p>
-            HighSchoolMowers.com helps High School Students promote their own
-            business and gain customers Get your own Business Website Plus Tap
-            into our Large Advertising Network to grow your business
+            HighSchoolMowers.com empowers students to promote their businesses
+            and attract customers.Get your own website and access our extensive
+            advertising network!
           </p>
-          <button onClick={backdropHandler}>Get Started Today!</button>
+          <LoadingButton onClick={backdropHandler}>
+            Sign up now! <ArrowForwardIcon fontSize="small" />
+          </LoadingButton>
         </div>
         <div className="second">
           <h4>Recently Created Profiles</h4>
-          <ProfileCards  />
+          <ProfileCards />
         </div>
       </StyledGetStarted>
       <Footer />
@@ -40,18 +47,20 @@ export default function GetStarted() {
 }
 
 const StyledGetStarted = styled.section`
-  width: 70%;
-  min-height: var(--section-height);
-  margin: var(--section-margin) auto;
+  width: var(--section-width);
+  margin: 0 auto 5% auto;
   .first {
+    margin-top: var(--heading-margin);
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 20px;
+    align-items: start;
+    gap: var(--heading-gap);
+    p{
+      max-width: 65ch;
+    }
   }
   .second {
-    margin-top: var(--section-margin);
+    margin-top: var(--heading-margin);
     & > :first-child {
       margin-bottom: 20px;
       font-weight: 500;

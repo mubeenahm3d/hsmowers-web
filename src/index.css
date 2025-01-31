@@ -1,11 +1,12 @@
 :root {
   --section-width: 90%;
   --section-height: 68vh;
+  --section-bg-color: #E7FBF1;
 
   --xl-heading: 3.4rem;
-  --l-heading: 2.4rem;
-  --main-heading: 2rem;
-  --m-heading: 1.75rem;
+  --l-heading: 3rem;
+  --main-heading: 2.2rem;
+  --m-heading: 2rem;
   --ms-heading: 1.25rem;
   --s-heading: 1.125rem;
   --text: 1rem;
@@ -16,12 +17,13 @@
 
   --section-margin: 80px;
   --heading-margin: 50px;
+  --heading-gap: 16px;
 
   --background-color: #fefefe;
-  --primary-color: #2DC65B;
+  --primary-color: #1DBF73;
   --big-btn-color: #E94C4F;
-  --primary-light-color: #84dfb5;
-  --primary-dark-color: #1ca251;
+  --primary-light-color: #68E8AC;
+  --primary-dark-color: #18a663;
   --secondary-color: #f9ad3e;
   --secondary-light-color: #fbc76d;
   --secondary-dark-color: #d68a2d;
@@ -29,12 +31,12 @@
   --accent-light-color: #f19092;
   --accent-dark-color: #e31f22;
 
-  --text-color: #002140;
+  --text-color: #1C2A23;
   --text-light-color: #72767E;
-  --text-white-color: white;
-  --text-gray-color: #9e9e9e;
+  --text-base-color: white;
+  --text-gray-color: #8E9491;
 
-  --border-color: #c6c6c6;
+  --border-color: #EDEDED;
 
   --gray-color: #9f9f9fdd;
   --light-gray-color: #d2d2d2dd;
@@ -67,7 +69,8 @@ html {
 }
 
 body {
-  font-family: "Open Sans", sans-serif;
+  font-family: "Inter", serif;
+  font-optical-sizing: auto;
   background: var(--background-color);
   color: var(--text-color);
   overflow-y: auto;
@@ -77,11 +80,11 @@ body {
 
 h1 {
   font-size: var(--l-heading);
-  font-weight: 600;
+  font-weight: 700;
 }
 h2 {
   font-size: var(--main-heading);
-  font-weight: 600;
+  font-weight: 700;
 }
 h3 {
   font-size: var(--m-heading);
@@ -93,7 +96,7 @@ h4 {
 }
 h5 {
   font-size: var(--s-heading);
-  font-weight: 500;
+  font-weight: 600;
 }
 h6 {
   font-size: var(--xl-heading);
@@ -123,14 +126,8 @@ a {
 button {
   cursor: pointer;
   outline: none;
-  color: var(--text-white-color);
-  transition: all 0.15s ease-in-out;
-  background-color: var(--primary-color);
-  border-radius: var(--s-radius);
-  padding: 10px 16px;
-  min-width: 120px;
-  max-height: 45px;
   border: none;
+  transition: all 0.15s ease-in-out;
   touch-action: pinch-zoom;
   white-space: nowrap;
 }
@@ -167,7 +164,7 @@ button {
 }
 input {
   outline: none;
-  border-radius: var(--s-radius);
+  border-radius: 50px;
   color: var(--text-color);
   padding: 6px 14px;
   border: 2px solid var(--border-color);

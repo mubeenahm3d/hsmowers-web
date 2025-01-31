@@ -48,6 +48,7 @@ import TermOfService from "./pages/TermOfService";
 import firebaseApi from "./utils/firebaseApi";
 import WelcomeEmail from "./utils/WelcomeEmail";
 import { fetchSubscription } from "./utils/fetchSubscription";
+import ContactUs from "./pages/ContactUs";
 
 function App() {
   const [redirectLoading, setRedirectLoading] = useState(true);
@@ -212,6 +213,7 @@ function App() {
         {/* <Route path="/" element={<Home />} /> */}
         <Route path="/" element={<LandingPage />} />
         <Route path="/about" element={<About />} />
+        <Route path="/contact-us" element={<ContactUs />} />
         <Route path="/select-area" element={<Map />} />
         <Route path="/page-not-found" element={<Page404 />} />
         <Route path="/find-mowers" element={<FindMowers />} />

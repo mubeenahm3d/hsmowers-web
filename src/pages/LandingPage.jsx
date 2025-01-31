@@ -1,16 +1,22 @@
 import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import LandingMenu from "../components/LandingMenu";
-import BG from "../assets/bg4.jpg";
+import BG from "../assets/profile-banner.jpg";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
-import Footer from "../components/Footer";
 import { useNavigate } from "react-router-dom";
 import { loadGoogleMapsScript } from "../utils/googleMap";
 import { initAutocomplete } from "../utils/autoComplete";
 import { geocodeAddress } from "../utils/geocodeAddress";
 import { alertActions } from "../store/alertSlice";
 import { useDispatch } from "react-redux";
+import Benefits from "../components/landing-page/Benefits";
+import BookingGuide from "../components/landing-page/BookingGuide";
+import Locations from "../components/landing-page/Locations";
+import Faq from "../components/landing-page/Faq";
+import CallToAction from "../components/landing-page/CallToAction";
+import LandingFooter from "../components/landing-page/LandingFooter";
+import HeroSection from "../components/landing-page/HeroSection";
 
 export default function LandingPage() {
   const [location, setLocation] = useState("");
@@ -75,7 +81,7 @@ export default function LandingPage() {
   return (
     <>
       <LandingMenu />
-      <HeroSection>
+      {/* <HeroSection>
         <div className="hero-container">
           <div className="card-container">
             <Card
@@ -110,84 +116,74 @@ export default function LandingPage() {
             <img src={BG} alt="" />
           </div>
         </div>
-
-        <About>
-          <p>
-            Local Students everywhere are looking for jobs. Help them achieve
-            their dreams.
-            <br />
-            <br />
-            HighSchoolMowers.com curates top student mowers, with no cost to you
-            at all. No Signup needed, so you will never be contacted by random
-            vendors. Students pay a small fee to have their own business
-            promoted on the website, making it extremely easy to find the help
-            you need.
-          </p>
-        </About>
-      </HeroSection>
-
-      <Footer />
+      </HeroSection> */}
+      <HeroSection />
+      <Benefits />
+      <BookingGuide />
+      <Locations />
+      <Faq />
+      <CallToAction />
+      <LandingFooter />
     </>
   );
 }
 
-const HeroSection = styled.div`
-  min-height: var(--section-height);
-  margin-bottom: var(--section-margin);
+// const HeroSection = styled.div`
+//   min-height: var(--section-height);
+//   margin-bottom: var(--section-margin);
+//   .hero-container {
+//     position: relative;
 
-  .hero-container {
-    position: relative;
+//     .image-container {
+//       margin-top: 2rem;
+//       img {
+//         width: 100%;
+//         height: 320px;
+//         object-fit: cover;
+//       }
+//     }
 
-    .image-container {
-      margin-top: 2rem;
-      img {
-        width: 100%;
-        height: 320px;
-        object-fit: cover;
-      }
-    }
+//     .card-container {
+//       position: static;
+//       /* top: 50%;
+//       left: 50%;
+//       transform: translate(-50%, -50%); */
+//       width: 95%;
+//       margin: auto;
+//       min-width: 320px;
+//       z-index: 10;
+//     }
 
-    .card-container {
-      position: static;
-      /* top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%); */
-      width: 95%;
-      margin: auto;
-      min-width: 320px;
-      z-index: 10;
-    }
+//     @media (min-width: 600px) {
+//       .card-container {
+//         position: absolute;
+//         top: 50%;
+//         /* left: 50%; */
+//         transform: translate(-50%, -50%);
+//         left: 32%;
+//         max-width: 400px;
+//       }
+//     }
 
-    @media (min-width: 600px) {
-      .card-container {
-        position: absolute;
-        top: 50%;
-        /* left: 50%; */
-        transform: translate(-50%, -50%);
-        left: 32%;
-        max-width: 400px;
-      }
-    }
-
-    @media (min-width: 1024px) {
-      .card-container {
-        position: absolute;
-        top: 50%;
-        /* left: 50%; */
-        transform: translate(-50%, -50%);
-        left: 22%;
-        max-width: 400px;
-      }
-      .image-container {
-        img {
-          width: 100%;
-          height: 400px;
-          object-fit: cover;
-        }
-      }
-    }
-  }
-`;
+//     @media (min-width: 1024px) {
+//       .card-container {
+//         position: absolute;
+//         top: 50%;
+//         /* left: 50%; */
+//         transform: translate(-50%, -50%);
+//         left: 22%;
+//         max-width: 400px;
+//       }
+//       .image-container {
+//         img {
+//           width: 100%;
+//           height: 400px;
+//           object-fit: cover;
+//         }
+//       }
+//     }
+//   }
+// `;
 
 const CardInfo = styled(CardContent)`
   h3 {

@@ -5,9 +5,7 @@ import { Avatar } from "@mui/material";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import {
-  serverTimestamp,
-} from "firebase/firestore";
+import { serverTimestamp } from "firebase/firestore";
 import { auth, db } from "../authentication/firebase";
 import { useNavigate } from "react-router";
 import LoadingButton from "../components/LoadingButton";
@@ -48,7 +46,7 @@ export default function ProfileSetup() {
 
   const [submitLoading, setSubmitLoading] = useState(false);
   const navigate = useNavigate();
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
   function onChangeHandler(e) {
     setForm((current) => ({ ...current, [e.target.name]: e.target.value }));
@@ -60,7 +58,7 @@ export default function ProfileSetup() {
         { name: form.userName, data: form.photoURL },
         "profilePics"
       );
-      
+
       // await updateProfile(currentUser, {
       //   photoURL,
       // });
@@ -93,19 +91,17 @@ export default function ProfileSetup() {
       console.log("userInfo", userInfo, photoURL);
       // await setDoc(doc(db, "userInfo", currentUser?.uid), userInfo);
 
-      dispatch(userActions.setUserInfo(userInfo))
-      dispatch(userActions.setUserImage(photoURL))
+      dispatch(userActions.setUserInfo(userInfo));
+      dispatch(userActions.setUserImage(photoURL));
 
       // navigate(`/profile-page/${form.userName}`);
       navigate("/select-area");
-      
     } catch (err) {
       console.log("error while saving user info", err);
     } finally {
       setSubmitLoading(false);
     }
   }
-
 
   function backBtnHandler(e) {
     e.preventDefault();
@@ -115,12 +111,7 @@ export default function ProfileSetup() {
   function renderSteps() {
     switch (stepNum) {
       case 1:
-        return (
-          <Step1
-            form={form}
-            onChangeHandler={onChangeHandler}
-          />
-        );
+        return <Step1 form={form} onChangeHandler={onChangeHandler} />;
       case 2:
         return <Step2 form={form} onChangeHandler={onChangeHandler} />;
       case 3:
@@ -128,20 +119,34 @@ export default function ProfileSetup() {
       case 4:
         return <Step4 form={form} onChangeHandler={onChangeHandler} />;
       default:
-        return (
-          <Step1
-            form={form}
-            onChangeHandler={onChangeHandler}
-          />
-        );
+        return <Step1 form={form} onChangeHandler={onChangeHandler} />;
     }
   }
+
+  console.log("stepnum", stepNum);
 
   return (
     <>
       <Navbar />
       <StyledProfileSetup>
-        <h3>Edit Profile</h3>
+        <StyledStepsBar>
+          <div className="progress">
+            {[1, 2, 3, 4].map((stepIndex) => (
+              <div
+                className={`step step${stepIndex} ${
+                  stepNum === stepIndex
+                    ? "active"
+                    : stepNum > stepIndex
+                    ? "completed"
+                    : ""
+                }`}
+              >
+                <div className="dot" />
+                {stepIndex !== 4 && <div className="line" />}
+              </div>
+            ))}
+          </div>
+        </StyledStepsBar>
         <div className="content">
           <h4>Edit your business page</h4>
           <form onSubmit={submitHandler}>
@@ -154,19 +159,11 @@ export default function ProfileSetup() {
               >
                 <ArrowBackIcon fontSize="small" /> Back
               </button>
-              <LoadingButton
-                loading={submitLoading}
-                type="submit"
-                title={"Next"}
-              />
+              <LoadingButton loading={submitLoading} type="submit">
+                Next
+              </LoadingButton>
             </div>
           </form>
-          <div className="progress">
-            <div className={`step ${stepNum > 0 ? "active" : ""}`} />
-            <div className={`step ${stepNum > 1 ? "active" : ""}`} />
-            <div className={`step ${stepNum > 2 ? "active" : ""}`} />
-            <div className={`step ${stepNum > 3 ? "active" : ""}`} />
-          </div>
         </div>
       </StyledProfileSetup>
       <Footer />
@@ -174,7 +171,7 @@ export default function ProfileSetup() {
   );
 }
 
-function Step1({ form, onChangeHandler}) {
+function Step1({ form, onChangeHandler }) {
   return (
     <StyledStep>
       <div className="field">
@@ -389,6 +386,87 @@ function Step4({ form, onChangeHandler }) {
   );
 }
 
+const StyledStepsBar = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  .progress {
+    width: 500px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 30px;
+    .step {
+      display: flex;
+      align-items: center;
+      .dot {
+        width: 14px;
+        height: 14px;
+        border: 1px solid var(--gray-color);
+        border-radius: 50px;
+        position: relative;
+        transition: border-color 0.3s ease-in-out,
+          background-color 0.3s ease-in-out;
+        &::before {
+          position: absolute;
+          white-space: nowrap;
+          color: var(--gray-color);
+          font-weight: 400;
+          top: -26px;
+          left: 50%;
+          transform: translateX(-50%);
+        }
+      }
+      .line {
+        width: 140px;
+        height: 1px;
+        background-color: var(--gray-color);
+        transition: background-color 0.3s ease-in-out, height 0.3s ease-in-out;
+      }
+      &.active {
+        .dot {
+          border-color: var(--primary-color);
+          &::before {
+            color: var(--primary-color);
+          }
+        }
+      }
+      &.completed {
+        .dot {
+          border-color: var(--primary-color);
+          background-color: var(--primary-color);
+          &::before {
+            color: var(--primary-color);
+          }
+        }
+        .line {
+          background-color: var(--primary-color);
+          height: 2px;
+        }
+      }
+    }
+    .step1 {
+      .dot:before {
+        content: "Services";
+      }
+    }
+    .step2 {
+      .dot:before {
+        content: "Business Page";
+      }
+    }
+    .step3 {
+      .dot:before {
+        content: "Profile Setup";
+      }
+    }
+    .step4 {
+      .dot:before {
+        content: "Success";
+      }
+    }
+  }
+`;
 
 const StyledProfileSetup = styled.section`
   margin-top: var(--section-margin);
@@ -399,6 +477,7 @@ const StyledProfileSetup = styled.section`
   h4 {
     color: var(--text-color);
   }
+
   .content {
     display: flex;
     flex-direction: column;
@@ -408,7 +487,7 @@ const StyledProfileSetup = styled.section`
     max-width: 650px;
     margin: var(--section-margin) auto;
     border-radius: var(--l-radius);
-    
+
     padding: 30px;
     h4 {
       margin-bottom: 20px;
@@ -429,25 +508,6 @@ const StyledProfileSetup = styled.section`
           align-items: center;
           justify-content: center;
           gap: 2px;
-        }
-      }
-    }
-    .progress {
-      width: 200px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      margin-top: 30px;
-      .step {
-        width: 50px;
-        height: 6px;
-        background-color: gray;
-        border-radius: 4px;
-        background-color: var(--light-gray-color);
-        transition: all 0.2s ease-in-out;
-        &.active {
-          background-color: var(--primary-color);
         }
       }
     }

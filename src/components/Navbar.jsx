@@ -98,7 +98,7 @@ export default function Navbar() {
       />
       <div className="logo" onClick={() => navigate("/")}>
         <img src={logo} alt="Logo" />
-        <h2>HighSchoolMowers</h2>
+        <h3>HighSchool<span>Mowers</span></h3>
       </div>
       <div className="nav-items">
         <div className="item">
@@ -334,6 +334,12 @@ const StyledNavbar = styled.section`
   box-shadow: 0px 0px 4px 2px var(--shadow-light);
   width: 100%;
   padding: 0 5%;
+
+  h3 span {
+    font-weight: inherit;
+    font-size: inherit;
+    color: var(--primary-color);
+  }
 
   .logo {
     display: flex;

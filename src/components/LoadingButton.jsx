@@ -1,19 +1,23 @@
 import { CircularProgress, useMediaQuery } from "@mui/material";
-// import { motion } from "framer-motion";
+import { motion } from "framer-motion";
 import React from "react";
 import styled from "styled-components";
 
-export default function LoadingButton({ loading, title, ...params }) {
-    const mediaQuery600 = useMediaQuery("(max-width: 600px)");
+export default function LoadingButton({
+  children,
+  loading = false,
+  ...params
+}) {
+  const mediaQuery600 = useMediaQuery("(max-width: 600px)");
   return (
     <StyledButton
-      // whileTap={{ scale: 0.8 }}
-      // transition={{
-      //   type: "spring",
-      //   duration: 0.2,
-      //   stiffness: 400,
-      //   damping: 17,
-      // }}
+      whileTap={{ scale: 0.8 }}
+      transition={{
+        type: "spring",
+        duration: 0.2,
+        stiffness: 400,
+        damping: 17,
+      }}
       disabled={loading}
       {...params}
     >
@@ -26,14 +30,30 @@ export default function LoadingButton({ loading, title, ...params }) {
           }}
         />
       ) : (
-        title
+        children
       )}
     </StyledButton>
   );
 }
 
-const StyledButton = styled.button`
+const StyledButton = styled(motion.button)`
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 6px;
+  height: 42px;
+  padding: 8px 12px;
+  border-radius: 50px;
+  color: var(--text-base-color);
+  background-color: var(--primary-color);
+  &:hover {
+    background-color: var(--primary-dark-color);
+  }
+  &.white {
+    background-color: white;
+    color: var(--primary-color);
+    &:hover {
+      background-color: white;
+    }
+  }
 `;

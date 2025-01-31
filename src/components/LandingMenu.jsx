@@ -1,10 +1,10 @@
-import React from 'react'
+import React from "react";
 import styled from "styled-components";
 import logo from "../assets/MowerLogo.png";
 import { Link, useNavigate } from "react-router-dom";
 
 export default function LandingMenu() {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   return (
     <>
@@ -12,16 +12,15 @@ export default function LandingMenu() {
         <div className="navbar-container">
           <div className="image-container">
             <img src={logo} alt="" />
-            <h2>HighSchoolMowers</h2>
+            <h3>
+              HighSchool<span>Mowers</span>
+            </h3>
           </div>
 
-          <div className='links'>
+          <div className="links">
             <Link to="/get-started" style={{ textDecoration: "underline" }}>
               Student? Signup!
             </Link>
-            <button className="green-btn" onClick={()=> {
-              navigate('/login')
-            }}>Login</button>
           </div>
         </div>
       </StyledNavbar>
@@ -29,11 +28,16 @@ export default function LandingMenu() {
   );
 }
 
-
 const StyledNavbar = styled.div`
   background-color: var(--background-color);
   width: var(--section-width);
   margin: 1rem auto;
+
+  h3 span {
+    font-weight: inherit;
+    font-size: inherit;
+    color: var(--primary-color);
+  }
 
   .navbar-container {
     display: flex;
@@ -42,13 +46,13 @@ const StyledNavbar = styled.div`
     flex-wrap: wrap;
     gap: 1rem;
 
-    .links{
+    .links {
       display: flex;
       justify-content: space-between;
       align-items: center;
       flex-wrap: wrap;
       gap: 1rem;
-    } 
+    }
     .image-container {
       display: flex;
       justify-content: space-between;
