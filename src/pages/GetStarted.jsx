@@ -8,6 +8,7 @@ import UserConsent from "../components/modals/UserConsent";
 import Heading from "../components/Heading";
 import LoadingButton from "../components/LoadingButton";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+import LandingMenu from "../components/LandingMenu";
 
 export default function GetStarted() {
   const [consentOpen, setConsentOpen] = useState(false);
@@ -22,7 +23,7 @@ export default function GetStarted() {
         backdropHandler={backdropHandler}
         element={<UserConsent backdropHandler={backdropHandler} />}
       />
-      <Navbar />
+      <LandingMenu />
       <Heading title={"Get Started"} />
       <StyledGetStarted>
         <div className="first">
@@ -55,7 +56,7 @@ const StyledGetStarted = styled.section`
     flex-direction: column;
     align-items: start;
     gap: var(--heading-gap);
-    p{
+    p {
       max-width: 65ch;
     }
   }
@@ -67,7 +68,11 @@ const StyledGetStarted = styled.section`
     }
   }
 
-  @media (max-width: 690px) {
+  @media (max-width: 768px) {
     text-align: center;
+    .first {
+      align-items: center;
+      justify-content: center;
+    }
   }
 `;

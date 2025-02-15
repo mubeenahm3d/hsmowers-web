@@ -2,8 +2,11 @@ import React from "react";
 import styled from "styled-components";
 import LoadingButton from "../LoadingButton";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+import { useNavigate } from "react-router";
 
 const CallToAction = () => {
+  const navigate = useNavigate()
+
   return (
     <StyledCTA>
       <div className="wrapper">
@@ -14,7 +17,7 @@ const CallToAction = () => {
             services. We help you find reliable professionals to transform your
             outdoor space.
           </p>
-          <LoadingButton className="white">
+          <LoadingButton onClick={() => navigate("/find-mowers")} className="white">
             Find out in Your Area <ArrowForwardIcon fontSize="small" />
           </LoadingButton>
         </div>
@@ -49,6 +52,14 @@ const StyledCTA = styled.div`
       justify-content: flex-start;
       align-items: flex-start;
       gap: var(--heading-gap);
+    }
+  }
+  @media (max-width: 768px) {
+    .wrapper {
+      text-align: center;
+      .right{
+        align-items: center;
+      }
     }
   }
 `;

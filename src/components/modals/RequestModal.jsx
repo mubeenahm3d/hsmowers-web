@@ -17,32 +17,28 @@ export default function RequestModal({ backdropHandler, heading, uemail }) {
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
 
-   const handleRequest = async () => {
-     setLoading(true);
-      console.log("Email:", email);
-      console.log("Number:", number);
-      console.log("Message:", message);
+  const handleRequest = async () => {
+    setLoading(true);
+    console.log("Email:", email);
+    console.log("Number:", number);
+    console.log("Message:", message);
 
+    const result = await ServiceEmail(
+      email,
+      uemail,
+      message,
+      number,
+      setLoading,
+      dispatch,
+      backdropHandler
+    );
 
-     const result = await ServiceEmail(
-       email, 
-       uemail,
-       message,
-       number, 
-       setLoading,
-       dispatch,
-       backdropHandler
-     );
-
-     if (result.success) {
-       setEmail("");
-       setMessage("");
-       setNumber("");
-     }
-   };
-
-
-
+    if (result.success) {
+      setEmail("");
+      setMessage("");
+      setNumber("");
+    }
+  };
 
   return (
     <>
@@ -132,11 +128,9 @@ export default function RequestModal({ backdropHandler, heading, uemail }) {
             )}
           </div>
 
-          <LoadingButton
-            loading={loading}
-            title={"Request"}
-            onClick={handleRequest}
-          />
+          <LoadingButton loading={loading} onClick={handleRequest}>
+            Request
+          </LoadingButton>
         </div>
       </StyledInfo>
     </>

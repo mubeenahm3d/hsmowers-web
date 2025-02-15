@@ -24,7 +24,15 @@ import { useLocation } from "react-router";
 import SignInWithoutEmail from "../../authentication/SignInWithoutEmail";
 import Info from "./Info";
 import Lottie from "lottie-react";
-import LoaderAnimation from '../../assets/animation.json'
+import LoaderAnimation from "../../assets/animation.json";
+import ProfileBasics from "../profile-setup/ProfileBasics";
+import ServicesOffered from "../profile-setup/ServicesOffered";
+import ProfileInfo from "../profile-setup/ProfileInfo";
+import BusinessInfo from "../profile-setup/BusinessInfo";
+import EastOutlinedIcon from "@mui/icons-material/EastOutlined";
+import { WestOutlined } from "@mui/icons-material";
+import LoginInfo from "../profile-setup/LoginInfo";
+import EmailVerify from "../profile-setup/EmailVerify";
 
 export default function ProfileSetupModal({ backdropHandler, heading }) {
   const userInfo = useSelector((state) => state.user.userInfo);
@@ -40,7 +48,7 @@ export default function ProfileSetupModal({ backdropHandler, heading }) {
     grade: userInfo?.grade || 9,
     description: userInfo?.description || "",
     schoolName: userInfo?.schoolName || "",
-    photoURL: userInfo?.photoURL || "",
+    photoURL: userInfo?.photoURL || require("../../assets/demo-img.png"),
     services: userInfo?.services || [],
     serviceDistance: userInfo?.serviceDistance || 0.5,
   });
@@ -54,38 +62,38 @@ export default function ProfileSetupModal({ backdropHandler, heading }) {
     }
   }, [userInfo]);
 
-async function fetchZipCodeFromAddress(address) {
-  const apiKey = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
-  const apiUrl = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
-    address
-  )}&key=${apiKey}`;
+  async function fetchZipCodeFromAddress(address) {
+    const apiKey = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
+    const apiUrl = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
+      address
+    )}&key=${apiKey}`;
 
-  try {
-    const response = await fetch(apiUrl);
-    const data = await response.json();
+    try {
+      const response = await fetch(apiUrl);
+      const data = await response.json();
 
-    if (data.status === "OK") {
-      const result = data.results[0];
-      console.log("Full result:", result);
+      if (data.status === "OK") {
+        const result = data.results[0];
+        console.log("Full result:", result);
 
-      const addressComponents = result.address_components;
-      console.log("Address components:", addressComponents);
+        const addressComponents = result.address_components;
+        console.log("Address components:", addressComponents);
 
-      const zipCode = addressComponents.find((component) =>
-        component.types.includes("postal_code")
-      )?.long_name;
+        const zipCode = addressComponents.find((component) =>
+          component.types.includes("postal_code")
+        )?.long_name;
 
-      console.log("Converted zip code:", zipCode);
-      return zipCode || "";
-    } else {
-      console.error("Geocoding API error:", data.status);
+        console.log("Converted zip code:", zipCode);
+        return zipCode || "";
+      } else {
+        console.error("Geocoding API error:", data.status);
+        return "";
+      }
+    } catch (error) {
+      console.error("Error fetching zip code:", error);
       return "";
     }
-  } catch (error) {
-    console.error("Error fetching zip code:", error);
-    return "";
   }
-}
 
   function onChangeHandler(e) {
     setForm((current) => ({ ...current, [e.target.name]: e.target.value }));
@@ -184,27 +192,31 @@ async function fetchZipCodeFromAddress(address) {
 
   function backBtnHandler(e) {
     e.preventDefault();
-    setError("")
+    setError("");
     setStepNum((current) => current - 1);
   }
 
   function renderSteps() {
     switch (stepNum) {
       case 1:
-        return <Step1 form={form} onChangeHandler={onChangeHandler} />;
+        return (
+          <ServicesOffered form={form} onChangeHandler={onChangeHandler} />
+        );
       case 2:
-        return <Step2 form={form} onChangeHandler={onChangeHandler} />;
+        return <ProfileInfo form={form} onChangeHandler={onChangeHandler} />;
       case 3:
-        return <Step3 form={form} onChangeHandler={onChangeHandler} />;
+        return <ProfileBasics form={form} onChangeHandler={onChangeHandler} />;
       case 4:
-        return <Step4 form={form} onChangeHandler={onChangeHandler} />;
+        return <LoginInfo form={form} onChangeHandler={onChangeHandler} />;
       case 5:
-        return <Step5 />;
-      case 6: 
-        return <Step6/>;
+        return <EmailVerify form={form} onChangeHandler={onChangeHandler} />;
+      // case 6:
+      //   return <Step6 />;
 
       default:
-        return <Step1 form={form} onChangeHandler={onChangeHandler} />;
+        return (
+          <ServicesOffered form={form} onChangeHandler={onChangeHandler} />
+        );
     }
   }
 
@@ -218,8 +230,25 @@ async function fetchZipCodeFromAddress(address) {
       </div>
 
       <StyledProfileSetup>
+        <StyledStepsBar>
+          <div className="progress">
+            {[1, 2, 3, 4].map((stepIndex) => (
+              <div
+                className={`step step${stepIndex} ${
+                  stepNum === stepIndex
+                    ? "active"
+                    : stepNum > stepIndex
+                    ? "completed"
+                    : ""
+                }`}
+              >
+                <div className="dot" />
+                {stepIndex !== 4 && <div className="line" />}
+              </div>
+            ))}
+          </div>
+        </StyledStepsBar>
         <div className="content">
-          <h4>Create your business page</h4>
           <form onSubmit={submitHandler}>
             {renderSteps()}
             <p className="error-msg">{error}</p>
@@ -231,16 +260,18 @@ async function fetchZipCodeFromAddress(address) {
                     onClick={backBtnHandler}
                     className="back-btn"
                   >
-                    <ArrowBackIcon fontSize="small" /> Back
+                    <WestOutlined fontSize="xs" /> Back
                   </button>
-                  <LoadingButton type="submit" title={"Next"} />
+                  <LoadingButton type="submit">
+                    Next <EastOutlinedIcon fontSize="xs" />
+                  </LoadingButton>
                 </>
               )}
             </div>
           </form>
 
           {/* {error && <p style={{ color: "red" }}>{error}</p>} */}
-
+          {/* 
           <div className="progress">
             <div className={`step ${stepNum > 0 ? "active" : ""}`} />
             <div className={`step ${stepNum > 1 ? "active" : ""}`} />
@@ -248,7 +279,7 @@ async function fetchZipCodeFromAddress(address) {
             <div className={`step ${stepNum > 3 ? "active" : ""}`} />
             <div className={`step ${stepNum > 4 ? "active" : ""}`} />
             <div className={`step ${stepNum > 5 ? "active" : ""}`} />
-          </div>
+          </div> */}
         </div>
       </StyledProfileSetup>
     </>
@@ -299,177 +330,6 @@ function Step1({ form, onChangeHandler }) {
   );
 }
 
-function Step2({ form, onChangeHandler }) {
-  const isActive = (service) =>
-    form.services.includes(service.toLowerCase().split(" ").join("-"));
-
-  function servicesBtnClicked(e) {
-    e.preventDefault();
-    const { classList, value } = e.target;
-    const serviceValue = value;
-
-    let updatedServices = [...form.services];
-
-    if (classList.contains("active")) {
-      updatedServices = updatedServices.filter(
-        (service) => service !== serviceValue
-      );
-      classList.remove("active");
-    } else {
-      updatedServices.push(serviceValue);
-      classList.add("active");
-    }
-    onChangeHandler({ target: { name: "services", value: updatedServices } });
-  }
-
-  const servicesOptions = [
-    "Mowing",
-    "Snow Removal",
-    "Baby Sitting",
-    "Window Cleaning",
-    "Edging",
-    "Weeding",
-    "Leaf Removal",
-    "Dog Walking"
-  ];
-  return (
-    <StyledStep className="step2">
-      <div className="field">
-        <label htmlFor="services">Select your services</label>
-        <div className="services-btns">
-          {servicesOptions.map((service, index) => (
-            <button
-              key={index}
-              className={`gray-btn ${isActive(service) ? "active" : ""}`}
-              value={service.toLowerCase().split(" ").join("-")}
-              onClick={servicesBtnClicked}
-            >
-              {service}
-            </button>
-          ))}
-        </div>
-      </div>
-      <div className="field">
-        <label htmlFor="serviceDistance">Service Distance</label>
-        <h5>{form.serviceDistance} Miles</h5>
-        <input
-          type={"range"}
-          min={0.1}
-          step={0.1}
-          max={5}
-          className="range-input"
-          name={"serviceDistance"}
-          value={form.serviceDistance}
-          onChange={onChangeHandler}
-        />
-      </div>
-    </StyledStep>
-  );
-}
-
-function Step3({ form, onChangeHandler }) {
-  const fileSelectedHandler = (e) => {
-    const reader = new FileReader();
-    reader.onload = async () => {
-      if (reader.readyState === 2) {
-        onChangeHandler({ target: { name: "photoURL", value: reader.result } });
-      }
-    };
-    reader.readAsDataURL(e.target.files[0]);
-  };
-
-  return (
-    <StyledStep className="step3">
-      <div className="field">
-        <label htmlFor="photoURL">Profile Picture</label>
-        <Avatar src={form.photoURL} sx={{ width: "100px", height: "100px" }} />
-        <input
-          style={{ display: "none" }}
-          type="file"
-          accept="image/*"
-          name="photoURL"
-          onChange={(e) => fileSelectedHandler(e)}
-          id="img-upload"
-        />
-        <label htmlFor="img-upload" className="gray-btn">
-          Upload Image
-        </label>
-      </div>
-      <div className="field">
-        <label htmlFor="userName">School Name</label>
-        <input
-          type={"text"}
-          minLength={3}
-          placeholder="Enter School Name"
-          name={"schoolName"}
-          value={form.schoolName}
-          onChange={onChangeHandler}
-          required
-        />
-      </div>
-      <div className="field">
-        <label htmlFor="grade">Grade</label>
-        <select
-          name="grade"
-          value={form.grade}
-          onChange={onChangeHandler}
-          required
-        >
-          <option value={9}>Fresherman</option>
-          <option value={10}>Sophomore</option>
-          <option value={11}>Junior</option>
-          <option value={12}>Senior</option>
-        </select>
-      </div>
-    </StyledStep>
-  );
-}
-
-function Step4({ form, onChangeHandler }) {
-  return (
-    <StyledStep className="step4">
-      <div className="field">
-        <label htmlFor="fullName">Describe your business</label>
-        <textarea
-          placeholder="Enter Full Name"
-          rows={5}
-          required
-          maxLength={200}
-          name={"description"}
-          value={form.description}
-          onChange={onChangeHandler}
-        />
-        {/* <label htmlFor="fullName">Enter Your Zip Code</label>
-        <input
-          type="number"
-          placeholder="Enter Zip Code"
-          required
-          minLength={5}
-          value={form.zipCode}
-          onChange={(e) =>
-            onChangeHandler({
-              target: { name: "zipCode", value: e.target.value },
-            })
-          }
-        /> */}
-
-        <label htmlFor="fullName">Enter Your Address</label>
-        <input
-          type="text"
-          placeholder="Enter Address"
-          required
-          value={form.address}
-          onChange={(e) =>
-            onChangeHandler({
-              target: { name: "address", value: e.target.value },
-            })
-          }
-        />
-      </div>
-    </StyledStep>
-  );
-}
-
 function Step5() {
   const [inputs, setInputs] = useState({
     email: "",
@@ -489,7 +349,7 @@ function Step5() {
     }));
   }
   const submitHandler = async (e) => {
-    console.log('submit called')
+    console.log("submit called");
     e.preventDefault();
     setLoading(true);
     try {
@@ -576,11 +436,9 @@ function Step5() {
                 style={{ marginBottom: "1rem" }}
               />
             </div>
-            <LoadingButton
-              loading={loading}
-              onClick={submitHandler}
-              title="Signup"
-            />
+            <LoadingButton loading={loading} onClick={submitHandler}>
+              Signup
+            </LoadingButton>
             <SignInWithoutEmail />
           </div>
         </div>
@@ -590,7 +448,6 @@ function Step5() {
 }
 
 function Step6() {
-
   return (
     <>
       <div
@@ -612,6 +469,88 @@ function Step6() {
   );
 }
 
+const StyledStepsBar = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  .progress {
+    width: 500px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 30px;
+    .step {
+      display: flex;
+      align-items: center;
+      .dot {
+        width: 14px;
+        height: 14px;
+        border: 1px solid var(--gray-color);
+        border-radius: 50px;
+        position: relative;
+        transition: border-color 0.3s ease-in-out,
+          background-color 0.3s ease-in-out;
+        &::before {
+          position: absolute;
+          white-space: nowrap;
+          color: var(--gray-color);
+          font-weight: 400;
+          top: -26px;
+          left: 50%;
+          transform: translateX(-50%);
+        }
+      }
+      .line {
+        width: 140px;
+        height: 1px;
+        background-color: var(--gray-color);
+        transition: background-color 0.3s ease-in-out, height 0.3s ease-in-out;
+      }
+      &.active {
+        .dot {
+          border-color: var(--primary-color);
+          &::before {
+            color: var(--primary-color);
+          }
+        }
+      }
+      &.completed {
+        .dot {
+          border-color: var(--primary-color);
+          background-color: var(--primary-color);
+          &::before {
+            color: var(--primary-color);
+          }
+        }
+        .line {
+          background-color: var(--primary-color);
+          height: 2px;
+        }
+      }
+    }
+    .step1 {
+      .dot:before {
+        content: "Services";
+      }
+    }
+    .step2 {
+      .dot:before {
+        content: "Business Page";
+      }
+    }
+    .step3 {
+      .dot:before {
+        content: "Profile Setup";
+      }
+    }
+    .step4 {
+      .dot:before {
+        content: "Success";
+      }
+    }
+  }
+`;
+
 const StyledProfileSetup = styled.section`
   margin-top: var(--section-margin);
   min-height: var(--section-height);
@@ -621,7 +560,7 @@ const StyledProfileSetup = styled.section`
   h4 {
     color: var(--text-color);
   }
-  .error-msg{
+  .error-msg {
     color: red;
     height: 40px;
   }
@@ -645,15 +584,17 @@ const StyledProfileSetup = styled.section`
       flex-direction: column;
       .btns {
         display: flex;
-
+        gap: 20px;
         .back-btn {
           background-color: transparent;
-          color: var(--text-light-color);
-          font-weight: 600;
+          color: var(--primary-color);
+          border: 1px solid var(--border-color);
+          border-radius: 50px;
+          padding: 0 18px;
           display: flex;
           align-items: center;
           justify-content: center;
-          gap: 2px;
+          gap: 10px;
         }
       }
     }
@@ -813,7 +754,6 @@ const StyledSignup = styled.section`
         .input {
           input {
             width: 100%;
-            
           }
         }
         .username {

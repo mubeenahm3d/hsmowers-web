@@ -3,11 +3,12 @@ import styled from 'styled-components'
 import Navbar from "./Navbar";
 import Footer from "./Footer";
 import ErrorImg from '../assets/404.svg'
+import LandingMenu from './LandingMenu';
 
 export default function Page404() {
   return (
     <>
-      <Navbar />
+      <LandingMenu />
       <Main>
         {/* <h1>404</h1> */}
         <img src={ErrorImg} alt="" />

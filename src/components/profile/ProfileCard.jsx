@@ -88,6 +88,7 @@ const StyledProfileCard = styled.section`
   border-radius: var(--l-radius);
   box-shadow: 0px 0px 4px 2px var(--shadow-light);
   transition: transform 0.15s ease-in-out;
+  text-align: left;
   cursor: pointer;
   overflow: hidden;
   &:hover {

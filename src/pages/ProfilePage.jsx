@@ -14,20 +14,13 @@ import { db } from "../authentication/firebase";
 import { useNavigate } from "react-router-dom";
 import RequestModal from "../components/modals/RequestModal";
 import BannerImg from "../assets/profile-page-grass.png";
-import Mower from "../assets/lawn-mower.svg";
-import SnowRemoval from "../assets/snow removal.svg";
-import Edging from "../assets/edging.svg";
-import LeafRemoval from "../assets/leaf-removal.svg";
-import Weeding from "../assets/weeding.svg";
-import BabySitting from "../assets/baby-sitting.svg";
-import DogWalking from "../assets/dog walking.svg";
-import WindowCleaning from "../assets/window cleaning.svg";
 import CloseIcon from "@mui/icons-material/Close";
 import ThemeModal from "../components/modals/ThemeModal";
 import MenuBookOutlinedIcon from "@mui/icons-material/MenuBookOutlined";
 import LoadingButton from "../components/LoadingButton";
 import { MailOutlineRounded } from "@mui/icons-material";
 import ServiceCard from "../components/profile/ServiceCard";
+import LandingMenu from "../components/LandingMenu";
 
 export default function ProfilePage() {
   const userInfo = useSelector((state) => state.user.userInfo);
@@ -62,16 +55,6 @@ export default function ProfilePage() {
   const secondarytheme = userData.secondaryColor || "var(--primary-color)";
   const tertiarytheme = userData.tertiaryColor || "var(--primary-color)";
 
-  const serviceImages = {
-    mowing: Mower,
-    "snow-removal": SnowRemoval,
-    edging: Edging,
-    "dog-walking": DogWalking,
-    "leaf-removal": LeafRemoval,
-    weeding: Weeding,
-    "baby-sitting": BabySitting,
-    "window-cleaning": WindowCleaning,
-  };
 
   const backdropHandler = () => {
     setUploadModal((current) => !current);
@@ -92,13 +75,16 @@ export default function ProfilePage() {
       querySnapshot.forEach((doc) => {
         //  console.log(`${doc.id} =>`, doc.data());
         fetchedData = doc.data();
-        console.log(fetchedData.email);
 
         setRequestModalEmail(fetchedData.email);
         //  console.log("Email send:", fetchedData.email);
       });
 
+      if(!fetchedData.email) {
+        navigate("/page-not-found")
+      }
       if (Object.keys(fetchedData).length > 0) {
+
         setUserData(fetchedData);
       }
     } catch (error) {
@@ -181,10 +167,11 @@ export default function ProfilePage() {
     return `${baseUrl}${size}&${center}&${pathParam}&${fillParam}&key=${key}`;
   };
   const mapUrlModal = generateMapUrlModal(serviceAreaPath);
+  
 
   return (
     <>
-      <Navbar />
+      <LandingMenu />
 
       <BackdropWrapper
         open={requestModal}
@@ -315,9 +302,7 @@ export default function ProfilePage() {
                 <div className="profile-details">
                   <div className="details">
                     <div className="brief">
-                      <h4>
-                      {/* {userData.displayName} */}
-                      May Jane</h4>
+                      <h4>{userData.displayName}</h4>
                       <div className="edu">
                         <span>
                           <MenuBookOutlinedIcon />
@@ -335,34 +320,17 @@ export default function ProfilePage() {
                         <span>{userData.schoolName}</span>
                       </div>
                     </div>
-                    <p className="description">
-                      {/* {userData.description} */}I am excited to start my own
-                      business and am looking forward to helping you take care
-                      of your yard.
-                    </p>
+                    <p className="description">{userData.description}</p>
                   </div>
-
-                  {/* <div className="service-area-map">
-                    {serviceAreaPath.length > 0 ? (
-                      <img
-                        src={mapUrl}
-                        alt="Service Area Map"
-                        onClick={mapModalFunction}
-                      />
-                    ) : (
-                      <p>No service area Available</p>
-                    )}
-                  </div> */}
                 </div>
-                <LoadingButton>
+                <LoadingButton onClick={backdropHandlerRequest}>
                   <MailOutlineRounded /> Contact
                 </LoadingButton>
               </div>
             </div>
 
-
             <div className="info-container">
-              <h4>Services</h4>
+              <h4>Offered Services</h4>
               <div className="profile-services">
                 {userData.services && userData.services.length > 0 ? (
                   userData.services.map((service, index) => (
@@ -373,6 +341,17 @@ export default function ProfilePage() {
                 )}
               </div>
             </div>
+            {/* <div className="service-area-map">
+              {serviceAreaPath.length > 0 ? (
+                <img
+                  src={mapUrl}
+                  alt="Service Area Map"
+                  onClick={mapModalFunction}
+                />
+              ) : (
+                <p>No service area Available</p>
+              )}
+            </div> */}
           </>
         )}
       </StyledProfile>
@@ -464,7 +443,7 @@ const StyledProfile = styled.div`
             }
           }
         }
-        .description{
+        .description {
           max-width: 50ch;
         }
       }

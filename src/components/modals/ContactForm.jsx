@@ -75,10 +75,7 @@ export default function ContactForm({ backdropHandler }) {
               ref={messageRef}
             ></textarea>
           </div>
-          <LoadingButton
-            loading={submitLoading}
-            type="submit"
-          >
+          <LoadingButton loading={submitLoading} type="submit">
             Send your message
           </LoadingButton>
         </form>
@@ -128,11 +125,18 @@ const StyledForm = styled.section`
   button {
     align-self: flex-start;
     margin-left: 10%;
-    margin-top: 16px; 
+    margin-top: 16px;
   }
-  @media (max-width: 500px) {
+  @media (max-width: 576px) {
     form {
-      padding: 1rem;
+      justify-content: flex-start;
+      align-items: flex-start;
+      .input input {
+        width: 300px;
+      }
+      button{
+        margin-left: 0;
+      }
     }
   }
 `;

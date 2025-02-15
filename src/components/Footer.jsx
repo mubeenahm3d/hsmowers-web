@@ -29,15 +29,6 @@ export default function Footer() {
           />
         }
       />
-      <div className="content">
-        <div className="socials">
-          {/* <h2>HighSchoolMowers</h2> */}
-          <p>
-            Students pay a small fee to have their own business promoted on the
-            website, making it extremely easy to find the help you need.
-          </p>
-        </div>
-      </div>
       <div className="copyright">
         <p> HighSchoolMowers, Copyright © {year}</p>
         <div className="tabs">
@@ -63,8 +54,9 @@ export default function Footer() {
 
 const StyledFooter = styled.section`
   background-color: var(--background-color);
-  box-shadow: 0px 0px 4px 2px var(--shadow-light);
-  padding: 40px 8%;
+  /* width: 100vw; */
+  padding: 20px 5%;
+  border-top: 2px solid var(--border-color);
   h5,
   li,
   p,
@@ -184,13 +176,13 @@ const StyledFooter = styled.section`
     }
   }
 
-  .conditions{
+  .conditions {
     display: flex;
     justify-content: flex-start;
     align-items: flex-start;
     gap: 1rem;
     margin-top: 2rem;
-    .condition-links{
+    .condition-links {
       color: black;
       text-decoration: underline;
     }

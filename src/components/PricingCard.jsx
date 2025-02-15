@@ -9,7 +9,7 @@ import LoadingButton from "./LoadingButton";
 import Info from "./modals/Info";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 
-const PricingCard = ({ priceInfo, subscription }) => {
+const PricingCard = ({ priceInfo, subscription, }) => {
   const [actionModal, setActionModal] = useState(false);
   const [subscriptionLoading, setSubscriptionLoading] = useState(false);
   const [subscriptionError, setSubscriptionError] = useState({
@@ -18,7 +18,7 @@ const PricingCard = ({ priceInfo, subscription }) => {
   });
   const [isYearly, setIsYearly] = useState(true);
   const toggleSwitch = () => setIsYearly((current) => !current);
-
+console.log("set is yearly", isYearly)
   const navigate = useNavigate();
 
   const upgradeHandler = async () => {
@@ -149,7 +149,7 @@ const PricingCard = ({ priceInfo, subscription }) => {
             <span>Unlimited Services</span>
           </li>
         </ul>
-        <LoadingButton>Subscribe</LoadingButton>
+        <LoadingButton onClick={upgradeHandler}>Subscribe</LoadingButton>
         {/* <div className="pricing-info">
           <h2 className="duration">1 {priceInfo?.interval}</h2>
 

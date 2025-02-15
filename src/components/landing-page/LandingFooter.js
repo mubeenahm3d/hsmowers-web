@@ -1,6 +1,10 @@
 import React from "react";
 import styled from "styled-components";
 import logo from "../../assets/MowerLogo.png";
+import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
+import LocationOnOutlinedIcon from "@mui/icons-material/LocationOnOutlined";
+import { Link, NavLink } from "react-router-dom";
+import Footer from "../Footer";
 
 const LandingFooter = () => {
   return (
@@ -13,19 +17,47 @@ const LandingFooter = () => {
               HighSchool<span>Mowers</span>
             </h4>
           </div>
-          <p>info@highschoolmowers.com</p>
-          <p>2464 Royal Ln. Mesa, New Jersey 45463</p>
+          <div className="email">
+            <EmailOutlinedIcon /> <p>info@highschoolmowers.com</p>
+          </div>
+          <div className="address">
+            <LocationOnOutlinedIcon />
+            <p>11650 Olio Rd, STE 1000-103 Fishers, IN 46037</p>
+          </div>
         </div>
         <div className="footer-section">
-          <a href="#">Home</a>
-          <a href="#">Find Mowers</a>
-          <a href="#">About Us</a>
-          <a href="#">Contact Us</a>
-        </div>
-        <div className="footer-section">
-          <a href="#">Pricing</a>
-          <a href="#">Privacy Policy</a>
-          <a href="#">Terms & Conditions</a>
+          <NavLink
+            to="/"
+            style={({ isActive }) => {
+              return isActive ? { color: "var(--primary-color)" } : {};
+            }}
+          >
+            Home
+          </NavLink>
+          <NavLink
+            to="/find-mowers"
+            style={({ isActive }) => {
+              return isActive ? { color: "var(--primary-color)" } : {};
+            }}
+          >
+            Find Mowers
+          </NavLink>
+          <NavLink
+            to="/about"
+            style={({ isActive }) => {
+              return isActive ? { color: "var(--primary-color)" } : {};
+            }}
+          >
+            About Us
+          </NavLink>
+          <NavLink
+            to="/contact-us"
+            style={({ isActive }) => {
+              return isActive ? { color: "var(--primary-color)" } : {};
+            }}
+          >
+            Contact Us
+          </NavLink>
         </div>
         <div className="footer-section newsletter">
           <h4>Subscribe to Our Newsletter</h4>
@@ -39,14 +71,7 @@ const LandingFooter = () => {
           </div>
         </div>
       </div>
-      <div className="footer-bottom">
-        <p>©2025 HighSchoolMowers All Rights are reserved</p>
-        <div className="social-icons">
-          <span>👍</span>
-          <span>📸</span>
-          <span>✖️</span>
-        </div>
-      </div>
+      <Footer />
     </StyledFooter>
   );
 };
@@ -55,7 +80,16 @@ const StyledFooter = styled.footer`
   text-align: left;
   width: var(--section-width);
   margin: 40px auto 10px auto;
-
+  .email,
+  .address {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin: 8px 0;
+    svg {
+      color: var(--text-light-color);
+    }
+  }
   .footer-content {
     display: flex;
     justify-content: space-between;
@@ -87,16 +121,18 @@ const StyledFooter = styled.footer`
     display: block;
     color: inherit;
     text-decoration: none;
-    margin: 10px 0;
+    margin: 16px 0;
     font-size: var(--s-heading);
     font-weight: 400;
-    &:hover {
-      color: var(--primary-color);
-    }
+    
   }
 
   .newsletter {
-    min-width: 200px;
+    flex: 1;
+    margin-top: 20px;
+    p {
+      margin: var(--heading-gap) 0;
+    }
     .subscribe {
       display: flex;
       align-items: center;
@@ -115,8 +151,8 @@ const StyledFooter = styled.footer`
     background-color: #333;
     color: white;
     border: none;
-    border-radius: 50%;
-    width: 30px;
+    border-radius: 50px;
+    min-width: 30px;
     height: 30px;
     cursor: pointer;
   }

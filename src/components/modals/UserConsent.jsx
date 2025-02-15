@@ -3,6 +3,7 @@ import styled from "styled-components";
 import CloseIcon from "@mui/icons-material/Close";
 import BackdropWrapper from "../../components/modals/BackdropWrapper";
 import ProfileSetupModal from "./ProfileSetupModal";
+import LoadingButton from "../LoadingButton";
 
 export default function UserConsent({ backdropHandler }) {
   const [selectedOption, setSelectedOption] = useState(null);
@@ -76,7 +77,8 @@ export default function UserConsent({ backdropHandler }) {
             />
             No, I am not currently enrolled in High School.
           </label>
-          <button type="submit">Submit</button>
+          {/* <button type="submit">Submit</button> */}
+          <LoadingButton type="submit">Submit</LoadingButton>
         </form>
       )}
     </StyledUserConsent>

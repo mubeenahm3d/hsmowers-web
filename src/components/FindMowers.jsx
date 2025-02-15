@@ -84,59 +84,59 @@ const FindMowers = () => {
   const inputRef = useRef(null); 
 
 
-   useEffect(() => {
-    const loadGoogleMapsScript = () => {
-      const script = document.createElement("script");
-      script.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}&libraries=places`;
-      script.async = true;
-      script.defer = true;
-      script.onload = () => setGoogleMapsLoaded(true);
-      document.body.appendChild(script);
-    };
+//    useEffect(() => {
+//     const loadGoogleMapsScript = () => {
+//       const script = document.createElement("script");
+//       script.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}&libraries=places`;
+//       script.async = true;
+//       script.defer = true;
+//       script.onload = () => setGoogleMapsLoaded(true);
+//       document.body.appendChild(script);
+//     };
 
-    if (!window.google) {
-      loadGoogleMapsScript();
-    } else {
-      setGoogleMapsLoaded(true);
-    }
-  }, []);
+//     if (!window.google) {
+//       loadGoogleMapsScript();
+//     } else {
+//       setGoogleMapsLoaded(true);
+//     }
+//   }, []);
 
 
- useEffect(() => {
-   if (
-     googleMapsLoaded &&
-     inputRef.current &&
-     window.google &&
-     window.google.maps &&
-     window.google.maps.places
-   ) {
-     const autocomplete = new window.google.maps.places.Autocomplete(
-       inputRef.current
-     );
-     autocomplete.setFields([
-       "address_components",
-       "geometry",
-       "formatted_address",
-     ]);
+//  useEffect(() => {
+//    if (
+//      googleMapsLoaded &&
+//      inputRef.current &&
+//      window.google &&
+//      window.google.maps &&
+//      window.google.maps.places
+//    ) {
+//      const autocomplete = new window.google.maps.places.Autocomplete(
+//        inputRef.current
+//      );
+//      autocomplete.setFields([
+//        "address_components",
+//        "geometry",
+//        "formatted_address",
+//      ]);
 
-     autocomplete.addListener("place_changed", () => {
-       const place = autocomplete.getPlace();
-       if (place.geometry) {
-         const zipComponent = place.address_components.find((component) =>
-           component.types.includes("postal_code")
-         );
-         if (zipComponent) {
-           const formattedAddress = place.formatted_address;
-           setSearchInput(formattedAddress); 
-           localStorage.setItem("location", formattedAddress);
-           setDisplaylocation(formattedAddress);
-           setZipCode(zipComponent.long_name); 
-           fetchMatchingUsers(zipComponent.long_name);
-         }
-       }
-     });
-   }
- }, [googleMapsLoaded]);
+//      autocomplete.addListener("place_changed", () => {
+//        const place = autocomplete.getPlace();
+//        if (place.geometry) {
+//          const zipComponent = place.address_components.find((component) =>
+//            component.types.includes("postal_code")
+//          );
+//          if (zipComponent) {
+//            const formattedAddress = place.formatted_address;
+//            setSearchInput(formattedAddress); 
+//            localStorage.setItem("location", formattedAddress);
+//            setDisplaylocation(formattedAddress);
+//            setZipCode(zipComponent.long_name); 
+//            fetchMatchingUsers(zipComponent.long_name);
+//          }
+//        }
+//      });
+//    }
+//  }, [googleMapsLoaded]);
 
   useEffect(() => {
     const zip = searchParams.get("zip");

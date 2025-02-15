@@ -120,7 +120,7 @@ export default function LandingPage() {
       <HeroSection />
       <Benefits />
       <BookingGuide />
-      <Locations />
+      {/* <Locations /> */}
       <Faq />
       <CallToAction />
       <LandingFooter />

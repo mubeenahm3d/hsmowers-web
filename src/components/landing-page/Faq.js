@@ -61,7 +61,7 @@ export default function Faq() {
 }
 
 const StyledFaq = styled.section`
-  background-color: var(--section-bg-color);
+  /* background-color: var(--section-bg-color); */
   padding: var(--section-margin) 0;
   .wrapper {
     width: var(--section-width);
@@ -77,7 +77,7 @@ const StyledFaq = styled.section`
       }
     }
 
-    .css-l8h5l-MuiPaper-root-MuiAccordion-root{
+    .MuiPaper-root{
         background-color: transparent;
         color: var(--text);
         box-shadow: none;
@@ -85,6 +85,12 @@ const StyledFaq = styled.section`
         position: static;
     }
 
+    @media (max-width: 768px) {
+      .top{
+        align-items: center;
+        text-align: center;
+      }
+    }
     @media screen and (max-width: 900px) {
       padding: var(--section-margin) 0;
     }

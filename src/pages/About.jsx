@@ -11,11 +11,19 @@ import LoadingButton from "../components/LoadingButton";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { LocationCityOutlined } from "@mui/icons-material";
 import CallMadeIcon from "@mui/icons-material/CallMade";
+import { useNavigate } from "react-router";
+import LocalPoliceOutlinedIcon from "@mui/icons-material/LocalPoliceOutlined";
+import DateRangeOutlinedIcon from "@mui/icons-material/DateRangeOutlined";
+import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
+import RoofingOutlinedIcon from "@mui/icons-material/RoofingOutlined";
+import LandingMenu from "../components/LandingMenu";
 
 export default function About() {
+  const navigate = useNavigate();
+
   return (
     <>
-      <Navbar />
+      <LandingMenu/>
       <Heading title={"About Us"} />
       <AboutContainer>
         <HandbookWrapper>
@@ -47,7 +55,9 @@ export default function About() {
                 Best Service
               </li>
             </ul>
-            <LoadingButton>Book Service</LoadingButton>
+            <LoadingButton onClick={() => navigate("/find-mowers")}>
+              Book Service
+            </LoadingButton>
           </div>
           <div className="image-container">
             <img src={about1} alt="" />
@@ -69,7 +79,7 @@ export default function About() {
             <ul>
               <li>
                 <div className="icon">
-                  <LocationCityOutlined htmlColor="var(--text-color)" />
+                  <LocalPoliceOutlinedIcon htmlColor="var(--text-color)" />
                 </div>
                 <div className="text">
                   <h5>Satisfaction Guaranteed</h5>
@@ -80,10 +90,10 @@ export default function About() {
               </li>
               <li>
                 <div className="icon">
-                  <LocationCityOutlined htmlColor="var(--text-color)" />
+                <DateRangeOutlinedIcon htmlColor="var(--text-color)" />
                 </div>
                 <div className="text">
-                  <h5>Satisfaction Guaranteed</h5>
+                  <h5>Flexible Appointment</h5>
                   <p>
                     Lorem ipsum dolor sit amet, consectetur adipiscing elit.
                   </p>
@@ -91,10 +101,10 @@ export default function About() {
               </li>
               <li>
                 <div className="icon">
-                  <LocationCityOutlined htmlColor="var(--text-color)" />
+                  <DescriptionOutlinedIcon htmlColor="var(--text-color)" />
                 </div>
                 <div className="text">
-                  <h5>Satisfaction Guaranteed</h5>
+                  <h5>Free Quotation</h5>
                   <p>
                     Lorem ipsum dolor sit amet, consectetur adipiscing elit.
                   </p>
@@ -102,10 +112,10 @@ export default function About() {
               </li>
               <li>
                 <div className="icon">
-                  <LocationCityOutlined htmlColor="var(--text-color)" />
+                  <RoofingOutlinedIcon htmlColor="var(--text-color)" />
                 </div>
                 <div className="text">
-                  <h5>Satisfaction Guaranteed</h5>
+                  <h5>Quick Service</h5>
                   <p>
                     Lorem ipsum dolor sit amet, consectetur adipiscing elit.
                   </p>
@@ -128,9 +138,12 @@ export default function About() {
                 lorem sagittis, proin ut lectus sed ut. Enim egestas enim id
                 duis.
               </p>
-              <div className="navigate-icon">
+              <button
+                onClick={() => navigate("/get-started")}
+                className="navigate-icon"
+              >
                 <CallMadeIcon fontSize="small" htmlColor="var(--text-color)" />
-              </div>
+              </button>
             </div>
             <div className="step">
               <h4>Create Profile</h4>
@@ -139,9 +152,12 @@ export default function About() {
                 lorem sagittis, proin ut lectus sed ut. Enim egestas enim id
                 duis.
               </p>
-              <div className="navigate-icon">
+              <button
+                onClick={() => navigate("/get-started")}
+                className="navigate-icon"
+              >
                 <CallMadeIcon fontSize="small" htmlColor="var(--text-color)" />
-              </div>
+              </button>
             </div>
             <div className="step">
               <h4>Browse Nearby Service</h4>
@@ -150,9 +166,12 @@ export default function About() {
                 lorem sagittis, proin ut lectus sed ut. Enim egestas enim id
                 duis.
               </p>
-              <div className="navigate-icon">
+              <button
+                onClick={() => navigate("/find-mowers")}
+                className="navigate-icon"
+              >
                 <CallMadeIcon fontSize="small" htmlColor="var(--text-color)" />
-              </div>
+              </button>
             </div>
             <div className="step">
               <h4>Book Service</h4>
@@ -161,9 +180,12 @@ export default function About() {
                 lorem sagittis, proin ut lectus sed ut. Enim egestas enim id
                 duis.
               </p>
-              <div className="navigate-icon">
+              <button
+                onClick={() => navigate("/find-mowers")}
+                className="navigate-icon"
+              >
                 <CallMadeIcon fontSize="small" htmlColor="var(--text-color)" />
-              </div>
+              </button>
             </div>
           </div>
         </HowItWorks>
@@ -175,7 +197,6 @@ export default function About() {
 }
 
 const HowItWorks = styled.div`
-margin: 100px 0;
   h3 {
     margin-bottom: var(--heading-gap);
   }
@@ -185,24 +206,38 @@ margin: 100px 0;
       display: grid;
       grid-template-columns: 1fr 2fr 50px;
       align-items: center;
-      margin-bottom: 20px;
-      h4{
+      padding: 20px 0;
+      border-bottom: 1px solid var(--border-color);
+      h4 {
         font-weight: bold;
       }
       .navigate-icon {
-        width: 35px;
-        height: 35px;
-        background-color: var(--primary-light-color);
+        width: 45px;
+        height: 45px;
         border-radius: 50px;
         display: flex;
         align-items: center;
         justify-content: center;
         cursor: pointer;
+        border: 1px solid var(--border-color);
         &:hover {
+          transition: all 0.3s ease-in-out;
+          background-color: var(--primary-light-color);
           svg {
-            transition: all 0.2s ease-in-out;
             transform: scale(1.2);
           }
+        }
+      }
+    }
+  }
+  @media (max-width: 768px) {
+    .steps {
+      .step {
+        grid-template-columns: 1fr 2fr;
+        p {
+          grid-row: 1/3;
+          grid-column: 2/3;
+          padding: 14px 0;
         }
       }
     }
@@ -215,7 +250,7 @@ const HandbookWrapper = styled.div`
   align-items: center;
   flex-wrap: wrap;
   gap: 2rem;
-  margin: var(--section-margin) 0;
+  margin: var(--section-margin) 0 150px 0;
   .info {
     flex: 1 1 50%;
     display: flex;
@@ -236,7 +271,7 @@ const HandbookWrapper = styled.div`
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 12px;
-
+      margin: 12px 0;
       li {
         display: flex;
         align-items: center;
@@ -266,8 +301,8 @@ const HandbookWrapper = styled.div`
 
         .icon {
           background-color: var(--primary-light-color);
-          width: 42px;
-          height: 38px;
+          width: 50px;
+          height: 50px;
           border-radius: 8px;
           display: flex;
           align-items: center;
@@ -294,7 +329,8 @@ const HandbookWrapper = styled.div`
   }
   .image-container2 {
     flex: 1 1 50%;
-    justify-content: flex-start;
+    /* justify-content: flex-start; */
+    margin-bottom: 60px;
     .images {
       position: relative;
       img {
@@ -303,9 +339,41 @@ const HandbookWrapper = styled.div`
       .side-img {
         position: absolute;
         right: -10%;
-        bottom: -10%;
+        bottom: -5%;
         width: 200px;
       }
+    }
+  }
+  @media (max-width: 576px) {
+    .info {
+      align-items: center;
+      text-align: center;
+      ul {
+        align-self: start;
+        grid-template-columns: 1fr;
+      }
+    }
+    .info-2 {
+      ul {
+        text-align: start;
+      }
+    }
+    .image-container {
+      img {
+        max-width: 320px !important;
+      }
+    }
+    .image-container2 .images {
+      .side-img {
+        width: 120px;
+        bottom: -5%;
+        right: -2%;
+      }
+    }
+  }
+  @media (min-width: 900px) {
+    .image-container2 {
+      justify-content: flex-start;
     }
   }
 `;

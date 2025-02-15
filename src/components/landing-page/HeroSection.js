@@ -1,10 +1,10 @@
-// import { useNavigate } from "react-router-dom";
-// import { loadGoogleMapsScript } from "../utils/googleMap";
-// import { initAutocomplete } from "../utils/autoComplete";
-// import { geocodeAddress } from "../utils/geocodeAddress";
-// import { alertActions } from "../store/alertSlice";
-// import { useDispatch } from "react-redux";
-// import React, { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
+import { loadGoogleMapsScript } from "../../utils/googleMap";
+import { initAutocomplete } from "../../utils/autoComplete";
+import { geocodeAddress } from "../../utils/geocodeAddress";
+import { alertActions } from "../../store/alertSlice";
+import { useDispatch } from "react-redux";
+import React, { useState, useEffect, useRef } from "react";
 import LoadingButton from "../LoadingButton";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import styled from "styled-components";
@@ -12,64 +12,61 @@ import heroImg from "../../assets/landing-page/hero-img.webp";
 import MyLocationOutlinedIcon from "@mui/icons-material/MyLocationOutlined";
 
 export default function HeroSection() {
-  //   const [location, setLocation] = useState("");
-  //   const inputRef = useRef(null);
-  //   const navigate = useNavigate();
-  //   const dispatch = useDispatch();
+  const [location, setLocation] = useState("");
+  const inputRef = useRef(null);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  //   useEffect(() => {
-  //     const handlePlaceChanged = () => {
-  //       const place = inputRef.current.value;
+  useEffect(() => {
+    const handlePlaceChanged = () => {
+      const place = inputRef.current.value;
 
-  //       if (place) {
-  //         geocodeAddress(
-  //           place,
-  //           (zipCode) => {
-  //             if (zipCode) {
-  //               console.log("zipCode", zipCode);
-  //               setLocation(zipCode);
-  //               localStorage.setItem("location", place);
-  //               navigate(`/find-mowers?zip=${zipCode}`);
-  //             } else {
-  //               console.log("No ZIP code found.");
-  //             }
-  //           },
-  //           dispatch,
-  //           alertActions
-  //         );
-  //       }
-  //     };
+      if (place) {
+        geocodeAddress(
+          place,
+          (zipCode) => {
+            if (zipCode) {
+              console.log("zipCode", zipCode);
+              setLocation(zipCode);
+              localStorage.setItem("location", place);
+              navigate(`/find-mowers?zip=${zipCode}`);
+            } else {
+              console.log("No ZIP code found.");
+            }
+          },
+          dispatch,
+          alertActions
+        );
+      }
+    };
 
-  //     const initializeGoogleMaps = () => {
-  //       loadGoogleMapsScript(process.env.REACT_APP_GOOGLE_MAPS_API_KEY, () => {
-  //         initAutocomplete(inputRef.current, handlePlaceChanged);
-  //       });
-  //     };
+    const initializeGoogleMaps = () => {
+      loadGoogleMapsScript(process.env.REACT_APP_GOOGLE_MAPS_API_KEY, () => {
+        initAutocomplete(inputRef.current, handlePlaceChanged);
+      });
+    };
 
-  //     initializeGoogleMaps();
-  //   }, [navigate, dispatch, alertActions]);
+    initializeGoogleMaps();
+  }, [navigate, dispatch, alertActions]);
 
-  //   const handleFindMower = (e) => {
-  //     e.preventDefault();
+  const handleFindMower = (e) => {
+    e.preventDefault();
 
-  //     const address = inputRef.current.value;
-  //     if (!address) return;
+    const address = inputRef.current.value;
+    if (!address) return;
 
-  //     geocodeAddress(
-  //       address,
-  //       (zipCode) => {
-  //         if (zipCode) {
-  //           setLocation(zipCode);
-  //           localStorage.setItem("location", address);
-  //           navigate(`/find-mowers?zip=${zipCode}`);
-  //         } else {
-  //           console.log("No ZIP code found.");
-  //         }
-  //       },
-  //       dispatch,
-  //       alertActions
-  //     );
-  //   };
+    geocodeAddress(address, (zipCode) => {
+      console.log("zip", zipCode);
+      if (zipCode) {
+        setLocation(zipCode);
+        localStorage.setItem("location", address);
+        navigate(`/find-mowers?zip=${zipCode}`);
+      } else {
+        console.log("No ZIP code found.");
+      }
+    });
+  };
+
   return (
     <StyledHeroSection hero_img={heroImg}>
       <div className="container">
@@ -77,16 +74,20 @@ export default function HeroSection() {
           Find your next Powerful <span>Mower!</span>
         </h1>
         <p>
-          No Ads. No SignUp. Support local students & get a great looking lawn
+          No Ads. No Signup. Support local students & get a great looking lawn
         </p>
-        <form>
+        <form onSubmit={handleFindMower}>
           <div className="input-div">
-            <input placeholder="Enter your zip code or address" />
-            <button>
+            <input
+              type="text"
+              ref={inputRef}
+              placeholder="Enter your zip code or address"
+            />
+            {/* <button>
               <MyLocationOutlinedIcon /> Locate Me
-            </button>
+            </button> */}
           </div>
-          <LoadingButton>
+          <LoadingButton type="submit">
             Find Mowers <ArrowForwardIcon />
           </LoadingButton>
         </form>
@@ -95,10 +96,10 @@ export default function HeroSection() {
   );
 }
 
-const StyledHeroSection = styled.div`
+const StyledHeroSection = styled.section`
   height: 90vh;
   background: url(${({ hero_img }) => hero_img});
-  background-size: 100%;
+  background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
   .container {
@@ -128,14 +129,11 @@ const StyledHeroSection = styled.div`
     }
     p {
       max-width: 37ch;
+      color: white;
     }
     form {
-      .input-div,
-      button {
-        width: min(360px, 95%);
-      }
-
       .input-div {
+        width: 400px;
         height: 45px;
         margin-bottom: 1.2rem;
         border: 2px solid white;
@@ -171,6 +169,28 @@ const StyledHeroSection = styled.div`
           justify-content: center;
           gap: 4px;
         }
+      }
+    }
+  }
+  @media (max-width: 768px) {
+    background-position: 75%;
+    .container {
+      width: 100%;
+      align-items: center;
+      text-align: center;
+      padding-left: 0;
+      form {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+    }
+  }
+  @media (max-width: 576px) {
+    .container {
+      form .input-div {
+        width: 320px;
       }
     }
   }

@@ -40,9 +40,9 @@ const StyledButton = styled(motion.button)`
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
-  height: 42px;
-  padding: 8px 12px;
+  gap: 10px;
+  height: 38px;
+  padding: 8px 20px;
   border-radius: 50px;
   color: var(--text-base-color);
   background-color: var(--primary-color);

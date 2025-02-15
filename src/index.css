@@ -6,7 +6,7 @@
   --xl-heading: 3.4rem;
   --l-heading: 3rem;
   --main-heading: 2.2rem;
-  --m-heading: 2rem;
+  --m-heading: 2.2rem;
   --ms-heading: 1.25rem;
   --s-heading: 1.125rem;
   --text: 1rem;
@@ -36,7 +36,7 @@
   --text-base-color: white;
   --text-gray-color: #8E9491;
 
-  --border-color: #EDEDED;
+  --border-color: #DFDFDF;
 
   --gray-color: #9f9f9fdd;
   --light-gray-color: #d2d2d2dd;
@@ -76,6 +76,7 @@ body {
   overflow-y: auto;
   overflow-x: hidden;
   height: 100vh;
+  scroll-behavior: auto;
 }
 
 h1 {
@@ -162,13 +163,13 @@ button {
   transform: scale(1.1);
   background-color: transparent;
 }
-input {
+input,select {
   outline: none;
   border-radius: 50px;
   color: var(--text-color);
   padding: 6px 14px;
   border: 2px solid var(--border-color);
-  height: 38px;
+  height: 42px;
 }
 input:focus {
   border-color: var(--primary-color);
@@ -180,22 +181,23 @@ textarea {
   color: var(--text-color);
   border-color: var(--border-color);
 }
-textarea::placeholder {
-  font-family: "Poppins", sans-serif;
-}
 input:focus,
 select:focus,
 textarea:focus {
   border-color: var(--primary-color);
   outline-color: var(--primary-color);
 }
+input[type="checkbox"]{
+  height: 18px;
+  width: 18px !important;
+}
+/* input[type="checkbox"]:checked{} */
 a {
   text-decoration: none;
   cursor: pointer;
 }
 select {
-  border-radius: var(--s-radius);
-  padding: 10px 14px;
+  color: var(--text-gray-color);
 }
 li {
   list-style: none;
@@ -216,11 +218,11 @@ svg:hover {
   text-align: center;
 }
 
-@media (max-width: 600px) {
+/* @media (max-width: 600px) {
   :root {
     --section-margin: 50px;
     --heading-margin: 30px;
-    --section-width: 90%;
+    --section-width: 95%;
 
     --xl-heading: 3rem;
     --l-heading: 2.2rem;
@@ -238,6 +240,26 @@ svg:hover {
   select,
   button {
     height: 42px;
+  }
+} */
+
+@media (max-width: 1024px) {
+  :root {
+    /* --section-margin: 50px; */
+    --heading-margin: 30px;
+    --section-width: 90%;
+
+    --xl-heading: 3.2rem;
+    --l-heading: 2.8rem;
+    --main-heading: 2rem;
+    --m-heading: 1.9rem;
+    --ms-heading: 1.3rem;
+    --s-heading: 1rem;
+    --text: 0.9rem;
+  }
+  button {
+    padding: 8px 12px;
+    /* min-width: 100px; */
   }
 }
 

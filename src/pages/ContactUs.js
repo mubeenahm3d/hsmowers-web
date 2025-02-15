@@ -4,6 +4,7 @@ import Navbar from "../components/Navbar";
 import styled from "styled-components";
 import { LocationCityOutlined } from "@mui/icons-material";
 import ContactForm from "../components/modals/ContactForm";
+import Footer from "../components/Footer";
 
 export default function ContactUs() {
   return (
@@ -59,6 +60,7 @@ export default function ContactUs() {
           </div>
         </div>
       </StyledContactUs>
+      <Footer />
     </>
   );
 }
